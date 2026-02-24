@@ -20138,6 +20138,9 @@
 /obj/structure/noticeboard/directional/west,
 /turf/open/floor/iron,
 /area/station/service/hydroponics)
+"fVh" = (
+/turf/closed/wall/r_wall/rust,
+/area/station/service/chapel)
 "fVj" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -92583,8 +92586,8 @@ tiv
 siL
 oiO
 oiO
-aeu
-aeu
+fVh
+aaa
 aaa
 aaa
 aaa
@@ -92840,7 +92843,7 @@ jFq
 xqw
 iGx
 oiO
-aeu
+fVh
 aaa
 aaa
 aaa
@@ -93097,7 +93100,7 @@ tiv
 rfg
 vtv
 bJV
-aeu
+fVh
 aaa
 aaa
 aaa
@@ -93354,8 +93357,8 @@ tiv
 jhc
 oiO
 oiO
-aeu
-aeu
+fVh
+aaa
 aaa
 aaa
 aaa
