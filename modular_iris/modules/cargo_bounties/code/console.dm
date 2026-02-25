@@ -45,13 +45,13 @@
 				var/datum/bounty/pill/pill_bounty = new_cargo_bounty
 				pill_bounty.required_ammount *= 3 // ammount
 
-			new_cargo_bounty.reward *= 3
+			new_cargo_bounty.get_bounty_reward() || 3
 			GLOB.cargo_bounties += new_cargo_bounty
 
 		var/list/high_priority_bounties = list()
 		for(var/index in 1 to 2)
 			var/datum/bounty/cargo_bounty = pick_n_take(GLOB.cargo_bounties)
-			cargo_bounty.reward *= 1.5
+			cargo_bounty.get_bounty_reward() || 1.5
 			high_priority_bounties += cargo_bounty
 
 		GLOB.cargo_bounties |= high_priority_bounties
@@ -70,7 +70,7 @@
 		data["bountydata"] += list(list(
 			"name" = B.name,
 			"description" = B.description,
-			"reward_string" = "[B.reward] Credits",
+			"reward_string" = "[B.get_bounty_reward()] Credits",
 			"completion_string" = B.get_completion_string(),
 			"can_claim" = B.can_claim(),
 			"bounty_ref" = REF(B),
