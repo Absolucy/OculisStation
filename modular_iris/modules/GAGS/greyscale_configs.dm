@@ -220,12 +220,12 @@
 //Jeogori, sprite from SweetToothArt
 /datum/greyscale_config/hanbok_jeogori
 	name = "Hanbok Jeogori"
-	icon_file = 'modular_iris/icons/obj/clothing/suits/jacket.dmi'
+	icon_file = 'modular_iris/modules/GAGS/icons/suits/jacket.dmi'
 	json_config = 'modular_iris/modules/GAGS/json_configs/suits/hanbok_jeogori.json'
 
 /datum/greyscale_config/hanbok_jeogori/worn
 	name = "Hanbok Jeogori (Worn)"
-	icon_file = 'modular_iris/icons/mob/clothing/suits/jacket.dmi'
+	icon_file = 'modular_iris/modules/GAGS/icons/suits/jacket_worn.dmi'
 	json_config = 'modular_iris/modules/GAGS/json_configs/suits/hanbok_jeogori_worn.json'
 
 /*
