@@ -18,7 +18,7 @@
 
 /obj/structure/vampire/examine(mob/user)
 	. = ..()
-	if(!user.mind && ghost_desc)
+	if(isobserver(user) && ghost_desc)
 		. += span_cult(ghost_desc)
 	if(IS_VAMPIRE(user) && vampire_desc)
 		if(!owner)
