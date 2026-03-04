@@ -39,7 +39,7 @@
 		// Note: most of the time you're getting brainwashed you're unconscious
 		brainwash_victim.say("You son of a bitch! I'm in.", forced = "That son of a bitch! They're in. (April Fools)")
 
-// OCULIS EDIT ADDITION START - add unbrainwash proc. kept in here so that it's right next to /proc/nbrainwash
+// OCULIS EDIT ADDITION START - add unbrainwash proc. kept in here so that it's right next to /proc/brainwash
 /// Removes objectives from someone's brainwash.
 /proc/unbrainwash(mob/living/victim, list/directives)
 	var/datum/antagonist/brainwashed/brainwash = victim?.mind?.has_antag_datum(/datum/antagonist/brainwashed)
