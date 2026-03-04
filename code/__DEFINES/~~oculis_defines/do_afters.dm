@@ -1,0 +1,2 @@
+#define DOAFTER_SOURCE_ARCHIVE_OF_THE_KINDRED "doafter_archive_of_the_kindred"
+#define DOAFTER_SOURCE_PERSUASION_RACK "doafter_persuasion_rack"

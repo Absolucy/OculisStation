@@ -359,6 +359,7 @@
 			if(HAS_TRAIT(src, TRAIT_SENSITIVESNOUT) && is_location_accessible(BODY_ZONE_PRECISE_MOUTH))
 				var/datum/quirk/sensitivesnout/poor_snout = src.get_quirk(/datum/quirk/sensitivesnout)
 				poor_snout?.get_booped(helper)
+			SEND_SIGNAL(helper, COMSIG_LIVING_HUG_CARBON, src) // OCULIS EDIT ADDITION - VAMPIRES
 			return
 	//NOVA EDIT ADDITION END
 	else if(check_zone(helper.zone_selected) == BODY_ZONE_HEAD && get_bodypart(BODY_ZONE_HEAD)) //Headpats!
@@ -384,6 +385,8 @@
 			if(src_tail && !(src_tail.wag_flags & WAG_WAGGING))
 				emote("wag")
 		//NOVA EDIT ADDITION END
+
+		SEND_SIGNAL(helper, COMSIG_LIVING_HUG_CARBON, src) // OCULIS EDIT ADDITION - VAMPIRES
 
 	else if ((helper.zone_selected == BODY_ZONE_PRECISE_GROIN) && !isnull(src.get_organ_by_type(/obj/item/organ/tail)))
 		helper.visible_message(span_notice("[helper] pulls on [src]'s tail!"), \
@@ -415,6 +418,7 @@
 					null, span_hear("You hear a soft patter."), DEFAULT_MESSAGE_RANGE, list(helper, src))
 			to_chat(helper, span_notice ("You shake [src]'s hand."))
 			to_chat(src, span_notice ("[helper] shakes your hand."))
+			SEND_SIGNAL(helper, COMSIG_LIVING_HUG_CARBON, src) // OCULIS EDIT ADDITION - VAMPIRES
 //IRIS ADDITION END
 
 	else
@@ -437,6 +441,8 @@
 		share_blood_on_touch(helper, ITEM_SLOT_HEAD|ITEM_SLOT_MASK|ITEM_SLOT_GLOVES)
 		// Warm them up with hugs
 		share_bodytemperature(helper)
+
+		SEND_SIGNAL(helper, COMSIG_LIVING_HUG_CARBON, src) // OCULIS EDIT ADDITION - VAMPIRES
 
 		// No moodlets for people who hate touches
 		if(!HAS_TRAIT(src, TRAIT_BADTOUCH))

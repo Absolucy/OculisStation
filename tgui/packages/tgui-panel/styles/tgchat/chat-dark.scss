@@ -1517,3 +1517,20 @@ $border-width-px: $border-width * 1px;
   font-style: italic;
 }
 // NOVA EDIT ADDITION END
+
+// OCULIS EDIT ADDITION START - VAMPIRES
+.awe {
+  color: hsl(227, 87.7%, 68%);
+  animation: awe_glow 2s ease-in-out infinite;
+}
+
+@keyframes awe_glow {
+  0%,
+  100% {
+    text-shadow: 0 0 8px rgb(255, 131, 197);
+  }
+  50% {
+    text-shadow: 0 0 16px rgb(255, 0, 136);
+  }
+}
+// OCULIS EDIT ADDITION END - VAMPIRES
