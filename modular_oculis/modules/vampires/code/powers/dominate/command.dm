@@ -213,6 +213,7 @@
 	REMOVE_TRAIT(owner, TRAIT_PACIFISM, TRAIT_STATUS_EFFECT(id))
 	unbrainwash(owner, directives)
 	owner.balloon_alert(caster, "[owner] snapped out of [owner.p_their()] trance!")
+	directives = null
 	caster = null
 
 /datum/status_effect/commanded/proc/on_attacked(datum/source, atom/attacker, attack_flags)
