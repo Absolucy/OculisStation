@@ -115,7 +115,7 @@
 	force = 9
 	armour_penetration = 25
 	staketime = 2 SECONDS
-	custom_materials = list(/datum/material/silver = SHEET_MATERIAL_AMOUNT)
+	custom_materials = list(/datum/material/silver = SHEET_MATERIAL_AMOUNT, /datum/material/iron = HALF_SHEET_MATERIAL_AMOUNT)
 
 /obj/item/stack/sheet/mineral/wood/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	if(!tool.get_sharpness())

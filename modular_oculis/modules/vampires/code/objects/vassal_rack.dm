@@ -18,7 +18,7 @@
 		They usually ensure that victims are handcuffed to prevent them from running away.\n\
 		Their rituals take time, allowing us to disrupt them."
 
-	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2.5)
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 8)
 
 	/// How many times a buckled person has to be tortured to be converted.
 	var/convert_progress = 3
