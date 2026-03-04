@@ -127,4 +127,5 @@
 /atom/movable/screen/alert/status_effect/bloodboil
 	name = "Blood Boil"
 	desc = "You feel an intense heat coursing through your veins. Your blood is boiling!"
+	icon = 'modular_oculis/modules/vampires/icons/screen_alert.dmi'
 	icon_state = "bloodboil"

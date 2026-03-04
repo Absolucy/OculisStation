@@ -170,11 +170,13 @@
 	duration = 1 MINUTES
 	tick_interval = STATUS_EFFECT_NO_TICK
 	on_remove_on_mob_delete = TRUE
-	alert_type = null
+	alert_type = /atom/movable/screen/alert/status_effect/commanded
 	/// The vampire that casted this command.
 	var/mob/living/caster
 	/// The actual command used for the objective.
 	var/command
+	/// The brainwash objectives, so we can unbrainwash when it ends.
+	var/list/directives
 
 /datum/status_effect/commanded/on_creation(mob/living/new_owner, mob/living/caster, command, duration)
 	src.caster = caster
@@ -184,8 +186,11 @@
 	return ..()
 
 /datum/status_effect/commanded/on_apply()
+	if(!owner.mind)
+		return FALSE
+
 	ADD_TRAIT(owner, TRAIT_PACIFISM, TRAIT_STATUS_EFFECT(id))
-	// directives = brainwash(owner, "[command]!", "[caster.real_name]'s Command")
+	directives = brainwash(owner, "[command]!", "[caster.real_name]'s Command")
 
 	// make sure they have a moment to realize what's going on
 	owner.Immobilize(2 SECONDS, TRUE)
@@ -195,6 +200,10 @@
 	message_admins("[ADMIN_LOOKUPFLW(caster)] used the COMMAND ability on [ADMIN_LOOKUPFLW(owner)], commanding them to [command].")
 	log_game("[key_name(caster)] used the command ability on [key_name(owner)], commanding them to [command].")
 
+	var/atom/movable/screen/alert/status_effect/commanded/command_alert = linked_alert
+	if(command_alert)
+		command_alert.command = command
+
 	owner.AddElement(/datum/element/relay_attackers)
 	RegisterSignal(owner, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(on_attacked))
 	return TRUE
@@ -202,7 +211,7 @@
 /datum/status_effect/commanded/on_remove()
 	UnregisterSignal(owner, COMSIG_ATOM_WAS_ATTACKED)
 	REMOVE_TRAIT(owner, TRAIT_PACIFISM, TRAIT_STATUS_EFFECT(id))
-	// unbrainwash(owner, directives)
+	unbrainwash(owner, directives)
 	owner.balloon_alert(caster, "[owner] snapped out of [owner.p_their()] trance!")
 	caster = null
 
@@ -217,3 +226,18 @@
 		caster.Stun(0.5 SECONDS, TRUE)
 	to_chat(owner, span_awe(span_reallybig("You quickly come back to your senses as you're hit by [attacker]!")))
 	qdel(src)
+
+/atom/movable/screen/alert/status_effect/commanded
+	name = "Commanded"
+	desc = "You've been brainwashed, you can't resist the Directives engraved upon your mind!"
+	icon = 'modular_oculis/modules/vampires/icons/screen_alert.dmi'
+	icon_state = "vampire_command"
+	var/command
+
+/atom/movable/screen/alert/status_effect/commanded/Click(location, control, params)
+	. = ..()
+	if(!.)
+		return
+	to_chat(owner, span_awe(span_reallybig("[command]")))
+	var/datum/antagonist/brainwashed/brainwashed = owner.mind.has_antag_datum(/datum/antagonist/brainwashed)
+	brainwashed.ui_interact(owner)

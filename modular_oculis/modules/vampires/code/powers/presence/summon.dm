@@ -178,5 +178,6 @@
 /atom/movable/screen/alert/status_effect/summoned
 	name = "Summoned"
 	desc = "You are being compelled to approach someone. You cannot resist."
+	icon = 'modular_oculis/modules/vampires/icons/screen_alert.dmi'
 	icon_state = "vampire_summon"
 
