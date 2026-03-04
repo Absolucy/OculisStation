@@ -10,7 +10,7 @@
 	power_explanation = "Click any player to attempt to compel them.\n\
 		If your target is already commanded, a Curator, or a vampire, you will fail.\n\
 		Once commanded, the target will do their best to fulfill it, with a duration scaling with level.\n\
-		If your target is mindshielded, your command's duration will be halved, and commanding them will take longer.\n\
+		If your target is mindshielded, your command's duration will be halved.\n\
 		At level 1, your command will stay for 60 seconds.\n\
 		At level 2, it will remain for 3 minutes.\n\
 		Be smart with your wording. They will become pacified, and won't obey violent commands.\n\
@@ -26,8 +26,6 @@
 
 	/// How long the command is in effect.
 	var/power_time = 60 SECONDS
-	/// How long you have to channel in order to command someone.
-	var/channel_time = 8 SECONDS
 
 	/// Reference to the target
 	var/datum/weakref/target_ref
@@ -38,7 +36,6 @@
 	vitaecost = 240
 	cooldown_time = 200 SECONDS
 	target_range = 6
-	channel_time = 5 SECONDS
 
 /datum/action/cooldown/vampire/targeted/command/can_use()
 	. = ..()
@@ -117,31 +114,6 @@
 
 	// They left while we were writing
 	if(!(living_target in hearers(target_range, owner)))
-		deactivate_power()
-		return
-
-	var/modified_delay = channel_time
-	if(HAS_TRAIT(living_target, TRAIT_UNCONVERTABLE))
-		modified_delay *= 1.5
-
-	// instant on your own vassals
-	var/datum/antagonist/vassal/victim_vassal = IS_VASSAL(living_target)
-	if(victim_vassal && (victim_vassal in vampiredatum_power.vassals))
-		modified_delay = 0
-
-	if(modified_delay > 0)
-		living_target.balloon_alert(living_target, "your thoughts begin to blur!")
-		living_target.add_client_colour(/datum/client_colour/glass_colour/pink, REF(src))
-	if(!do_after(owner, modified_delay, living_target, IGNORE_TARGET_LOC_CHANGE | IGNORE_HELD_ITEM, extra_checks = CALLBACK(src, PROC_REF(continue_active)), hidden = TRUE))
-		living_target.balloon_alert(living_target, "your thoughts come back into focus.")
-		living_target.remove_client_colour(REF(src))
-		deactivate_power()
-		return
-	living_target.remove_client_colour(REF(src))
-
-	// they're out of range once more
-	if(!(living_target in hearers(target_range, owner)))
-		living_target.balloon_alert(living_target, "your thoughts come back into focus.")
 		deactivate_power()
 		return
 
