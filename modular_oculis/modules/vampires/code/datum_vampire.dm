@@ -365,7 +365,7 @@
 	check_start_society()
 
 	if(!QDELETED(owner.current))
-		for(var/quirk_type in typesof(/datum/quirk/item_quirk/addict) + /datum/quirk/skittish)
+		for(var/quirk_type in typesof(/datum/quirk/item_quirk/addict) + /datum/quirk/skittish + /datum/quirk/sol_weakness)
 			owner.current.remove_quirk(quirk_type)
 
 #ifdef VAMPIRE_TESTING

@@ -103,11 +103,10 @@
 	to_chat(quirk_holder, text)
 	COOLDOWN_START(src, sun_burn, 30 SECONDS)
 
-/datum/quirk/sol_weakness/proc/sun_warning(atom/source, danger_level, vampire_warning_message, ghoul_warning_message)
+/datum/quirk/sol_weakness/proc/sun_warning(atom/source, danger_level, vampire_warning_message, vassal_warning_message)
 	SIGNAL_HANDLER
-	if(danger_level == DANGER_LEVEL_SOL_ROSE)
-		vampire_warning_message = span_userdanger("Solar flares bombard the station with deadly UV light! Stay in cover for the next [TIME_VAMPIRE_DAY / 60] minutes or risk death!")
-	// SSsol.warn_notify(quirk_holder, danger_level, vampire_warning_message)
+	if(vampire_warning_message)
+		to_chat(quirk_holder, vampire_warning_message, type = MESSAGE_TYPE_WARNING)
 
 /datum/quirk/sol_weakness/proc/in_coffin()
 	return istype(quirk_holder.loc, /obj/structure/closet/crate/coffin)
