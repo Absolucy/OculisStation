@@ -153,7 +153,7 @@ enum GuideTab {
   Sol,
   Vitae,
   Combat,
-  Lair,
+  Haven,
   Structures,
   Vassals,
 }
@@ -227,11 +227,11 @@ const VampireGuide = () => {
             </Tabs.Tab>
             <Tabs.Tab
               icon="list"
-              selected={tab === GuideTab.Lair}
-              onClick={() => setTab(GuideTab.Lair)}
+              selected={tab === GuideTab.Haven}
+              onClick={() => setTab(GuideTab.Haven)}
               style={guideTabStyle}
             >
-              Your Lair
+              Your Haven
             </Tabs.Tab>
             <Tabs.Tab
               icon="list"
@@ -822,15 +822,15 @@ const VampireGuide = () => {
               </Box>
             </Box>
           )}
-          {tab === GuideTab.Lair && (
-            // Lairs
+          {tab === GuideTab.Haven && (
+            // Havens
             <Box>
               <Box fontSize="18px" textColor="green" bold>
-                Your Lair
+                Your Haven
               </Box>
               <br />A{' '}
               <Box inline textColor="green">
-                lair
+                haven
               </Box>{' '}
               is a location you have claimed as your own, where you can rest in
               your coffin and perform certain vampiric rituals. Some vampires
@@ -840,14 +840,14 @@ const VampireGuide = () => {
               <Box bold>
                 Do You Need a{' '}
                 <Box inline textColor="green">
-                  Lair
+                  Haven
                 </Box>
                 ?
               </Box>
               <Box fontSize="13px">
                 Honestly? Probably not. A{' '}
                 <Box inline textColor="green">
-                  lair
+                  haven
                 </Box>{' '}
                 is only necessary if you intend to create{' '}
                 <Box inline textColor="purple">
@@ -865,7 +865,7 @@ const VampireGuide = () => {
               <Box bold>
                 Claiming a{' '}
                 <Box inline textColor="green">
-                  Lair
+                  Haven
                 </Box>
               </Box>
               <Box fontSize="13px">
@@ -894,8 +894,8 @@ const VampireGuide = () => {
                 }}
               >
                 <b>Warning:</b> Maintenance is the first place people look. If
-                someone finds your lair, they find everything: your coffin, your
-                structures, your vassals, and you.
+                someone finds your haven, they find everything: your coffin,
+                your structures, your vassals, and you.
               </Box>
             </Box>
           )}
@@ -923,7 +923,7 @@ const VampireGuide = () => {
                 <br />
                 <b>Usage:</b> Secure the rack in your{' '}
                 <Box inline textColor="green">
-                  lair
+                  haven
                 </Box>{' '}
                 → restrain your target → drag them onto the rack → click the
                 rack to begin the torture process.
@@ -998,7 +998,7 @@ const VampireGuide = () => {
                 </Box>{' '}
                 secured within your{' '}
                 <Box inline textColor="green">
-                  lair
+                  haven
                 </Box>
                 . Capture your target and restrain them so they cannot escape,
                 then drag them onto the rack. Click the rack to begin the{' '}

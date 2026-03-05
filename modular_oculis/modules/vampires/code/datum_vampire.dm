@@ -101,8 +101,8 @@
 	/// How much more punch/kick damage the vampire gets per rank.
 	var/extra_damage_per_rank = VAMPIRE_UNARMED_DMG_INCREASE_ON_RANKUP
 
-	/// Lair
-	var/area/vampire_lair_area
+	/// Haven
+	var/area/vampire_haven_area
 	var/obj/structure/closet/crate/coffin/coffin
 
 	/// To make sure we don't spam sol damage messages
@@ -612,20 +612,20 @@
 	var/turf/coffin_turf = get_turf(claimed)
 	var/area/current_area = get_area(coffin_turf)
 	// this if check is split up bc it's annoying to read and mentally parse when it's combined into one big if statement
-	var/valid_lair_area = TRUE
+	var/valid_haven_area = TRUE
 	if(!coffin_turf)
-		valid_lair_area = FALSE
+		valid_haven_area = FALSE
 	else if(is_type_in_typecache(current_area, banned_areas_typecache) || (istype(current_area, /area/ruin) && current_area.outdoors))
-		valid_lair_area = FALSE
-	if(!valid_lair_area)
+		valid_haven_area = FALSE
+	if(!valid_haven_area)
 		claimed.balloon_alert(owner.current, "ineligible area!")
 		return
-	// This is my Lair
+	// This is my Haven
 	coffin = claimed
 	coffin.resident = owner
-	vampire_lair_area = current_area
+	vampire_haven_area = current_area
 
-	to_chat(owner, span_userdanger("You have claimed [claimed] as your place of immortal rest! Your lair is now [vampire_lair_area]."))
+	to_chat(owner, span_userdanger("You have claimed [claimed] as your place of immortal rest! Your haven is now [vampire_haven_area]."))
 	return TRUE
 
 /// Name shown on antag list
