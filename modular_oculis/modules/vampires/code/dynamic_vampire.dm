@@ -19,10 +19,8 @@
 	config_tag = "Midround Vampire"
 	preview_antag_datum = /datum/antagonist/vampire
 	midround_type = LIGHT_MIDROUND
-	false_alarm_able = TRUE
 	pref_flag = ROLE_VAMPIRIC_ACCIDENT
 	jobban_flag = ROLE_VAMPIRE
-	ruleset_flags = RULESET_VARIATION
 	weight = 8
 	min_pop = 15
 	blacklisted_roles = list(
