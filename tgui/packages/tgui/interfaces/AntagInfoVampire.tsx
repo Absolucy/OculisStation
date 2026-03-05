@@ -14,6 +14,7 @@ import {
 import type { BooleanLike } from 'tgui-core/react';
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
+import { AntagInfoHeader } from './common/AntagInfoHeader';
 import { type Objective, ObjectivePrintout } from './common/Objectives';
 
 type VampireInformation = {
@@ -125,8 +126,13 @@ const VampireIntroduction = (props: {
   const { objectives } = data;
   return (
     <Stack vertical fill>
+      <Stack.Item>
+        <AntagInfoHeader name={'Vampire'} asset="vampire.png" indefinite />
+      </Stack.Item>
       <Stack.Item grow maxHeight="220px">
-        <ObjectivePrintout objectives={objectives} />
+        <Section title="Objectives">
+          <ObjectivePrintout objectives={objectives} />
+        </Section>
       </Stack.Item>
       <Stack.Item textAlign="center">
         <Button
@@ -170,7 +176,7 @@ const VampireGuide = () => {
         <Stack.Item>
           <Tabs vertical>
             <Tabs.Tab
-              icon="list"
+              icon="book-atlas"
               selected={tab === GuideTab.Basics}
               onClick={() => setTab(GuideTab.Basics)}
               style={guideTabStyle}
@@ -178,7 +184,7 @@ const VampireGuide = () => {
               The Basics
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="mask"
               selected={tab === GuideTab.Masquerade}
               onClick={() => setTab(GuideTab.Masquerade)}
               style={guideTabStyle}
@@ -186,7 +192,7 @@ const VampireGuide = () => {
               The Masquerade
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="heart"
               selected={tab === GuideTab.Humanity}
               onClick={() => setTab(GuideTab.Humanity)}
               style={guideTabStyle}
@@ -194,7 +200,7 @@ const VampireGuide = () => {
               Humanity
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="crown"
               selected={tab === GuideTab.Society}
               onClick={() => setTab(GuideTab.Society)}
               style={guideTabStyle}
@@ -202,7 +208,7 @@ const VampireGuide = () => {
               Princes & Society
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="sun"
               selected={tab === GuideTab.Sol}
               onClick={() => setTab(GuideTab.Sol)}
               style={guideTabStyle}
@@ -210,7 +216,7 @@ const VampireGuide = () => {
               Sol & Leveling
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="droplet"
               selected={tab === GuideTab.Vitae}
               onClick={() => setTab(GuideTab.Vitae)}
               style={guideTabStyle}
@@ -218,7 +224,7 @@ const VampireGuide = () => {
               Vitae
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="hand-fist"
               selected={tab === GuideTab.Combat}
               onClick={() => setTab(GuideTab.Combat)}
               style={guideTabStyle}
@@ -226,7 +232,7 @@ const VampireGuide = () => {
               Combat
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="house"
               selected={tab === GuideTab.Haven}
               onClick={() => setTab(GuideTab.Haven)}
               style={guideTabStyle}
@@ -234,7 +240,7 @@ const VampireGuide = () => {
               Your Haven
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="screwdriver-wrench"
               selected={tab === GuideTab.Structures}
               onClick={() => setTab(GuideTab.Structures)}
               style={guideTabStyle}
@@ -242,7 +248,7 @@ const VampireGuide = () => {
               Structures
             </Tabs.Tab>
             <Tabs.Tab
-              icon="list"
+              icon="arrows-to-eye"
               selected={tab === GuideTab.Vassals}
               onClick={() => setTab(GuideTab.Vassals)}
               style={guideTabStyle}
@@ -610,11 +616,9 @@ const VampireGuide = () => {
               </Box>
               <Box fontSize="13px">
                 • Click the HUD icon for more detailed information
-                <br />
-                • You cannot die to Sol if you are protected by lockers,
+                <br />• You cannot die to Sol if you are protected by lockers,
                 maintenance tunnels, or coffins
-                <br />
-                • If you are caught unprotected, you will burn to dust
+                <br />• If you are caught unprotected, you will burn to dust
                 <br />• Higher humanity grants partial resistance to Sol&apos;s
                 effects
               </Box>
@@ -624,8 +628,7 @@ const VampireGuide = () => {
               </Box>
               <Box fontSize="13px">
                 • You cannot passively heal; only coffins can restore you
-                <br />
-                • You take 50% more damage from all sources
+                <br />• You take 50% more damage from all sources
                 <br />• Your powers have doubled cooldowns, increased vitae
                 costs, and some are blocked entirely
               </Box>
@@ -643,12 +646,9 @@ const VampireGuide = () => {
               benefits:
               <Box fontSize="13px" ml={1}>
                 • Increased physical strength
-                <br />
-                • Greater health pool
-                <br />
-                • Faster feeding rate
-                <br />
-                • Higher blood capacity
+                <br />• Greater health pool
+                <br />• Faster feeding rate
+                <br />• Higher blood capacity
                 <br />• Additional discipline points to unlock new powers
               </Box>
               <br />

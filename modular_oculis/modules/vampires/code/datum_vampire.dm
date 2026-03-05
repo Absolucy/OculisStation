@@ -451,6 +451,11 @@
 	log_admin("[key_name(usr)] [msg]")
 	new_owner.add_antag_datum(src)
 
+/datum/antagonist/vampire/ui_assets(mob/user)
+	return list(
+		get_asset_datum(/datum/asset/simple/vampire_header),
+	)
+
 /datum/antagonist/vampire/ui_static_data(mob/user)
 	. = ..()
 
@@ -854,3 +859,6 @@
 	enrico.eye_color_right = "#663300"
 
 	enrico.update_body(is_creating = TRUE)
+
+/datum/asset/simple/vampire_header
+	assets = list("vampire.png" = 'modular_oculis/modules/vampires/html/images/vampire.png')
