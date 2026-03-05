@@ -9894,6 +9894,7 @@
 #include "modular_oculis\master_files\code\__HELPERS\files.dm"
 #include "modular_oculis\master_files\code\code\modules\client\client_colour.dm"
 #include "modular_oculis\master_files\code\datums\http.dm"
+#include "modular_oculis\master_files\code\datums\elements\art.dm"
 #include "modular_oculis\master_files\code\game\machinery\newscaster\newscaster_data.dm"
 #include "modular_oculis\master_files\code\game\objects\structures\crates_lockers\crates.dm"
 #include "modular_oculis\master_files\code\modules\admin\verbs\getlogs.dm"

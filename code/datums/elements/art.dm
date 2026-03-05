@@ -65,8 +65,6 @@
 	user.visible_message(span_notice("[user] stops to inspect [source]."), \
 		span_notice("You appraise [source], inspecting the fine craftsmanship of the proletariat... [msg]"))
 
-	SEND_SIGNAL(user, COMSIG_LIVING_APPRAISE_ART, source) // OCULIS EDIT ADDITION - VAMPIRES
-
 /datum/element/art/commoner
 
 /datum/element/art/commoner/apply_moodlet(atom/source, mob/living/user, impress)
