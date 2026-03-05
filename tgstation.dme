@@ -9970,6 +9970,7 @@
 #include "modular_oculis\modules\vampires\code\powers\dominate\command.dm"
 #include "modular_oculis\modules\vampires\code\powers\dominate\dominate.dm"
 #include "modular_oculis\modules\vampires\code\powers\dominate\mesmerize.dm"
+#include "modular_oculis\modules\vampires\code\powers\dominate\voice_of_domination.dm"
 #include "modular_oculis\modules\vampires\code\powers\fortitude\fortitude.dm"
 #include "modular_oculis\modules\vampires\code\powers\obfuscate\cloak.dm"
 #include "modular_oculis\modules\vampires\code\powers\obfuscate\obfuscate.dm"
