@@ -136,8 +136,6 @@
 
 /atom/movable/screen/vampire/sunlight_counter/Click()
 	. = ..()
-	if(!.)
-		return
 	var/list/msg = list()
 	var/mob/living/owner_mob = hud.mymob
 	var/datum/antagonist/vampire/owner_vamp = IS_VAMPIRE(owner_mob)

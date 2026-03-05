@@ -28,10 +28,13 @@
 	return TRUE
 
 /datum/action/cooldown/vampire/voice_of_domination/activate_power()
+	. = ..()
 	var/command = tgui_input_text(owner, "Speak with the Voice of Domination", "Command", encode = FALSE)
-	if(QDELETED(src) || QDELETED(owner) || !command)
+	if(QDELETED(src) || QDELETED(owner) || !command || !currently_active)
+		vampiredatum_power.adjust_blood_volume(vitaecost) // refund the blood
+		deactivate_power()
 		return
 	playsound(get_turf(owner), 'sound/effects/magic/clockwork/invoke_general.ogg', 100, TRUE, 3)
 	var/command_cooldown = voice_of_god(command, owner, list("colossus", "commands"), base_multiplier = 2)
 	cooldown_time = max(command_cooldown, 60 SECONDS)
-	. = ..()
+	deactivate_power()

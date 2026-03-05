@@ -171,7 +171,7 @@
 
 	// Vampires in a Frenzy don't have enough Blood to pay it, so just don't.
 	if(!HAS_TRAIT(owner, TRAIT_FRENZY))
-		vampiredatum_power.current_vitae -= vitaecost
+		vampiredatum_power.adjust_blood_volume(-vitaecost)
 		vampiredatum_power.update_hud()
 
 /datum/action/cooldown/vampire/proc/activate_power()
@@ -228,7 +228,8 @@
 /// Used to unlearn Single-Use Powers
 /datum/action/cooldown/vampire/proc/remove_after_use()
 	vampiredatum_power?.powers -= src
-	Remove(owner)
+	if(!QDELETED(src) && !QDELETED(owner))
+		Remove(owner)
 
 // If there's a mortal in line of sight, we get a masq infraction
 /datum/action/cooldown/vampire/proc/check_witnesses(mob/living/target)
