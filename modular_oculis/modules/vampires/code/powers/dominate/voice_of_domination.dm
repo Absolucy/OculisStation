@@ -2,7 +2,8 @@
 /datum/action/cooldown/vampire/voice_of_domination
 	name = "Voice of Domination"
 	desc = "Speak with an overwhelmingly dominant voice, forcing mortals to briefly obey your command."
-	button_icon_state = "power_command"
+	button_icon = 'icons/mob/actions/actions_items.dmi'
+	button_icon_state = "voice_of_god"
 	power_explanation = "Activate this power to speak a command using the Voice of God.\n\
 		Listeners will be compelled to obey simple commands such as 'stop', 'drop', 'sleep', 'come here', etc.\n\
 		This is a weaker version of the divine Voice of God, granted passively by your mastery of Dominate."
@@ -29,7 +30,7 @@
 
 /datum/action/cooldown/vampire/voice_of_domination/activate_power()
 	. = ..()
-	var/command = tgui_input_text(owner, "Speak with the Voice of Domination", "Command", encode = FALSE)
+	var/command = tgui_input_text(owner, "Speak with the Voice of Domination", "Command", max_length = MAX_MESSAGE_LEN, encode = FALSE)
 	if(QDELETED(src) || QDELETED(owner) || !command || !currently_active)
 		vampiredatum_power.adjust_blood_volume(vitaecost) // refund the blood
 		deactivate_power()
