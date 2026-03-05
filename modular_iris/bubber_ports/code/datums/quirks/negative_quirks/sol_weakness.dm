@@ -39,7 +39,7 @@
 	if(sun_hud && quirk_holder?.hud_used?.infodisplay)
 		quirk_holder.hud_used.infodisplay -= sun_hud
 		quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
-		QDEL_NULL(sun_hud)
+	QDEL_NULL(sun_hud)
 
 /datum/quirk/sol_weakness/proc/on_blood_healing(mob/living/owner, seconds_between_ticks, datum/status_effect/blood_regen_active/effect)
 	if(effect && in_coffin())
