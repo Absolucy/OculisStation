@@ -17,20 +17,29 @@
 	quirk_flags = QUIRK_HIDE_FROM_SCAN | QUIRK_HUMAN_ONLY
 	COOLDOWN_DECLARE(sun_burn)
 
-/datum/quirk/sol_weakness/add_to_holder(mob/living/new_holder, quirk_transfer = FALSE, client/client_source, unique = TRUE, announce = TRUE)
-	return ..()
+	var/atom/movable/screen/vampire/sunlight_counter/sun_hud
+
+/datum/quirk/sol_weakness/Destroy()
+	. = ..()
+	QDEL_NULL(sun_hud)
 
 /datum/quirk/sol_weakness/add()
+	RegisterSignal(SSsol, COMSIG_SOL_RISE_TICK, PROC_REF(sun_risen))
+	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(sun_warning))
 	RegisterSignal(quirk_holder, COMSIG_MOB_HEMO_BLOOD_REGEN_TICK, PROC_REF(on_blood_healing))
 	if(!quirk_holder.hud_used)
 		RegisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED, PROC_REF(add_sun_timer_hud))
-		return
-	add_sun_timer_hud()
+	else
+		add_sun_timer_hud()
 
 /datum/quirk/sol_weakness/remove()
+	remove_sun_timer_hud()
 	UnregisterSignal(quirk_holder, COMSIG_MOB_HEMO_BLOOD_REGEN_TICK)
-	SSsunlight.remove_sun_sufferer(quirk_holder)
-	UnregisterSignal(SSsunlight, list(COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
+	UnregisterSignal(SSsol, list(COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
+	if(sun_hud && quirk_holder?.hud_used?.infodisplay)
+		quirk_holder.hud_used.infodisplay -= sun_hud
+		quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
+		QDEL_NULL(sun_hud)
 
 /datum/quirk/sol_weakness/proc/on_blood_healing(mob/living/owner, seconds_between_ticks, datum/status_effect/blood_regen_active/effect)
 	if(effect && in_coffin())
@@ -39,15 +48,28 @@
 	else
 		effect.cost_blood = initial(effect.cost_blood)
 	// prevent healing if sol is active
-	return SSsunlight.sunlight_active ? COMSIG_CANCEL_MOB_HEMO_BLOOD_REGEN : NONE
+	return SSsol.sunlight_active ? COMSIG_CANCEL_MOB_HEMO_BLOOD_REGEN : NONE
 
 /datum/quirk/sol_weakness/proc/add_sun_timer_hud()
+	if(!QDELETED(sun_hud))
+		return
 	if(!quirk_holder.hud_used)
 		CRASH("Sol Weakness quirk holder has no HUD")
-	SSsunlight.add_sun_sufferer(quirk_holder)
 	UnregisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED)
-	RegisterSignal(SSsunlight, COMSIG_SOL_RISE_TICK, PROC_REF(sun_risen))
-	RegisterSignal(SSsunlight, COMSIG_SOL_WARNING_GIVEN, PROC_REF(sun_warning))
+	sun_hud = new(null, quirk_holder.hud_used)
+	quirk_holder.hud_used.infodisplay += sun_hud
+	quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
+
+/datum/quirk/sol_weakness/proc/remove_sun_timer_hud()
+	if(QDELETED(sun_hud))
+		return
+	if(!quirk_holder.hud_used?.infodisplay)
+		QDEL_NULL(sun_hud)
+		return
+	quirk_holder.hud_used.infodisplay -= sun_hud
+	quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
+	QDEL_NULL(sun_hud)
+	UnregisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED)
 
 /datum/quirk/sol_weakness/proc/sun_risen()
 	SIGNAL_HANDLER
@@ -84,8 +106,8 @@
 /datum/quirk/sol_weakness/proc/sun_warning(atom/source, danger_level, vampire_warning_message, ghoul_warning_message)
 	SIGNAL_HANDLER
 	if(danger_level == DANGER_LEVEL_SOL_ROSE)
-		vampire_warning_message = span_userdanger("Solar flares bombard the station with deadly UV light! Stay in cover for the next [TIME_BLOODSUCKER_DAY / 60] minutes or risk death!")
-	SSsunlight.warn_notify(quirk_holder, danger_level, vampire_warning_message)
+		vampire_warning_message = span_userdanger("Solar flares bombard the station with deadly UV light! Stay in cover for the next [TIME_VAMPIRE_DAY / 60] minutes or risk death!")
+	// SSsol.warn_notify(quirk_holder, danger_level, vampire_warning_message)
 
 /datum/quirk/sol_weakness/proc/in_coffin()
 	return istype(quirk_holder.loc, /obj/structure/closet/crate/coffin)

@@ -86,8 +86,6 @@
 	/// The rank this vampire is at, used to level abilities and strength up
 	var/vampire_level = 0
 	var/vampire_level_unspent = VAMPIRE_STARTING_LEVELS
-	/// How many more "free" levels this vampire will get.
-	var/free_levels_remaining = VAMPIRE_FREE_LEVELS
 
 	/// If this guy has suffered final death.
 	var/final_death = FALSE
@@ -107,12 +105,17 @@
 	var/area/vampire_lair_area
 	var/obj/structure/closet/crate/coffin/coffin
 
+	/// To make sure we don't spam sol damage messages
+	var/were_shielded = FALSE
+
 	/// Blood display HUD
 	var/atom/movable/screen/vampire/blood_counter/blood_display
 	/// Vampire level display HUD
 	var/atom/movable/screen/vampire/rank_counter/vamprank_display
 	/// Vampire humanity display HUD
 	var/atom/movable/screen/vampire/humanity_counter/humanity_display
+	/// Sunlight timer HUD
+	var/atom/movable/screen/vampire/sunlight_counter/sunlight_display
 
 	/// Tracker so that vassals know where their master is
 	/* var/obj/effect/abstract/vampire_tracker_holder/tracker */
@@ -286,11 +289,8 @@
 		hud_used.infodisplay -= blood_display
 		hud_used.infodisplay -= vamprank_display
 		hud_used.infodisplay -= humanity_display
-	var/client/current_client = current_mob?.client
-	if(current_client)
-		current_client?.screen -= blood_display
-		current_client?.screen -= vamprank_display
-		current_client?.screen -= humanity_display
+		hud_used.infodisplay -= sunlight_display
+		hud_used.show_hud(hud_used.hud_version)
 
 /datum/antagonist/vampire/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
@@ -304,6 +304,9 @@
 
 	humanity_display = new /atom/movable/screen/vampire/humanity_counter(null, vampire_hud)
 	vampire_hud.infodisplay += humanity_display
+
+	sunlight_display = new /atom/movable/screen/vampire/sunlight_counter(null, vampire_hud)
+	vampire_hud.infodisplay += sunlight_display
 
 	vampire_hud.show_hud(vampire_hud.hud_version)
 	UnregisterSignal(owner.current, COMSIG_MOB_HUD_CREATED)
@@ -332,6 +335,12 @@
 	/* RegisterSignal(owner, COMSIG_OOZELING_CORE_EJECTED, PROC_REF(on_oozeling_core_ejected))
 	RegisterSignal(owner, COMSIG_OOZELING_REVIVED, PROC_REF(on_oozeling_revive)) */
 
+	RegisterSignal(SSsol, COMSIG_SOL_NEAR_START, PROC_REF(sol_near_start))
+	RegisterSignal(SSsol, COMSIG_SOL_END, PROC_REF(on_sol_end))
+	RegisterSignal(SSsol, COMSIG_SOL_NEAR_END, PROC_REF(sol_near_end))
+	RegisterSignal(SSsol, COMSIG_SOL_RISE_TICK, PROC_REF(handle_sol))
+	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(give_warning))
+
 	owner.teach_crafting_recipe(list(
 		/datum/crafting_recipe/vassalrack,
 		/datum/crafting_recipe/candelabrum,
@@ -351,7 +360,6 @@
 	// Assign starting stats skill point.
 	give_starting_powers()
 	GLOB.all_vampires += src
-	SSvampire_leveling.check_enable()
 
 	// Start society if we're the first vampire
 	check_start_society()
@@ -369,6 +377,7 @@
 /datum/antagonist/vampire/on_removal()
 	REMOVE_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
 	/* UnregisterSignal(owner, list(COMSIG_OOZELING_CORE_EJECTED, COMSIG_OOZELING_REVIVED)) */
+	UnregisterSignal(SSsol, list(COMSIG_SOL_NEAR_END, COMSIG_SOL_NEAR_START, COMSIG_SOL_END, COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
 
 	owner.forget_crafting_recipe(list(
 		/datum/crafting_recipe/vassalrack,
@@ -379,7 +388,6 @@
 
 	clear_powers_and_stats()
 	GLOB.all_vampires -= src
-	SSvampire_leveling.check_enable()
 	check_cancel_society()
 
 	if(iscarbon(owner.current))
@@ -616,9 +624,6 @@
 	coffin = claimed
 	coffin.resident = owner
 	vampire_lair_area = current_area
-
-	if(!(locate(/datum/action/cooldown/vampire/gohome) in powers))
-		grant_power(new /datum/action/cooldown/vampire/gohome)
 
 	to_chat(owner, span_userdanger("You have claimed [claimed] as your place of immortal rest! Your lair is now [vampire_lair_area]."))
 	return TRUE

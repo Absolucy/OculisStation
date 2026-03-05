@@ -30,13 +30,16 @@
 
 /// How many starting levels do we want each one to have?
 #define VAMPIRE_STARTING_LEVELS 3
-/// How many free levels the vampire gets gradually.
-#define VAMPIRE_FREE_LEVELS 3
 /// Vampire's default stamina resist.
 #define VAMPIRE_INHERENT_STAMINA_RESIST 0.75
 
 /// When do we warn them about their low blood?
 #define VAMPIRE_LOW_BLOOD_WARNING 300
+
+/// How much blood drained from the vampire each tick during sol
+#define VAMPIRE_SOL_BURN 15
+/// We don't go below this threshold when in a shielded area during sol
+#define VAMPIRE_SOL_SHIELD_THRESHOLD 500
 
 /// Minimum blood required for vampires oozelings to auto-revive.
 #define OOZELING_MIN_REVIVE_BLOOD_THRESHOLD (FRENZY_THRESHOLD_ENTER * 5)
@@ -57,6 +60,20 @@
 /// If someone is not allowed under any circimstances to become a vassal
 #define VASSALIZATION_BANNED 2
 
+/// How long Sol lasts
+#define TIME_VAMPIRE_DAY 90
+/// The grace period inbetween Sol
+#define TIME_VAMPIRE_NIGHT 1200
+/// First audio warning that Sol is coming
+#define TIME_VAMPIRE_DAY_WARN_1 90
+/// Second audio warning that Sol is coming
+#define TIME_VAMPIRE_DAY_WARN_2 30
+/// Final audio warning that Sol is coming
+#define TIME_VAMPIRE_DAY_WARN_3 15
+
+///How much time Sol can be 'off' by, keeping the time inconsistent.
+#define TIME_VAMPIRE_SOL_DELAY 120
+
 // Humanity gains (The actual tracking lists and such are in the datum duh)
 // These are supposed to be somewhat nontrivial, to the point of sometimes not being viable.
 /// Hugging of separate people
@@ -72,6 +89,9 @@
 
 /// Default Humanity
 #define VAMPIRE_DEFAULT_HUMANITY 7
+
+// List of areas that are shielded from sol.
+#define VAMPIRE_SOL_SHIELDED list(/area/station/maintenance, /area/station/medical/morgue, /area/station/security/prison, /area/shuttle)
 
 // Cooldown defines
 // Used to prevent spamming vampires
@@ -133,19 +153,29 @@
 #define COMSIG_VAMPIRE_BROKE_MASQUERADE "comsig_vampire_broke_masquerade"
 
 // Signals & Defines
-/// Sent whenever vampires get a "natural" rank up.
-#define COMSIG_SOL_RANKUP_VAMPIRES "sol_rankup_vampires"
+/// Sent every Sol tick.
+#define COMSIG_SOL_TICK "comsig_sol_tick"
+/// Sent every Sol tick while the sun is up.
+#define COMSIG_SOL_RISE_TICK "comsig_sol_rise_tick"
+/// Sent 90 seconds before Sol begins
+#define COMSIG_SOL_NEAR_START "comsig_sol_near_start"
+/// Sent at the end of Sol
+#define COMSIG_SOL_END "comsig_sol_end"
+/// Sent 15 seconds before Sol ends
+#define COMSIG_SOL_NEAR_END "comsig_sol_near_end"
+/// Sent when a warning for Sol is meant to go out: (danger_level, vampire_warning_message, vassal_warning_message)
+#define COMSIG_SOL_WARNING_GIVEN "comsig_sol_warning_given"
 /// Sent when tracking humanity gain progress: (type, subject)
 #define COMSIG_VAMPIRE_TRACK_HUMANITY_GAIN "comsig_vampire_track_humanity_gain"
-
-/// Called on the mind when a Vampire chooses a clan: (datum/antagonist/vampire, datum/vampire_clan)
-#define COMSIG_VAMPIRE_CLAN_CHOSEN "vampire_clan_chosen"
 
 #define DANGER_LEVEL_FIRST_WARNING 1
 #define DANGER_LEVEL_SECOND_WARNING 2
 #define DANGER_LEVEL_THIRD_WARNING 3
 #define DANGER_LEVEL_SOL_ROSE 4
 #define DANGER_LEVEL_SOL_ENDED 5
+
+/// Called on the mind when a Vampire chooses a clan: (datum/antagonist/vampire, datum/vampire_clan)
+#define COMSIG_VAMPIRE_CLAN_CHOSEN "vampire_clan_chosen"
 
 // Clan defines
 /// Drinks blood the normal Vampire way.

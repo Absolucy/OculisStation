@@ -1,12 +1,16 @@
 /// 1 tile up
-#define UI_HUMANITY_DISPLAY "WEST:6,CENTER+1:-8"
+#define UI_HUMANITY_DISPLAY "WEST:6,CENTER+1:0"
 /// 1 tile down
-#define UI_BLOOD_DISPLAY "WEST:6,CENTER:0"
+#define UI_BLOOD_DISPLAY "WEST:6,CENTER-1:0"
 /// 2 tiles down
-#define UI_VAMPRANK_DISPLAY "WEST:6,CENTER-1:-2"
+#define UI_VAMPRANK_DISPLAY "WEST:6,CENTER-2:-5"
+/// 6 pixels to the right, zero tiles & 5 pixels DOWN.
+#define UI_SUNLIGHT_DISPLAY "WEST:6,CENTER-0:0"
 
 ///Maptext define for Vampire HUDs
 #define FORMAT_VAMPIRE_HUD_TEXT(valuecolor, value) MAPTEXT("<div align='center' valign='middle' style='position:relative; top:0px; left:6px'><font color='[valuecolor]'>[round(value,1)]</font></div>")
+///Maptext define for Vampire Sunlight HUDs
+#define FORMAT_VAMPIRE_SUNLIGHT_TEXT(valuecolor, value) MAPTEXT("<div align='center' valign='bottom' style='position:relative; top:0px; left:6px'><font color='[valuecolor]'>[value]</font></div>")
 
 /atom/movable/screen/vampire
 	icon = 'modular_oculis/modules/vampires/icons/actions_vampire.dmi'
@@ -86,6 +90,72 @@
 
 	if(disciplinestext)
 		msg += span_cult("\n<b>Your disciplines and their levels are:</b>[disciplinestext]")
+
+	to_chat(usr, boxed_message(msg.Join("\n")))
+
+/atom/movable/screen/vampire/sunlight_counter
+	name = "Solar Flare Timer"
+	icon_state = "sunlight"
+	screen_loc = UI_SUNLIGHT_DISPLAY
+
+/atom/movable/screen/vampire/sunlight_counter/Initialize(mapload, datum/hud/hud_owner)
+	. = ..()
+	RegisterSignal(SSsol, COMSIG_SOL_TICK, PROC_REF(update_sunlight_display))
+
+/atom/movable/screen/vampire/sunlight_counter/Destroy()
+	UnregisterSignal(SSsol, COMSIG_SOL_TICK)
+	return ..()
+
+/atom/movable/screen/vampire/sunlight_counter/proc/update_sunlight_display()
+	SIGNAL_HANDLER
+	if(QDELETED(hud.mymob) || !hud.mymob.client)
+		return
+	var/sunlightvaluecolor = "#ffffff"
+	if(SSsol.sunlight_active)
+		sunlightvaluecolor = "#FF5555"
+		icon_state = "[initial(icon_state)]_day"
+	else
+		switch(round(SSsol.time_til_cycle, 1))
+			if(0 to 30)
+				icon_state = "[initial(icon_state)]_30"
+				sunlightvaluecolor = "#FFCCCC"
+			if(31 to 60)
+				icon_state = "[initial(icon_state)]_60"
+				sunlightvaluecolor = "#FFE6CC"
+			if(61 to 90)
+				icon_state = "[initial(icon_state)]_90"
+				sunlightvaluecolor = "#FFFFCC"
+			else
+				icon_state = "[initial(icon_state)]_night"
+				sunlightvaluecolor = "#FFFFFF"
+
+	maptext = FORMAT_VAMPIRE_SUNLIGHT_TEXT( \
+		sunlightvaluecolor, \
+		(SSsol.time_til_cycle >= 60) ? "[round(SSsol.time_til_cycle / 60, 1)] m" : "[round(SSsol.time_til_cycle, 1)] s" \
+	)
+
+/atom/movable/screen/vampire/sunlight_counter/Click()
+	. = ..()
+	if(!.)
+		return
+	var/list/msg = list()
+	var/mob/living/owner_mob = hud.mymob
+	var/datum/antagonist/vampire/owner_vamp = IS_VAMPIRE(owner_mob)
+
+	if(!owner_vamp)
+		return
+
+	msg += span_cult_large("This is the 'Sol' indicator.")
+	msg += span_cult("Here you see the current state of Sol, the frequent solar flares given off by the nearby star.")
+	msg += span_cult("While traditionally, vampires have thrived on space installations, Auri-Geminae's erratic solar behavior risks final death even in a shielded vessel.")
+
+	var/normal_humanity_divisor = min(2, 1 + (owner_vamp.humanity / 10))
+	var/divisor_turned_percentage = ((normal_humanity_divisor - 1) * 200) / 4
+	msg += span_cult("\n<b>Your current humanity affords you a [divisor_turned_percentage]% resistance to the ravages of Sol.</b>")
+
+	msg += span_cult("\n<b>When Sol hits, do not be found in the hallways. You will burn, and draw attention. A locker or maintenance can shield you.</b>")
+
+	msg += span_cult("\nThe best measure of protection is of course afforded only by the terrible deathless sleep, 'Torpor.'")
 
 	to_chat(usr, boxed_message(msg.Join("\n")))
 
@@ -191,6 +261,10 @@
 #undef UI_BLOOD_DISPLAY
 /// 2 tiles down
 #undef UI_VAMPRANK_DISPLAY
+/// 6 pixels to the right, zero tiles & 5 pixels DOWN.
+#undef UI_SUNLIGHT_DISPLAY
 
 ///Maptext define for Vampire HUDs
 #undef FORMAT_VAMPIRE_HUD_TEXT
+///Maptext define for Vampire Sunlight HUDs
+#undef FORMAT_VAMPIRE_SUNLIGHT_TEXT
