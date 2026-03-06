@@ -32,8 +32,8 @@
 					- Level 4: When Activated, you will see further, and be able to sense anything in sight, seeing through walls and barriers as if they were glass."
 	vampire_power_flags = BP_AM_TOGGLE | BP_AM_STATIC_COOLDOWN
 	vampire_check_flags = BP_CANT_USE_IN_TORPOR | BP_CANT_USE_IN_FRENZY | BP_CANT_USE_WHILE_STAKED | BP_CANT_USE_WHILE_INCAPACITATED | BP_CANT_USE_WHILE_UNCONSCIOUS
-	vitaecost = 50
-	constant_vitaecost = 1
+	vitaecost = 20
+	constant_vitaecost = 0.75
 	cooldown_time = 10 SECONDS
 	var/add_meson = FALSE
 	var/add_xray = FALSE
@@ -47,8 +47,8 @@
 
 /datum/action/cooldown/vampire/auspex/two
 	name = "Auspex"
-	vitaecost = 40
-	constant_vitaecost = 2
+	vitaecost = 20
+	constant_vitaecost = 1
 	zoom_out_amt = 4
 	zoom_amt = 7
 	add_meson = TRUE
@@ -56,8 +56,8 @@
 
 /datum/action/cooldown/vampire/auspex/three
 	name = "Auspex"
-	vitaecost = 30
-	constant_vitaecost = 3
+	vitaecost = 20
+	constant_vitaecost = 1.25
 	zoom_out_amt = 6
 	zoom_amt = 8
 	add_meson = TRUE
@@ -66,7 +66,7 @@
 /datum/action/cooldown/vampire/auspex/four
 	name = "Auspex"
 	vitaecost = 20
-	constant_vitaecost = 4
+	constant_vitaecost = 1.5
 	zoom_out_amt = 10
 	zoom_amt = 10
 	add_xray = TRUE

@@ -6,24 +6,24 @@
 		Additionally, while Cloak is active, you are completely invisible to silicons."
 	vampire_power_flags = BP_AM_TOGGLE
 	vampire_check_flags = BP_CANT_USE_IN_TORPOR | BP_CANT_USE_WHILE_STAKED | BP_CANT_USE_IN_FRENZY | BP_CANT_USE_WHILE_UNCONSCIOUS
-	vitaecost = 50
-	constant_vitaecost = 1
+	vitaecost = 20
+	constant_vitaecost = 0.75
 	cooldown_time = 5 SECONDS
 	var/cloaklevel = 20
 
 /datum/action/cooldown/vampire/cloak/two
-	vitaecost = 40
-	constant_vitaecost = 2
+	vitaecost = 20
+	constant_vitaecost = 1
 	cloaklevel = 15
 
 /datum/action/cooldown/vampire/cloak/three
-	vitaecost = 30
-	constant_vitaecost = 3
+	vitaecost = 20
+	constant_vitaecost = 1.25
 	cloaklevel = 10
 
 /datum/action/cooldown/vampire/cloak/four
 	vitaecost = 20
-	constant_vitaecost = 4
+	constant_vitaecost = 1.5
 	cloaklevel = 5
 
 /// Must have nobody around to see the cloak

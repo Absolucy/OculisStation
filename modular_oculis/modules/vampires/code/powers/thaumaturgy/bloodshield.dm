@@ -11,9 +11,9 @@
 	vampire_power_flags = BP_AM_TOGGLE | BP_AM_STATIC_COOLDOWN
 	vampire_check_flags = BP_CANT_USE_IN_TORPOR | BP_CANT_USE_WHILE_STAKED | BP_CANT_USE_IN_FRENZY | BP_CANT_USE_WHILE_INCAPACITATED | BP_CANT_USE_WHILE_UNCONSCIOUS
 
-	vitaecost = 50
+	vitaecost = 20
 	cooldown_time = 10 SECONDS
-	constant_vitaecost = 6
+	constant_vitaecost = 3
 
 	/// Blood shield given while this Power is active.
 	var/datum/weakref/blood_shield
