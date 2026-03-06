@@ -291,6 +291,10 @@
 		hud_used.infodisplay -= humanity_display
 		hud_used.infodisplay -= sunlight_display
 		hud_used.show_hud(hud_used.hud_version)
+	QDEL_NULL(blood_display)
+	QDEL_NULL(vamprank_display)
+	QDEL_NULL(humanity_display)
+	QDEL_NULL(sunlight_display)
 
 /datum/antagonist/vampire/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
