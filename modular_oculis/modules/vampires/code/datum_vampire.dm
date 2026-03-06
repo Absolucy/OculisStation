@@ -52,10 +52,6 @@
 	/// Cooldown between masquerade infractions, so you can't have a bunch of them in the span of a single fight.
 	COOLDOWN_DECLARE(masquerade_infraction_cooldown)
 
-	/// Have / are we embracing a new vampire?
-	/// If so, this will halve our max vassal count!
-	var/embracing = FALSE
-
 	/// How many vampires we've diablerized, if any.
 	var/diablerie_count = 0
 
@@ -742,8 +738,6 @@
 			. = 3
 		else
 			. = 4
-	if(embracing) // if we're embracing a new vampire, our max vassal count gets halved.
-		return max(ceil(. / 2), 1)
 
 /datum/antagonist/vampire/proc/on_examine(datum/source, mob/examiner, list/examine_text)
 	SIGNAL_HANDLER
