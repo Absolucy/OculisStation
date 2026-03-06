@@ -105,8 +105,20 @@
 
 /datum/quirk/sol_weakness/proc/sun_warning(atom/source, danger_level, vampire_warning_message, vassal_warning_message)
 	SIGNAL_HANDLER
-	if(vampire_warning_message)
-		to_chat(quirk_holder, vampire_warning_message, type = MESSAGE_TYPE_WARNING)
+	if(!vampire_warning_message)
+		return
+	to_chat(quirk_holder, vampire_warning_message, type = MESSAGE_TYPE_WARNING)
+	switch(danger_level)
+		if(DANGER_LEVEL_FIRST_WARNING)
+			quirk_holder.playsound_local(null, 'modular_oculis/modules/vampires/sound/griffin_3.ogg', 50, TRUE)
+		if(DANGER_LEVEL_SECOND_WARNING)
+			quirk_holder.playsound_local(null, 'modular_oculis/modules/vampires/sound/griffin_5.ogg', 50, TRUE)
+		if(DANGER_LEVEL_THIRD_WARNING)
+			quirk_holder.playsound_local(null, 'sound/effects/alert.ogg', 75, TRUE)
+		if(DANGER_LEVEL_SOL_ROSE)
+			quirk_holder.playsound_local(null, 'sound/ambience/misc/ambimystery.ogg', 75, TRUE)
+		if(DANGER_LEVEL_SOL_ENDED)
+			quirk_holder.playsound_local(null, 'sound/music/antag/bloodcult/ghosty_wind.ogg', 90, TRUE)
 
 /datum/quirk/sol_weakness/proc/in_coffin()
 	return istype(quirk_holder.loc, /obj/structure/closet/crate/coffin)
