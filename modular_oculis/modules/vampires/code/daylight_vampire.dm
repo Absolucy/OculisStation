@@ -99,7 +99,7 @@
 
 	if(!owner?.current)
 		return
-	to_chat(owner, vampire_warning_message)
+	to_chat(owner, vampire_warning_message, type = MESSAGE_TYPE_WARNING)
 
 	switch(danger_level)
 		if(DANGER_LEVEL_FIRST_WARNING)
