@@ -4,13 +4,11 @@
 	antagpanel_category = "Vampire"
 	show_in_roundend = ROLE_VAMPIRE
 	ui_name = "AntagInfoVampire"
-	hijack_speed = 0.5
+	hijack_speed = 0
 	stinger_sound = 'modular_oculis/modules/vampires/sound/lunge_warn.ogg'
 	hud_icon = 'modular_oculis/modules/vampires/icons/antag_hud.dmi'
 	antag_hud_name = "vampire"
 	preview_outfit = /datum/outfit/vampire_outfit
-
-	hijack_speed = 0
 
 	show_to_ghosts = TRUE
 
