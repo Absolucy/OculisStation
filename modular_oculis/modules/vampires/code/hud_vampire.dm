@@ -108,7 +108,7 @@
 
 /atom/movable/screen/vampire/sunlight_counter/proc/update_sunlight_display()
 	SIGNAL_HANDLER
-	if(QDELETED(hud.mymob) || !hud.mymob.client)
+	if(QDELETED(hud) || QDELETED(hud.mymob) || !hud.mymob.client)
 		return
 	var/sunlightvaluecolor = "#ffffff"
 	if(SSsol.sunlight_active)

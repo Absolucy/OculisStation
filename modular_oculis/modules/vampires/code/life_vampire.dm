@@ -213,7 +213,7 @@
 /datum/antagonist/vampire/proc/on_death(mob/living/source, gibbed)
 	SIGNAL_HANDLER
 
-	if(source.stat != DEAD /* || is_oozeling_core(source.get_organ_slot(ORGAN_SLOT_BRAIN)) */) // weirdness shield
+	if(source.stat != DEAD || isjellyperson(source))
 		return
 
 	COOLDOWN_START(src, revive_cooldown, 25 SECONDS) // ensure we take at minimum 25 seconds to revive.

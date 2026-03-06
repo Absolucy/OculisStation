@@ -258,6 +258,7 @@
 /obj/item/organ/brain/slime/proc/core_ejection(mob/living/victim, new_stat, turf/loc_override)
 	if(core_ejected)
 		return
+	var/datum/mind/victim_mind = victim.mind // OCULIS EDIT ADDITION
 	core_ejected = TRUE
 	victim.visible_message(span_warning("[victim]'s body completely dissolves, collapsing outwards!"), span_notice("Your body completely dissolves, collapsing outwards!"), span_notice("You hear liquid splattering."))
 	var/atom/death_loc = victim.drop_location()
@@ -274,6 +275,11 @@
 
 	if(gps_active) // adding the gps signal if they have activated the ability
 		AddComponent(/datum/component/gps, "[victim]'s Core")
+
+	// OCULIS EDIT ADDITION START
+	if(victim_mind)
+		SEND_SIGNAL(victim_mind, COMSIG_SLIME_CORE_EJECTED, src)
+	// OCULIS EDIT ADDITION END
 
 	qdel(victim)
 	UnregisterSignal(victim, COMSIG_LIVING_DEATH)
@@ -352,6 +358,10 @@
 			continue
 	new_body.visible_message(span_warning("[new_body]'s torso \"forms\" from [new_body.p_their()] core, yet to form the rest."))
 	to_chat(owner, span_purple("Your torso fully forms out of your core, yet to form the rest."))
+	// OCULIS EDIT ADDITION START
+	if(owner.mind)
+		SEND_SIGNAL(owner.mind, COMSIG_SLIME_REVIVED, new_body, src)
+	// OCULIS EDIT END
 	return TRUE
 
 // HEALING SECTION

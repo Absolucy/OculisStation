@@ -332,8 +332,8 @@
 	ADD_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
 
 	RegisterSignal(src, COMSIG_VAMPIRE_TRACK_HUMANITY_GAIN, PROC_REF(on_track_humanity_gain_signal))
-	/* RegisterSignal(owner, COMSIG_OOZELING_CORE_EJECTED, PROC_REF(on_oozeling_core_ejected))
-	RegisterSignal(owner, COMSIG_OOZELING_REVIVED, PROC_REF(on_oozeling_revive)) */
+	RegisterSignal(owner, COMSIG_SLIME_CORE_EJECTED, PROC_REF(on_slime_core_ejected))
+	RegisterSignal(owner, COMSIG_SLIME_REVIVED, PROC_REF(on_slime_revive))
 
 	RegisterSignal(SSsol, COMSIG_SOL_NEAR_START, PROC_REF(sol_near_start))
 	RegisterSignal(SSsol, COMSIG_SOL_END, PROC_REF(on_sol_end))
@@ -376,7 +376,7 @@
 
 /datum/antagonist/vampire/on_removal()
 	REMOVE_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
-	/* UnregisterSignal(owner, list(COMSIG_OOZELING_CORE_EJECTED, COMSIG_OOZELING_REVIVED)) */
+	UnregisterSignal(owner, list(COMSIG_SLIME_CORE_EJECTED, COMSIG_SLIME_REVIVED))
 	UnregisterSignal(SSsol, list(COMSIG_SOL_NEAR_END, COMSIG_SOL_NEAR_START, COMSIG_SOL_END, COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
 
 	owner.forget_crafting_recipe(list(
