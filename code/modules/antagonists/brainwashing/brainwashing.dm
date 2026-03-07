@@ -29,7 +29,7 @@
 		brainwash_mind.add_antag_datum(brainwashed_datum)
 
 	var/source_message = source ? " by [source]" : "" // OCULIS EDIT ADDITION
-	var/begin_message = " has been brainwashed with the following objective[length(directives) > 1 ? "s" : ""][source_message]: " // OCULUS EDIT CHANGE - ORIGINAL: var/begin_message = " has been brainwashed with the following objectives: "
+	var/begin_message = " has been brainwashed with the following objective[length(directives) > 1 ? "s" : ""][source_message]: " // OCULIS EDIT CHANGE - ORIGINAL: var/begin_message = " has been brainwashed with the following objectives: "
 	var/obj_message = english_list(directives)
 	var/rendered = begin_message + obj_message
 	if(!(rendered[length(rendered)] in list(",",":",";",".","?","!","\'","-")))
