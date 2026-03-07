@@ -59,7 +59,7 @@ SUBSYSTEM_DEF(vsociety)
 		poll_time = 3 MINUTES,
 		flash_window = TRUE,
 		group = vampire_living_candidates,
-		alert_pic = prince_icon,
+		alert_pic = image(prince_icon),
 		role_name_text = "Prince",
 		custom_response_messages = list(
 			POLL_RESPONSE_SIGNUP = "You have made your bid for princedom. <br>* Note: Princedom has certain expectations placed upon you. If you are not in a position to enforce the masquerade, consider letting someone else take this burden.",
