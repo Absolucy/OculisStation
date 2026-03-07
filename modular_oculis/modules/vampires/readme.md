@@ -37,6 +37,8 @@ Adds a new antagonist, Vampires.
   - `/datum/feed_network/New()`
 - `modular_oculis/master_files/code/modules/reagents/reagent_containers/blood_pack.dm`
   - `/obj/item/reagent_containers/blood/attack`
+- `modular_oculis/master_files/code/modules/jobs/job_types/curator.dm`
+  - `/datum/outfit/job/curator/pre_equip()`
 
 ### Defines:
 
