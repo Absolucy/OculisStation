@@ -26,7 +26,7 @@ SUBSYSTEM_DEF(sol)
 			time_til_cycle = round(rand((TIME_VAMPIRE_NIGHT-TIME_VAMPIRE_SOL_DELAY), (TIME_VAMPIRE_NIGHT+TIME_VAMPIRE_SOL_DELAY)), 1)
 			message_admins("VAMPIRE NOTICE: Daylight Ended. Resetting to Night (Lasts for [time_til_cycle / 60] minutes.")
 			GLOB.news_network.submit_article("<h1>IWA Status Update - Solar Flare Passed</h1><br><br>\
-												This is an update from the Interstellar Weather Authority. The latest Class I solar flare has now fully passed Station [station_name()]'s orbital path.<br><br>\
+												This is an update from the Interstellar Weather Authority. The latest Class I solar flare has now fully passed [station_name()]'s orbital path.<br><br>\
 												No anomalies or disruptions have been detected.<br><br>\
 												- IWA Monitoring Admin",
 												"Interstellar Weather Authority (IWA)",
