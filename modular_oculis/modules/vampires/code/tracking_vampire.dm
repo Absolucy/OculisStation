@@ -1,35 +1,44 @@
-/* /datum/antagonist/vampire/proc/setup_tracker(mob/living/body)
-	cleanup_tracker()
-	tracker = new(body, REF(src))
+/atom/movable/screen/tracking_arrow
+	icon = 'modular_oculis/modules/vampires/icons/arrow.dmi'
+	icon_state = "hud_arrow"
+	screen_loc = "CENTER,CENTER"
+	color = "#960000"
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 
-	for(var/datum/antagonist/vassal/vassal in vassals)
-		vassal.monitor?.add_to_tracking_network(tracker.tracking_beacon)
-	tracker.tracking_beacon.toggle_visibility(TRUE)
+/atom/movable/screen/tracking_arrow/proc/update(mob/user, atom/target)
+	var/turf/our_turf = get_turf(user)
+	var/turf/their_turf = get_turf(target)
+	if(!our_turf || !their_turf)
+		invisibility = INVISIBILITY_ABSTRACT
+		return
+	invisibility = INVISIBILITY_NONE
+	var/matrix/rotation_matrix = matrix()
+	rotation_matrix.Scale(1.5)
+	rotation_matrix.Translate(0, -20)
+	rotation_matrix.Turn(get_angle(their_turf, our_turf))
+	var/new_alpha = 240
+	var/new_color = "#808080"
+	if(their_turf.z == our_turf.z)
+		switch(get_dist(their_turf, our_turf))
+			if(0)
+				new_alpha = 0
+			if(1)
+				new_alpha = 60
+			if(2)
+				new_alpha = 100
+			if(3)
+				new_alpha = 150
+			else
+				new_alpha = 240
+		new_color = "#960000"
+	animate(src, alpha = new_alpha, color = new_color, transform = rotation_matrix, time = 0.2 SECONDS)
 
-/datum/antagonist/vampire/proc/cleanup_tracker()
-	if(tracker)
-		QDEL_NULL(tracker)
-
-/**
- * An abstract object contained within the vampire, used to host the team_monitor component.
-**/
-/obj/effect/abstract/vampire_tracker_holder
-	name = "vampire tracker holder"
-	desc = span_danger("You <b>REALLY</b> shouldn't be seeing this!")
-
-	var/datum/component/tracking_beacon/tracking_beacon
-
-/obj/effect/abstract/vampire_tracker_holder/Initialize(mapload, key)
-	. = ..()
-	tracking_beacon = AddComponent(/datum/component/tracking_beacon, \
-		_frequency_key = key, \
-		_colour = "#960000", \
-		_global = TRUE, \
-		_always_update = TRUE, \
-	)
-
-/obj/effect/abstract/vampire_tracker_holder/Destroy(force)
-	tracking_beacon.toggle_visibility(FALSE)
-	QDEL_NULL(tracking_beacon)
-	. = ..()
- */
+/datum/antagonist/vampire/proc/update_all_trackers()
+	SIGNAL_HANDLER
+	if(QDELETED(owner.current) || !length(vassals))
+		return
+	for(var/datum/antagonist/vassal/vassal as anything in vassals)
+		var/mob/living/vassal_mob = vassal.owner.current
+		if(QDELETED(vassal_mob))
+			continue
+		vassal.tracking_arrow?.update(vassal_mob, owner.current)

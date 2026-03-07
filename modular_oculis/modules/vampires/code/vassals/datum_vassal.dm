@@ -17,7 +17,7 @@
 	/// List of Powers, like Vampires.
 	var/list/datum/action/powers = list()
 	/// A link to our team monitor, used to track our master.
-	// var/datum/component/team_monitor/monitor
+	var/atom/movable/screen/tracking_arrow/tracking_arrow
 
 /datum/antagonist/vassal/antag_panel_data()
 	return "Master : [master.owner.name]"
@@ -29,6 +29,7 @@
 	RegisterSignal(current_mob, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
 	RegisterSignals(current_mob, list(COMSIG_MOB_LOGIN, COMSIG_MOVABLE_Z_CHANGED), PROC_REF(on_login))
 	RegisterSignal(current_mob, COMSIG_MOB_UPDATE_SIGHT, PROC_REF(on_update_sight))
+	RegisterSignal(current_mob, COMSIG_MOVABLE_MOVED, PROC_REF(on_moved))
 
 	current_mob.update_sight()
 
@@ -43,15 +44,27 @@
 
 	current_mob.clear_mood_event("vampcandle")
 
+	if(current_mob.hud_used)
+		on_hud_created()
+	else
+		RegisterSignal(current_mob, COMSIG_MOB_HUD_CREATED, PROC_REF(on_hud_created))
+
 /datum/antagonist/vassal/remove_innate_effects(mob/living/mob_override)
 	. = ..()
 	var/mob/living/current_mob = mob_override || owner.current
 
-	UnregisterSignal(current_mob, list(COMSIG_ATOM_EXAMINE, COMSIG_MOB_LOGIN, COMSIG_MOVABLE_Z_CHANGED, COMSIG_MOB_UPDATE_SIGHT))
+	UnregisterSignal(current_mob, list(
+		COMSIG_ATOM_EXAMINE,
+		COMSIG_MOB_LOGIN,
+		COMSIG_MOVABLE_Z_CHANGED,
+		COMSIG_MOB_UPDATE_SIGHT,
+		COMSIG_MOB_HUD_CREATED,
+		COMSIG_MOVABLE_MOVED,
+	))
 	current_mob.update_sight()
 
 	// Tracking
-	// QDEL_NULL(monitor)
+	remove_hud_elements(current_mob)
 	current_mob.remove_language(/datum/language/vampiric, source = LANGUAGE_VASSAL)
 
 	// Remove traits
@@ -244,3 +257,35 @@
 	powers += power
 	power.Grant(owner.current)
 	log_uplink("[key_name(owner.current)] has received \"[power]\" as a vassal")
+
+/datum/antagonist/vassal/proc/on_hud_created(datum/source)
+	SIGNAL_HANDLER
+	var/datum/hud/hud_used = owner.current.hud_used
+
+	tracking_arrow = new /atom/movable/screen/tracking_arrow(null, hud_used)
+	hud_used.static_inventory |= tracking_arrow
+
+	hud_used.show_hud(hud_used.hud_version)
+	UnregisterSignal(owner.current, COMSIG_MOB_HUD_CREATED)
+
+	var/mob/living/master_body = master?.owner?.current
+	if(!QDELETED(master_body))
+		tracking_arrow.update(owner.current, master_body)
+
+/datum/antagonist/vassal/proc/remove_hud_elements(mob/living/current_mob)
+	var/datum/hud/hud_used = current_mob?.hud_used
+	if(hud_used)
+		hud_used.static_inventory -= tracking_arrow
+		hud_used.show_hud(hud_used.hud_version)
+	QDEL_NULL(tracking_arrow)
+
+/datum/antagonist/vassal/proc/on_moved()
+	SIGNAL_HANDLER
+	if(!tracking_arrow)
+		return
+	var/mob/living/our_mob = owner.current
+	var/mob/living/master_mob = master?.owner?.current
+	if(QDELETED(our_mob) || QDELETED(master_mob))
+		tracking_arrow.invisibility = INVISIBILITY_ABSTRACT
+		return
+	tracking_arrow.update(our_mob, master_mob)
