@@ -90,8 +90,11 @@
 		qdel(src)
 
 /datum/status_effect/vampire_torpor/proc/should_end()
-	if(HAS_TRAIT(owner, TRAIT_FRENZY) || SSsol.sunlight_active)
+	if(HAS_TRAIT(owner, TRAIT_FRENZY))
 		return TRUE
+	if(SSsol.sunlight_active)
+		return FALSE
+
 	var/total_brute = owner.get_brute_loss()
 	var/total_burn = owner.get_fire_loss()
 
