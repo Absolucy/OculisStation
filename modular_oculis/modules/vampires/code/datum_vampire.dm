@@ -222,7 +222,10 @@
 		current_human.physiology?.stamina_mod *= VAMPIRE_INHERENT_STAMINA_RESIST
 
 	var/datum/dna/current_mob_dna = current_mob.has_dna()
-	current_mob_dna?.remove_all_mutations()
+	if(current_mob_dna)
+		if(current_mob_dna.check_mutation(/datum/mutation/dwarfism))
+			ADD_TRAIT(current_mob, TRAIT_DWARF, TRAIT_VAMPIRE)
+		current_mob_dna.remove_all_mutations()
 	current_mob.add_traits(vampire_traits + always_traits, TRAIT_VAMPIRE)
 
 	current_mob.grant_language(/datum/language/vampiric, source = LANGUAGE_VAMPIRE)
