@@ -34,6 +34,7 @@
 	if(QDELETED(src) || QDELETED(owner) || !command || !currently_active)
 		vampiredatum_power.adjust_blood_volume(vitaecost) // refund the blood
 		deactivate_power()
+		StartCooldown(0)
 		return
 	playsound(get_turf(owner), 'sound/effects/magic/clockwork/invoke_general.ogg', 100, TRUE, 3)
 	var/command_cooldown = voice_of_god(command, owner, list("colossus", "commands"), base_multiplier = 2)
