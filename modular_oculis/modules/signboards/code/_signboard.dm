@@ -10,6 +10,7 @@
 	density = TRUE
 	anchored = TRUE
 	interaction_flags_atom = INTERACT_ATOM_ATTACK_HAND | INTERACT_ATOM_REQUIRES_DEXTERITY
+	custom_materials = list(/datum/material/wood = SHEET_MATERIAL_AMOUNT * 5)
 	/// The current text written on the sign.
 	var/sign_text
 	/// The maximum length of text that can be input onto the sign.
