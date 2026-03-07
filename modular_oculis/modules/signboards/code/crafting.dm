@@ -1,7 +1,7 @@
 /datum/crafting_recipe/signboard
 	name = "Signboard"
 	desc = "A sign, you can write anything on it!"
-	tool_behaviors = list(TOOL_WRENCH, TOOL_SCREWDRIVER)
+	tool_behaviors = list(TOOL_SCREWDRIVER)
 	result = /obj/structure/signboard
 	reqs = list(
 		/obj/item/stack/sheet/mineral/wood = 5,
@@ -12,7 +12,7 @@
 /datum/crafting_recipe/holosign
 	name = "Holographic Signboard"
 	desc = "A sign, you can write anything on it! Now available in many colors!"
-	tool_behaviors = list(TOOL_WRENCH, TOOL_MULTITOOL)
+	tool_behaviors = list(TOOL_SCREWDRIVER, TOOL_MULTITOOL)
 	result = /obj/structure/signboard/holosign
 	reqs = list(
 		/obj/item/stack/sheet/iron = 5,
