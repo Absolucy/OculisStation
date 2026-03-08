@@ -9,6 +9,7 @@
 	hud_icon = 'modular_oculis/modules/vampires/icons/antag_hud.dmi'
 	antag_hud_name = "vampire"
 	preview_outfit = /datum/outfit/vampire_outfit
+	view_exploitables = TRUE
 
 	show_to_ghosts = TRUE
 
