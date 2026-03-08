@@ -2,7 +2,7 @@
 import { type Antagonist, Category } from '../base';
 
 const VampireBreakout: Antagonist = {
-  key: 'vampire_breakout',
+  key: 'vampirebreakout',
   name: 'Vampire Breakout',
   description: [
     `
