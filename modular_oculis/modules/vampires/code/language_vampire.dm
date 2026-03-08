@@ -1,7 +1,7 @@
 /datum/language/vampiric
 	name = "Enochian"
 	desc = "The language of Enoch, the first city of man. It was preserved past the great flood by the antediluvians, and is now learned intuitively by Fledglings as they pass from death into immortality."
-	key = "l"
+	key = "L"
 	space_chance = 40
 	default_priority = 90
 
