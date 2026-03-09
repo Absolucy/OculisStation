@@ -38,6 +38,7 @@
 	if(check_holidays(APRIL_FOOLS))
 		// Note: most of the time you're getting brainwashed you're unconscious
 		brainwash_victim.say("You son of a bitch! I'm in.", forced = "That son of a bitch! They're in. (April Fools)")
+	brainwashed_datum.update_static_data_for_all_viewers() // OCULIS EDIT ADDITION - ensure that objectives show up properly
 
 // OCULIS EDIT ADDITION START - add unbrainwash proc. kept in here so that it's right next to /proc/brainwash
 /// Removes objectives from someone's brainwash.

@@ -198,6 +198,7 @@
 	var/datum/objective/vampire/vassal/vassal_objective = new
 	vassal_objective.owner = owner
 	objectives += vassal_objective
+	update_static_data_for_all_viewers()
 
 /datum/antagonist/vassal/add_team_hud(mob/target)
 	QDEL_NULL(team_hud_ref)
