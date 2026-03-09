@@ -127,19 +127,7 @@
 	RegisterSignal(owner, COMSIG_MOVABLE_MOVED, PROC_REF(on_owner_moved))
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/vampire_sol)
 	owner.add_actionspeed_modifier(/datum/actionspeed_modifier/vampire_sol)
-	to_chat(owner, span_userdanger("Sol has risen! Your powers are suppressed, your body is burdened, and you will not heal outside of a coffin!"), type = MESSAGE_TYPE_INFO)
-	if(ishuman(owner))
-		var/mob/living/carbon/human/human_owner = owner
-		human_owner.physiology?.damage_resistance -= 50
-	/* for(var/datum/action/cooldown/vampire/power in owner.actions)
-		if(power.sol_multiplier)
-			power.vitaecost *= power.sol_multiplier
-			power.constant_vitaecost *= power.sol_multiplier
-			if(power.currently_active)
-				to_chat(owner, span_warning("[power.name] is harder to upkeep during Sol, now requiring [power.constant_vitaecost] blood while the solar flares last!"), type = MESSAGE_TYPE_INFO)
-			LAZYSET(burdened_actions, power, TRUE)
-		power.update_desc()
-		power.update_buttons() */
+	to_chat(owner, span_userdanger("Sol has risen! Your powers are suppressed, and you will not heal outside of a coffin!"), type = MESSAGE_TYPE_INFO)
 	return TRUE
 
 /datum/status_effect/vampire_sol/on_remove()
@@ -148,16 +136,6 @@
 	owner.remove_filter(id)
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/vampire_sol)
 	owner.remove_actionspeed_modifier(/datum/actionspeed_modifier/vampire_sol)
-	if(ishuman(owner))
-		var/mob/living/carbon/human/human_owner = owner
-		human_owner.physiology?.damage_resistance += 50
-	/*for(var/datum/action/vampire/power in owner.actions)
-		if(LAZYACCESS(burdened_actions, power))
-			power.vitaecost /= power.sol_multiplier
-			power.constant_vitaecost /= power.sol_multiplier
-		power.update_desc()
-		power.update_buttons()
-	LAZYNULL(burdened_actions) */
 
 /datum/status_effect/vampire_sol/proc/on_sol_end()
 	SIGNAL_HANDLER
