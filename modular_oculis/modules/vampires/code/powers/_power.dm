@@ -232,8 +232,15 @@
 		Remove(owner)
 
 // If there's a mortal in line of sight, we get a masq infraction
-/datum/action/cooldown/vampire/proc/check_witnesses(mob/living/target)
+/datum/action/cooldown/vampire/proc/check_witnesses(mob/living/target, fallback_find_target = TRIUE)
 	var/turf/our_turf = get_turf(owner)
+	if(fallback_find_target && target && (!isliving(target) || !vampiredatum_power.is_masq_watcher(target)))
+		find_target_loop:
+			for(var/turf/nearby_turf as anything in spiral_range_turfs(6, target))
+				for(var/mob/living/nearby_mob in nearby_turf)
+					if(vampiredatum_power.is_masq_watcher(nearby_mob))
+						target = nearby_mob
+						break find_target_loop
 	var/turf/target_turf = get_turf(target)
 	var/min_darkness = target_turf ? min(our_turf.get_lumcount(), target_turf.get_lumcount()) : our_turf.get_lumcount()
 	var/is_dark = min_darkness <= LIGHTING_TILE_IS_DARK
