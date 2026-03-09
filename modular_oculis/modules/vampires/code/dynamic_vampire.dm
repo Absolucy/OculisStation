@@ -3,10 +3,15 @@
 	config_tag = "Roundstart Vampire"
 	preview_antag_datum = /datum/antagonist/vampire
 	pref_flag = ROLE_VAMPIRE
-	weight = 8
+	weight = alist(
+		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOWMEDIUM = 8,
+		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_HIGH = 10,
+	)
 	min_pop = 15
 	min_antag_cap = 2
-	min_antag_cap = list("denominator" = 15, "offset" = 2)
+	max_antag_cap = list("denominator" = 15, "offset" = 2)
 	blacklisted_roles = list(
 		JOB_CURATOR,
 	)
@@ -21,7 +26,12 @@
 	midround_type = LIGHT_MIDROUND
 	pref_flag = ROLE_VAMPIRIC_ACCIDENT
 	jobban_flag = ROLE_VAMPIRE
-	weight = 8
+	weight = alist(
+		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOWMEDIUM = 8,
+		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_HIGH = 10,
+	)
 	min_pop = 15
 	blacklisted_roles = list(
 		JOB_CURATOR,
@@ -87,7 +97,12 @@
 	preview_antag_datum = /datum/antagonist/vampire
 	pref_flag = ROLE_VAMPIRE_BREAKOUT
 	jobban_flag = ROLE_VAMPIRE
-	weight = 8
+	weight = alist(
+		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOWMEDIUM = 8,
+		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_HIGH = 10,
+	)
 	min_pop = 15
 	blacklisted_roles = list(
 		JOB_CURATOR,
