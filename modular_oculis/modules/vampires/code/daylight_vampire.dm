@@ -148,10 +148,10 @@
 	owner.remove_filter(id)
 	owner.remove_movespeed_modifier(/datum/movespeed_modifier/vampire_sol)
 	owner.remove_actionspeed_modifier(/datum/actionspeed_modifier/vampire_sol)
-	/* if(ishuman(owner))
+	if(ishuman(owner))
 		var/mob/living/carbon/human/human_owner = owner
 		human_owner.physiology?.damage_resistance += 50
-	for(var/datum/action/vampire/power in owner.actions)
+	/*for(var/datum/action/vampire/power in owner.actions)
 		if(LAZYACCESS(burdened_actions, power))
 			power.vitaecost /= power.sol_multiplier
 			power.constant_vitaecost /= power.sol_multiplier
