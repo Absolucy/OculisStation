@@ -64,6 +64,12 @@
 	if(is_type_in_list(get_area(current) in VAMPIRE_SOL_SHIELDED))
 		shielded = TRUE
 
+	var/datum/weather/ash_storm/ash_storm = SSweather.get_weather_by_type(/datum/weather/ash_storm)
+	if(ash_storm)
+		var/area/our_area = get_area(current)
+		if(our_area && (our_area in ash_storm.impacted_areas))
+			shielded = TRUE
+
 	var/sol_burn_calculated = VAMPIRE_SOL_BURN / (min(2, 1 + (humanity / 10)))
 
 	if(shielded)
