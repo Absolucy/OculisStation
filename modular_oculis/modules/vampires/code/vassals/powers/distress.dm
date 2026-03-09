@@ -17,5 +17,6 @@
 	to_chat(vassaldatum.master.owner, span_userdanger("[owner.real_name], your loyal vassal, is desperately calling for aid at [get_area(owner)]!"))
 
 	var/mob/living/living_owner = owner
-	living_owner.adjust_brute_loss(10)
+	if(living_owner.health > (living_owner.crit_threshold + 10))
+		living_owner.adjust_brute_loss(10)
 	deactivate_power()
