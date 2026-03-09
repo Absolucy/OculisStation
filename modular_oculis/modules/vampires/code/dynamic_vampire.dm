@@ -26,9 +26,60 @@
 	blacklisted_roles = list(
 		JOB_CURATOR,
 	)
+	var/static/list/vampire_current_polling = list()
 
 /datum/dynamic_ruleset/midround/from_living/vampire/assign_role(datum/mind/candidate)
-	candidate.add_antag_datum(/datum/antagonist/vampire)
+	var/wait_time = 0
+	if(SSsol.sunlight_active)
+		wait_time = (SSsol.time_til_cycle + 5) SECONDS // 5 seconds after sol ends
+	else if(SSsol.time_til_cycle < 75)
+		wait_time = (SSsol.time_til_cycle + TIME_VAMPIRE_DAY + 5) SECONDS
+	if(wait_time)
+		addtimer(CALLBACK(candidate, TYPE_PROC_REF(/datum/mind, add_antag_datum), /datum/antagonist/vampire), wait_time)
+	else
+		candidate.add_antag_datum(/datum/antagonist/vampire)
+
+/datum/dynamic_ruleset/midround/from_living/vampire/collect_candidates()
+	var/list/candidates = ..()
+	return poll_candidates_for_one(trim_candidates(candidates))
+
+/**
+ * Polls a group of candidates to see if they want to be a vampire.
+ *
+ * @param candidates a list containing a candidate mobs
+ */
+/datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(candidates)
+	message_admins("Attempting to poll [length(candidates)] people individually to become a Vampire...")
+	var/list/potential_candidates = shuffle(candidates)
+	var/list/yes_candidate = list()
+	for(var/mob/living/candidate in potential_candidates)
+		potential_candidates -= candidate
+		vampire_current_polling += candidate
+		yes_candidate += SSpolling.poll_candidates(
+			question = "Do you want to be a Vampire?",
+			group = list(candidate),
+			poll_time = 15 SECONDS,
+			flash_window = TRUE,
+			start_signed_up = FALSE,
+			announce_chosen = FALSE,
+			role_name_text = "Vampiric Accident",
+			alert_pic = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
+			custom_response_messages = list(
+				POLL_RESPONSE_SIGNUP = "You have signed up to be a vampire!",
+				POLL_RESPONSE_ALREADY_SIGNED = "You are already signed up to be a vampire.",
+				POLL_RESPONSE_NOT_SIGNED = "You aren't signed up to be a vampire.",
+				POLL_RESPONSE_TOO_LATE_TO_UNREGISTER = "It's too late to decide against being a vampire.",
+				POLL_RESPONSE_UNREGISTERED = "You decide against being a vampire.",
+			),
+			chat_text_border_icon = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
+		)
+		vampire_current_polling -= candidate
+		if(length(yes_candidate) >= max_antag_cap)
+			break
+		else
+			message_admins("Candidate [candidate] has declined to be a vampire.")
+
+	return yes_candidate
 
 /datum/dynamic_ruleset/latejoin/vampire
 	name = "Vampire"
@@ -43,4 +94,12 @@
 	)
 
 /datum/dynamic_ruleset/latejoin/vampire/assign_role(datum/mind/candidate)
-	candidate.add_antag_datum(/datum/antagonist/vampire)
+	var/wait_time = 0
+	if(SSsol.sunlight_active)
+		wait_time = (SSsol.time_til_cycle + 5) SECONDS // 5 seconds after sol ends
+	else if(SSsol.time_til_cycle < 75)
+		wait_time = (SSsol.time_til_cycle + TIME_VAMPIRE_DAY + 5) SECONDS
+	if(wait_time)
+		addtimer(CALLBACK(candidate, TYPE_PROC_REF(/datum/mind, add_antag_datum), /datum/antagonist/vampire), wait_time)
+	else
+		candidate.add_antag_datum(/datum/antagonist/vampire)
