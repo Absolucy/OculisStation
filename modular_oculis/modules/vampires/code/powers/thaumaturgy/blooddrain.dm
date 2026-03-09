@@ -38,8 +38,7 @@
 
 /datum/action/cooldown/vampire/targeted/blooddrain/deactivate_power()
 	. = ..()
-	if(!isnull(active_effect))
-		active_effect.end_drain()
+	active_effect?.end_drain()
 
 /obj/projectile/magic/blood_drain
 	name = "vitality draining stream"
