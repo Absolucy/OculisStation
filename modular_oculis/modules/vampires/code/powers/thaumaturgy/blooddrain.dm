@@ -58,6 +58,7 @@
 /obj/projectile/magic/blood_drain/on_hit(mob/living/target, blocked, pierce_hit)
 	. = ..()
 	if(isliving(target))
+		QDEL_NULL(drain_beam)
 		target.apply_status_effect(/datum/status_effect/blood_drain, firer, fired_from)
 
 /obj/projectile/magic/blood_drain/Destroy()
@@ -92,13 +93,16 @@
 	vampire = firer
 	spell = fired_from
 	spell.active_effect = src
-	drain_beam = vampire.Beam(new_owner, icon = 'icons/effects/beam.dmi', icon_state = "blood_drain", time = 22 SECONDS, maxdistance = 7, beam_color = COLOR_RED)
-	RegisterSignal(drain_beam, COMSIG_QDELETING, PROC_REF(end_drain))
-	new_owner.visible_message(span_boldwarning("[vampire] begins draining the life force from [new_owner]!"), span_boldwarning("[vampire] is draining your life force! You need to get away from [vampire.p_them()] to stop it!"))
 	. = ..()
 
 /datum/status_effect/blood_drain/on_apply()
 	owner.add_movespeed_modifier(/datum/movespeed_modifier/status_effect/life_drain)
+	drain_beam = vampire.Beam(owner, icon = 'icons/effects/beam.dmi', icon_state = "blood_drain", time = 22 SECONDS, maxdistance = 7, beam_color = COLOR_RED)
+	RegisterSignal(drain_beam, COMSIG_QDELETING, PROC_REF(end_drain))
+	owner.visible_message(
+		span_boldwarning("[vampire] begins draining the life force from [owner]!"),
+		span_boldwarning("[vampire] is draining your life force! You need to get away from [vampire.p_them()] to stop it!"),
+	)
 	return TRUE
 
 /datum/status_effect/blood_drain/on_remove()
