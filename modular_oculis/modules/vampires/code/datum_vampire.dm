@@ -730,11 +730,11 @@
 	var/total_players = length(GLOB.player_list)
 	switch(total_players)
 		if(1 to 20)
-			. = 1
+			return 1
 		if(21 to 30)
-			. = 3
+			return 2
 		else
-			. = 4
+			return 3
 
 /datum/antagonist/vampire/proc/on_examine(datum/source, mob/examiner, list/examine_text)
 	SIGNAL_HANDLER
