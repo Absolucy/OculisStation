@@ -204,7 +204,6 @@
 
 /obj/structure/vampire/vassalrack/proc/attempt_progress(mob/living/user, mob/living/carbon/target)
 	if(do_after(user, 5 SECONDS, target, interaction_key = DOAFTER_SOURCE_PERSUASION_RACK))
-		var/obj/item/bodypart/selected_bodypart = pick(target.bodyparts)
 		target.visible_message(
 			span_danger("[user] performs a ritual, catering some of [user.p_their()] blood to [target]!"),
 			span_userdanger("[user] feeds some of [user.p_their()] blood to you! " + span_awe("You feel as if your mind is slipping away...?"))
