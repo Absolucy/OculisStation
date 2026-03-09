@@ -232,7 +232,7 @@
 		Remove(owner)
 
 // If there's a mortal in line of sight, we get a masq infraction
-/datum/action/cooldown/vampire/proc/check_witnesses(mob/living/target, fallback_find_target = TRIUE)
+/datum/action/cooldown/vampire/proc/check_witnesses(mob/living/target, fallback_find_target = TRUE)
 	var/turf/our_turf = get_turf(owner)
 	if(fallback_find_target && target && (!isliving(target) || !vampiredatum_power.is_masq_watcher(target)))
 		find_target_loop:
