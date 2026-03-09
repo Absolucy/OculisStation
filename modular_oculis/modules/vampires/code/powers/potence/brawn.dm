@@ -172,13 +172,13 @@
 
 		INVOKE_ASYNC(target_closet, TYPE_PROC_REF(/obj/structure/closet, bust_open), FALSE)
 		playsound(get_turf(carbon_owner), 'sound/effects/grillehit.ogg', 80, TRUE, -1)
-		// check_witnesses()
+		check_witnesses()
 	// Airlocks
 	else if(istype(target_atom, /obj/machinery/door/airlock))
 		var/obj/machinery/door/airlock/target_airlock = target_atom
 
 		playsound(get_turf(carbon_owner), 'sound/machines/airlock/airlock_alien_prying.ogg', 40, TRUE, -1)
-		// check_witnesses()
+		check_witnesses()
 		owner.balloon_alert(owner, "you prepare to tear open [target_airlock]...")
 		if(!do_after(carbon_owner, 2.5 SECONDS, target_airlock))
 			carbon_owner.balloon_alert(carbon_owner, "interrupted!")
