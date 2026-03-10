@@ -26,6 +26,8 @@
 	midround_type = LIGHT_MIDROUND
 	pref_flag = ROLE_VAMPIRIC_ACCIDENT
 	jobban_flag = ROLE_VAMPIRE
+	min_antag_cap = 1
+	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
 	weight = alist(
 		DYNAMIC_TIER_LOW = 7,
 		DYNAMIC_TIER_LOWMEDIUM = 8,
@@ -58,14 +60,16 @@
  *
  * @param candidates a list containing a candidate mobs
  */
-/datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(candidates)
-	message_admins("Attempting to poll [length(candidates)] people individually to become a Vampire...")
-	var/list/potential_candidates = shuffle(candidates)
-	var/list/yes_candidate = list()
-	for(var/mob/living/candidate in potential_candidates)
-		potential_candidates -= candidate
+/datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(list/candidates)
+	var/max_candidates = get_antag_cap(length(GLOB.alive_player_list) - length(GLOB.all_vampires), max_antag_cap || min_antag_cap)
+	message_admins("Attempting to poll [length(candidates)] people individually to become a Vampire, trying to select [max_candidates]")
+	var/list/yes_candidates = list()
+	while((length(yes_candidates) < max_candidates) && length(candidates))
+		var/mob/living/candidate = pick_n_take(candidates)
+		if(QDELETED(candidate) || candidate.stat == DEAD || !candidate.client)
+			continue
 		vampire_current_polling += candidate
-		yes_candidate += SSpolling.poll_candidates(
+		var/list/response = SSpolling.poll_candidates(
 			question = "Do you want to be a Vampire?",
 			group = list(candidate),
 			poll_time = 15 SECONDS,
@@ -84,12 +88,12 @@
 			chat_text_border_icon = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
 		)
 		vampire_current_polling -= candidate
-		if(length(yes_candidate) >= max_antag_cap)
-			break
+		if(response)
+			yes_candidates += response
 		else
 			message_admins("Candidate [candidate] has declined to be a vampire.")
 
-	return yes_candidate
+	return yes_candidates
 
 /datum/dynamic_ruleset/latejoin/vampire
 	name = "Vampire"
