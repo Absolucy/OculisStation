@@ -803,6 +803,9 @@
 /datum/antagonist/vampire/proc/unregister_limb(mob/living/carbon/owner, obj/item/bodypart/lost_limb, special)
 	SIGNAL_HANDLER
 
+	var/extra_damage = 1 + (vampire_level * extra_damage_per_rank)
+	lost_limb.unarmed_damage_low = max(lost_limb.unarmed_damage_low - extra_damage, initial(lost_limb.unarmed_damage_low))
+	lost_limb.unarmed_damage_high = max(lost_limb.unarmed_damage_high - extra_damage, initial(lost_limb.unarmed_damage_high))
 	affected_limbs[lost_limb.body_zone] = null
 	UnregisterSignal(lost_limb, COMSIG_QDELETING)
 
