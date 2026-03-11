@@ -393,8 +393,6 @@
 		return FALSE
 	if(HAS_SILICON_ACCESS(watcher))
 		return FALSE
-	if(watcher in owner.current?.get_all_linked_holoparasites())
-		return FALSE
 	if(recursion > 0)
 		var/mob/living/master = watcher.mind.enslaved_to?.resolve()
 		if(master)
