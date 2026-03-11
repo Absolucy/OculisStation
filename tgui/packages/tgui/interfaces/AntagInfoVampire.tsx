@@ -15,7 +15,11 @@ import type { BooleanLike } from 'tgui-core/react';
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
 import { AntagInfoHeader } from './common/AntagInfoHeader';
-import { type Objective, ObjectivePrintout } from './common/Objectives';
+import {
+  type Objective,
+  ObjectivePrintout,
+  ReplaceObjectivesButton,
+} from './common/Objectives';
 
 type VampireInformation = {
   clan: ClanInfo[];
@@ -123,7 +127,7 @@ const VampireIntroduction = (props: {
   setTab: React.Dispatch<SetStateAction<InfoTab>>;
 }) => {
   const { data } = useBackend<Info>();
-  const { objectives } = data;
+  const { objectives, can_change_objective } = data;
   return (
     <Stack vertical fill>
       <Stack.Item>
@@ -131,7 +135,16 @@ const VampireIntroduction = (props: {
       </Stack.Item>
       <Stack.Item grow maxHeight="220px">
         <Section title="Objectives">
-          <ObjectivePrintout objectives={objectives} />
+          <ObjectivePrintout
+            objectives={objectives}
+            objectiveFollowup={
+              <ReplaceObjectivesButton
+                can_change_objective={can_change_objective}
+                button_title={'Acquire New Tastes'}
+                button_colour={'red'}
+              />
+            }
+          />
         </Section>
       </Stack.Item>
       <Stack.Item textAlign="center">

@@ -10,6 +10,7 @@
 	antag_hud_name = "vampire"
 	preview_outfit = /datum/outfit/vampire_outfit
 	view_exploitables = TRUE
+	can_assign_self_objectives = TRUE
 
 	show_to_ghosts = TRUE
 
