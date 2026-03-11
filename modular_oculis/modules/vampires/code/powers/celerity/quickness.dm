@@ -48,7 +48,7 @@
 			continue
 		// if it's a fellow vampire (who doesn't have the same masquerade breaker status as us), a vassal, or has ourself in its factions, then it'll be prioritized last.
 		var/datum/antagonist/vampire/target_vampire = IS_VAMPIRE(potential_target)
-		if((target_vampire && target_vampire.broke_masquerade != vampiredatum_power.broke_masquerade) || IS_VASSAL(potential_target) || potential_target.has_faction(REF(source)))
+		if((target_vampire && target_vampire.broke_masquerade != vampiredatum_power.broke_masquerade) || IS_VASSAL(potential_target) || potential_target.has_faction(REF(source)) || potential_target.has_ally(source))
 			potential_targets += potential_target
 		else
 			potential_targets.Insert(1, potential_target)

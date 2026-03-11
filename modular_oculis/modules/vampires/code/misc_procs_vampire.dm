@@ -379,7 +379,7 @@
 		return FALSE
 	if(HAS_MIND_TRAIT(watcher, TRAIT_VAMPIRE_ALIGNED))
 		return FALSE
-	if(watcher.has_faction(list(FACTION_VAMPIRE, REF(owner.current))))
+	if(watcher.has_faction(list(FACTION_VAMPIRE, REF(owner.current))) || watcher.has_ally(owner.current))
 		return FALSE
 	if(watcher.mind.has_antag_datum_in_list(weirdo_antags))
 		return FALSE
