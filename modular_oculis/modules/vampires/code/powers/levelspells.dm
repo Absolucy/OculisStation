@@ -123,6 +123,7 @@
 
 		// Make, then give the datum
 		var/datum/antagonist/vampire/scourgedatum = new(living_target.mind)
+		scourgedatum.can_assign_self_objectives = FALSE
 		scourgedatum.should_forge_objectives = FALSE // their one objective is to enforce their prince's authority
 		scourgedatum.stinger_sound = null // to avoid several sounds stacking on top of each other
 		living_target.mind.add_antag_datum(scourgedatum)

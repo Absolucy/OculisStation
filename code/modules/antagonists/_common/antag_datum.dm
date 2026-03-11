@@ -614,6 +614,10 @@ GLOBAL_LIST_EMPTY(antagonists)
 			/datum/objective/survive,
 			///datum/objective/martyr, // NOVA EDIT REMOVAL
 			/datum/objective/exile,
+			// OCULIS EDIT ADDITION START - VAMPIRES
+			/datum/objective/vampire/scourge,
+			/datum/objective/vampire/prince,
+			// OCULIS EDIT ADDITION END
 		)
 		for (var/datum/objective/check_objective in objectives)
 			if (is_type_in_list(check_objective, escape_objectives))
