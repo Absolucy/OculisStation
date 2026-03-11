@@ -683,11 +683,10 @@
 /datum/antagonist/vampire/forge_objectives()
 	var/datum/objective/vampire/extra_objective
 
+	/* if(prob(80)) */
 	extra_objective = new /datum/objective/vampire/ego/vassals
-	/* if(prob(80))
-		extra_objective = new /datum/objective/vampire/ego/vassals
-	else
-		extra_objective = new /datum/objective/vampire/ego/department_vassal*/
+	/* else
+		extra_objective = new /datum/objective/vampire/ego/department_vassal */
 
 	extra_objective.owner = owner
 	objectives += extra_objective
