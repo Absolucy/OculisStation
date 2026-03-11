@@ -10,7 +10,6 @@
 	vitaecost = 25
 	constant_vitaecost = 3
 
-
 /datum/action/cooldown/vampire/exactitude/can_use()
 	. = ..()
 	if(!.)
@@ -43,9 +42,19 @@
 		if(living_target.stat != DEAD) // don't focus on dead targets
 			return NONE
 
-	for(var/mob/living/to_attack in oview(1, source))
-		if(to_attack.stat == DEAD || to_attack.invisibility > source.see_invisible)
+	var/list/potential_targets = list()
+	for(var/mob/living/potential_target in oview(1, source))
+		if(potential_target.stat == DEAD || potential_target.invisibility > source.see_invisible)
 			continue
+		// if it's a fellow vampire (who doesn't have the same masquerade breaker status as us), a vassal, or has ourself in its factions, then it'll be prioritized last.
+		var/datum/antagonist/vampire/target_vampire = IS_VAMPIRE(potential_target)
+		if((target_vampire && target_vampire.broke_masquerade != vampiredatum_power.broke_masquerade) || IS_VASSAL(potential_target) || potential_target.has_faction(REF(source)))
+			potential_targets += potential_target
+		else
+			potential_targets.Insert(1, potential_target)
+
+	if(length(potential_targets))
+		var/mob/living/to_attack = potential_targets[1]
 		source.face_atom(to_attack)
 		to_attack.attack_hand(source, modifiers)
 		source.changeNext_move(CLICK_CD_MELEE)
