@@ -848,3 +848,17 @@
 
 /datum/asset/simple/vampire_header
 	assets = list("vampire.png" = 'modular_oculis/modules/vampires/html/images/vampire.png')
+
+/obj/item/antag_granter/vampire
+	name = "strange vial"
+	desc = "A large vial filled with a strange viscous, red substance. It has no markings apart from an orange warning stripe near the cap."
+	icon = 'icons/obj/mining_zones/artefacts.dmi'
+	icon_state = "vial"
+	antag_datum = /datum/antagonist/vampire
+	user_message = "As you chug the strange liquid within the bottle, you start to feel... <span class='red'><b>thirsty</b></span>..."
+
+/datum/opposing_force_equipment/uplink/vampire
+	item_type = /obj/item/antag_granter/vampire
+	name = "Vampiric Blood"
+	description = "A mysterious vial filled with a strange viscous, red substance, said to turn the user into a \"Vampire\"."
+	admin_note = "Vampire antag granter."
