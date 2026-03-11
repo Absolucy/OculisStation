@@ -4,9 +4,9 @@
 	preview_antag_datum = /datum/antagonist/vampire
 	pref_flag = ROLE_VAMPIRE
 	weight = alist(
-		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOW = 8,
 		DYNAMIC_TIER_LOWMEDIUM = 8,
-		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_MEDIUMHIGH = 8,
 		DYNAMIC_TIER_HIGH = 10,
 	)
 	min_pop = 15
@@ -29,9 +29,9 @@
 	min_antag_cap = 1
 	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
 	weight = alist(
-		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOW = 8,
 		DYNAMIC_TIER_LOWMEDIUM = 8,
-		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_MEDIUMHIGH = 8,
 		DYNAMIC_TIER_HIGH = 10,
 	)
 	min_pop = 15
@@ -102,9 +102,9 @@
 	pref_flag = ROLE_VAMPIRE_BREAKOUT
 	jobban_flag = ROLE_VAMPIRE
 	weight = alist(
-		DYNAMIC_TIER_LOW = 7,
+		DYNAMIC_TIER_LOW = 8,
 		DYNAMIC_TIER_LOWMEDIUM = 8,
-		DYNAMIC_TIER_MEDIUMHIGH = 9,
+		DYNAMIC_TIER_MEDIUMHIGH = 8,
 		DYNAMIC_TIER_HIGH = 10,
 	)
 	min_pop = 15
