@@ -534,7 +534,7 @@
 	var/blood_to_take = min(feed_amount * mult, target.blood_volume)
 
 	// Remove target's blood
-	target.blood_volume -= blood_to_take
+	target.adjust_blood_volume(-blood_to_take)
 
 	// Shift body temperature (toward target's temp, by volume taken)
 	// ((vamp_blood_volume * vamp_temp) + (target_blood_volume * target_temp)) / (vamp_blood_volume + blood_to_take)

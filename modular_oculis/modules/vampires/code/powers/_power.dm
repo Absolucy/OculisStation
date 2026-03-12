@@ -166,7 +166,7 @@
 	if(!vampiredatum_power)
 		var/mob/living/living_owner = owner
 		if(!HAS_TRAIT(living_owner, TRAIT_NOBLOOD))
-			living_owner.blood_volume -= vitaecost
+			living_owner.adjust_blood_volume(-vitaecost)
 		return
 
 	// Vampires in a Frenzy don't have enough Blood to pay it, so just don't.
@@ -211,7 +211,7 @@
 		else
 			var/mob/living/living_owner = owner
 			if(!HAS_TRAIT(living_owner, TRAIT_NOBLOOD))
-				living_owner.blood_volume = max(living_owner.blood_volume - constant_vitaecost, 0)
+				living_owner.adjust_blood_volume(-constant_vitaecost)
 	return TRUE
 
 /// Checks to make sure this power can stay active

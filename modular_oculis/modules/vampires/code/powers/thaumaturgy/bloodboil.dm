@@ -114,7 +114,7 @@
 		multiplier *= 0.5
 
 	owner.take_overall_damage(burn = round(burn_damage * multiplier, 1))
-	owner.blood_volume = max(owner.blood_volume - round(blood_loss * multiplier, 1), 0)
+	owner.adjust_blood_volume(-round(blood_loss * multiplier, 1))
 
 	if(SPT_PROB(50, seconds_between_ticks))
 		to_chat(owner, span_warning("Oh god! IT BURNS!"))

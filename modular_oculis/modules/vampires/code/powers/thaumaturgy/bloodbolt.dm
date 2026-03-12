@@ -63,7 +63,7 @@
 
 	if(isliving(target))
 		var/mob/living/living_target = target
-		living_target.blood_volume = max(living_target.blood_volume - 50, 0)
+		living_target.adjust_blood_volume(-50)
 		living_target.emote("scream")
 		living_target.set_jitter_if_lower(6 SECONDS)
 		living_target.Unconscious(3 SECONDS)
