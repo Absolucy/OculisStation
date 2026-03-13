@@ -81,7 +81,7 @@
 	return NONE
 
 /obj/structure/closet/crate/coffin/relaymove(mob/living/user, direction)
-	if(user.stat == CONSCIOUS && user.mind == resident && user.body_position == STANDING_UP && !opened)
+	if(user.stat == CONSCIOUS && user.mind == resident && !user.resting && !opened)
 		open(user)
 		return
 	return ..()
