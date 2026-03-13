@@ -259,8 +259,8 @@
 		COMSIG_LIVING_APPRAISE_ART,
 	))
 	current_mob.update_sight()
+	current_mob.remove_status_effect(/datum/status_effect/frenzy)
 	current_mob.remove_traits(vampire_traits + always_traits, TRAIT_VAMPIRE)
-	current_mob.clear_mood_event("vassal")
 
 	handle_clown_mutation(current_mob, removing = FALSE)
 
