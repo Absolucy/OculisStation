@@ -77,6 +77,8 @@
 		owner.remove_antag_datum(src)
 		CRASH("[owner.current] was vassilized without a master!")
 
+	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(give_warning))
+
 	ADD_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
 
 	vampire_team = master.vampire_team
@@ -95,6 +97,7 @@
 	forge_objectives()
 
 /datum/antagonist/vassal/on_removal()
+	UnregisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN)
 	REMOVE_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
 
 	// Free them from their Master
@@ -290,3 +293,22 @@
 		tracking_arrow.invisibility = INVISIBILITY_ABSTRACT
 		return
 	tracking_arrow.update(our_mob, master_mob)
+
+/datum/antagonist/vassal/proc/give_warning(atom/source, danger_level, vampire_warning_message, vassal_warning_message)
+	SIGNAL_HANDLER
+
+	if(!owner?.current)
+		return
+	to_chat(owner, vassal_warning_message, type = MESSAGE_TYPE_WARNING)
+
+	switch(danger_level)
+		if(DANGER_LEVEL_FIRST_WARNING)
+			owner.current.playsound_local(null, 'modular_oculis/modules/vampires/sound/griffin_3.ogg', 50, TRUE)
+		if(DANGER_LEVEL_SECOND_WARNING)
+			owner.current.playsound_local(null, 'modular_oculis/modules/vampires/sound/griffin_5.ogg', 50, TRUE)
+		if(DANGER_LEVEL_THIRD_WARNING)
+			owner.current.playsound_local(null, 'sound/effects/alert.ogg', 75, TRUE)
+		if(DANGER_LEVEL_SOL_ROSE)
+			owner.current.playsound_local(null, 'sound/ambience/misc/ambimystery.ogg', 75, TRUE)
+		if(DANGER_LEVEL_SOL_ENDED)
+			owner.current.playsound_local(null, 'sound/music/antag/bloodcult/ghosty_wind.ogg', 90, TRUE)
