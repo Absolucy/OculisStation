@@ -40,7 +40,7 @@
 			update_appearance(UPDATE_ICON)
 		locked = FALSE
 		return TRUE
-	playsound(get_turf(src), 'modular_oculis/modules/vampires/sound/door_locked.ogg', vol = 20, vary = TRUE)
+	playsound(src, 'modular_oculis/modules/vampires/sound/door_locked.ogg', vol = 20, vary = TRUE)
 	to_chat(user, span_notice("[src] appears to be locked tight from the inside."))
 	return FALSE
 
