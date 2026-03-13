@@ -320,6 +320,7 @@
 		current.add_mood_event("vassal", /datum/mood_event/vassal_happy)
 	else if(time_away_from_master >= 25 MINUTES)
 		current.add_mood_event("vassal", /datum/mood_event/vassal_away_severe)
+		current.set_jitter_if_lower(5 SECONDS)
 	else if(time_away_from_master >= 5 MINUTES)
 		current.add_mood_event("vassal", /datum/mood_event/vassal_away)
 	else
