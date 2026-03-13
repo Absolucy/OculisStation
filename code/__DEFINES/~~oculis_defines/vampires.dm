@@ -91,7 +91,7 @@
 #define VAMPIRE_DEFAULT_HUMANITY 7
 
 // List of areas that are shielded from sol.
-#define VAMPIRE_SOL_SHIELDED list(/area/station/maintenance, /area/station/medical/morgue, /area/station/security/prison, /area/shuttle)
+#define VAMPIRE_SOL_SHIELDED list(/area/station/maintenance, /area/station/medical/morgue, /area/station/security/prison, /area/shuttle, /area/centcom)
 
 // Cooldown defines
 // Used to prevent spamming vampires
