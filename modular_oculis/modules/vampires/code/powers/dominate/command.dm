@@ -139,7 +139,7 @@
 	if(findtext_char(command, " "))
 		to_chat(owner, span_warning("Please only input a single word."))
 		return FALSE
-	if(length_char(command)  > 7)
+	if(length_char(command) > 10)
 		to_chat(owner, span_warning("Command too long!"))
 		return FALSE
 	if(copytext(command, 1, 5) == "kill" || copytext(command, 1, 7) == "murder" || copytext(command, 1, 8) == "suicide" || copytext(command, 1, 4) == "die")
