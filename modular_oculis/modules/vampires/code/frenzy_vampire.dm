@@ -70,12 +70,16 @@
 	// Traits
 	carbon_owner.add_traits(frenzy_traits, TRAIT_STATUS_EFFECT(id))
 
+	carbon_owner.log_message("has entered a vampiric Frenzy due to low blood!", LOG_ATTACK)
+
 	return TRUE
 
 /datum/status_effect/frenzy/on_remove()
 	var/mob/living/carbon/carbon_owner = owner
 	if(!iscarbon(carbon_owner))
 		return
+
+	carbon_owner.log_message("has exited their vampiric Frenzy.", LOG_ATTACK)
 
 	COOLDOWN_START(vampiredatum, frenzy_cooldown, 30 SECONDS)
 
