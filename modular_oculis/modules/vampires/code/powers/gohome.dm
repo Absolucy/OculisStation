@@ -76,9 +76,9 @@
 
 	playsound(current_turf, 'sound/effects/magic/summon_karp.ogg', vol = 60, vary = TRUE)
 
-	var/datum/effect_system/steam_spread/vampire/puff = new /datum/effect_system/steam_spread/vampire()
+	/* var/datum/effect_system/steam_spread/vampire/puff = new /datum/effect_system/steam_spread/vampire()
 	puff.set_up(3, 0, current_turf)
-	puff.start()
+	puff.start() */
 
 	/// STEP FIVE: Create animal at prev location
 	var/mob/living/simple_animal/new_mob = pick_weight(spawning_mobs)
@@ -92,8 +92,8 @@
 
 	deactivate_power()
 
-/datum/effect_system/steam_spread/vampire
-	effect_type = /obj/effect/particle_effect/fluid/smoke/vampsmoke
+/* /datum/effect_system/steam_spread/vampire
+	effect_type = /obj/effect/particle_effect/fluid/smoke/vampsmoke */
 
 #undef GOHOME_START
 #undef GOHOME_FLICKER_ONE
