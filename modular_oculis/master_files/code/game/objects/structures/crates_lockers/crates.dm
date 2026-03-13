@@ -80,6 +80,12 @@
 		return CLICK_ACTION_SUCCESS
 	return NONE
 
+/obj/structure/closet/crate/coffin/container_resist_act(mob/living/user, loc_required)
+	if(user.mind == resident && !opened)
+		open(user)
+		return
+	return ..()
+
 /obj/structure/closet/crate/coffin/crowbar_act(mob/living/user, obj/item/tool)
 	if(user.combat_mode || !locked)
 		return FALSE
