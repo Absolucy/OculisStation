@@ -61,9 +61,9 @@
 #define VASSALIZATION_BANNED 2
 
 /// How long Sol lasts
-#define TIME_VAMPIRE_DAY 90
+#define TIME_VAMPIRE_DAY 180 // 3 minutes
 /// The grace period inbetween Sol
-#define TIME_VAMPIRE_NIGHT 1200
+#define TIME_VAMPIRE_NIGHT 2700 // 45 minutes
 /// First audio warning that Sol is coming
 #define TIME_VAMPIRE_DAY_WARN_1 90
 /// Second audio warning that Sol is coming

@@ -826,7 +826,7 @@ const VampireGuide = () => {
                 offers minimal protection.
                 <br />
                 <br />
-                <b>Sol:</b> Every twenty minutes, sunlight cripples you unless
+                <b>Sol:</b> Every 45 minutes, sunlight cripples you unless
                 protected by a coffin or similar shelter.
                 <br />
                 <br />
