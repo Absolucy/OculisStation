@@ -66,6 +66,7 @@
 		COMSIG_LIVING_LIFE,
 	))
 	current_mob.update_sight()
+	current_mob.clear_mood_event("vassal")
 
 	// Tracking
 	remove_hud_elements(current_mob)
