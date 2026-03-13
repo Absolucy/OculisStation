@@ -21,7 +21,7 @@
 	if(. || !isliving(AM))
 		return
 	var/mob/living/person = AM
-	if(IS_VAMPIRE(person)) // we only use the snowflake checks for vampires
+	if(!IS_VAMPIRE(person)) // we only use the snowflake checks for vampires
 		return
 	if(person.anchored || person.buckled || person.incorporeal_move || person.has_buckled_mobs())
 		return FALSE
