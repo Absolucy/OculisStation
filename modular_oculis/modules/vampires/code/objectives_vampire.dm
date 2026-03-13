@@ -175,7 +175,7 @@
  */
 /datum/objective/vampire/vassal
 	name = "assist master"
-	explanation_text = "You crave the blood of your sire! Obey and protect them at all costs!"
+	explanation_text = "You crave the blood of your vampiric master! Obey and protect them at all costs!"
 
 /datum/objective/vampire/vassal/check_completion()
 	var/datum/antagonist/vassal/vassal_datum = owner.has_antag_datum(/datum/antagonist/vassal)

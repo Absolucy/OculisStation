@@ -21,12 +21,18 @@
 	/// A link to our team monitor, used to track our master.
 	var/atom/movable/screen/tracking_arrow/tracking_arrow
 
+	/// How much time has been spent away from their master, used for moodlets.
+	var/time_away_from_master = 0
+	var/last_life_tick = 0
+
 /datum/antagonist/vassal/antag_panel_data()
 	return "Master : [master.owner.name]"
 
 /datum/antagonist/vassal/apply_innate_effects(mob/living/mob_override)
 	. = ..()
 	var/mob/living/current_mob = mob_override || owner.current
+
+	last_life_tick = world.time
 
 	RegisterSignal(current_mob, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
 	RegisterSignals(current_mob, list(COMSIG_MOB_LOGIN, COMSIG_MOVABLE_Z_CHANGED), PROC_REF(on_login))
@@ -307,11 +313,17 @@
 	var/mob/living/master_body = master.owner.current
 	if(QDELETED(master_body))
 		return
+	time_away_from_master += (world.time - last_life_tick)
+	last_life_tick = world.time
 	if(CAN_THEY_SEE(master_body, current))
-		current.add_mood_event("vassal", /datum/mood_event/vassal)
+		time_away_from_master = 0
+		current.add_mood_event("vassal", /datum/mood_event/vassal_happy)
+	else if(time_away_from_master >= 25 MINUTES)
+		current.add_mood_event("vassal", /datum/mood_event/vassal_away_severe)
+	else if(time_away_from_master >= 5 MINUTES)
+		current.add_mood_event("vassal", /datum/mood_event/vassal_away)
 	else
 		current.clear_mood_event("vassal")
-
 
 /datum/antagonist/vassal/proc/give_warning(atom/source, danger_level, vampire_warning_message, vassal_warning_message)
 	SIGNAL_HANDLER
