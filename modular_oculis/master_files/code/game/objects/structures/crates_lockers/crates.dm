@@ -16,6 +16,21 @@
 		. += span_cult("Alt-Click while inside the Coffin to Lock/Unlock.")
 		. += span_cult("Alt-Click while outside of your Coffin to Unclaim it, unwrenching it and all your other structures as a result.")
 
+/obj/structure/closet/crate/coffin/insertion_allowed(atom/movable/AM)
+	. = ..()
+	if(. || !isliving(AM))
+		return
+	var/mob/living/person = AM
+	if(IS_VAMPIRE(person)) // we only use the snowflake checks for vampires
+		return
+	if(person.anchored || person.buckled || person.incorporeal_move || person.has_buckled_mobs())
+		return FALSE
+	if(horizontal && person.density)
+		return FALSE
+	// if there's nobody else in here, then we'll be allowed to sleep in here, regardless of our mob size
+	if(!(locate(/mob/living) in contents - person))
+		return TRUE
+
 /obj/structure/closet/crate/coffin/can_open(mob/living/user, force)
 	if(!locked)
 		return ..()
