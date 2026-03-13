@@ -17,6 +17,8 @@
 	jobban_flag = ROLE_VAMPIRE
 	pref_flag = ROLE_VAMPIRE
 
+	desensitized_modifier = DESENSITIZED_THRESHOLD
+
 	/// How much blood we have, starting off at default blood levels.
 	/// We don't use our actual body's temperature because some species don't have blood and we don't want to exclude them
 	var/current_vitae = BLOOD_VOLUME_NORMAL

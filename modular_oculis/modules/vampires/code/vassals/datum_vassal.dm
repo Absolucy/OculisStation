@@ -10,6 +10,8 @@
 
 	pref_flag = ROLE_VASSAL
 
+	desensitized_modifier = DESENSITIZED_THRESHOLD
+
 	/// The Master Vampire's antag datum.
 	var/datum/antagonist/vampire/master
 	/// The Vampire's team
