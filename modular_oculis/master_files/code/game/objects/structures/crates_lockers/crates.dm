@@ -81,7 +81,7 @@
 	return NONE
 
 /obj/structure/closet/crate/coffin/container_resist_act(mob/living/user, loc_required)
-	if(user.mind == resident && !opened)
+	if(user.stat == CONSCIOUS && user.mind == resident && !opened)
 		open(user)
 		return
 	return ..()
