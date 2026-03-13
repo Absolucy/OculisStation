@@ -407,6 +407,15 @@
 	for(var/datum/antagonist/vassal/all_vassals in vassals)
 		all_vassals.owner.remove_antag_datum(/datum/antagonist/vassal)
 
+/// Checks to see if someone is a vassal of another vampire.
+/datum/antagonist/vampire/proc/is_someone_elses_vassal(mob/living/target)
+	if(!isliving(target))
+		return FALSE
+	var/datum/antagonist/vassal/vassal = IS_VASSAL(target)
+	if(vassal && !(vassal in vassals))
+		return TRUE
+	return FALSE
+
 /* /datum/status_effect/silver_cuffed
 	id = "silver cuffed"
 	alert_type = null

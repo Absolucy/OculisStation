@@ -83,7 +83,7 @@
 		owner.balloon_alert(owner, "not [(living_target.stat == DEAD || HAS_TRAIT(living_target, TRAIT_FAKEDEATH)) ? "alive" : "conscious"]")
 		return FALSE
 
-	if(IS_VASSAL(living_target) && !(IS_VASSAL(living_target) in vampiredatum_power.vassals)) // Only our own vassal may be promoted.
+	if(vampiredatum_power.is_someone_elses_vassal(living_target)) // Only our own vassal may be promoted.
 		owner.balloon_alert(owner, "not your vassal")
 		return FALSE
 
