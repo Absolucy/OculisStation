@@ -288,11 +288,6 @@
 		hud_used.infodisplay -= humanity_display
 		hud_used.infodisplay -= sunlight_display
 		hud_used.show_hud(hud_used.hud_version)
-	if(current_mob?.client)
-		current_mob?.client?.screen -= blood_display
-		current_mob?.client?.screen -= vamprank_display
-		current_mob?.client?.screen -= humanity_display
-		current_mob?.client?.screen -= sunlight_display
 	QDEL_NULL(blood_display)
 	QDEL_NULL(vamprank_display)
 	QDEL_NULL(humanity_display)

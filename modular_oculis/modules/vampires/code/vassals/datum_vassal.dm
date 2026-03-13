@@ -292,8 +292,6 @@
 	if(hud_used)
 		hud_used.static_inventory -= tracking_arrow
 		hud_used.show_hud(hud_used.hud_version)
-	if(current_mob?.client)
-		current_mob?.client?.screen -= tracking_arrow
 	QDEL_NULL(tracking_arrow)
 
 /datum/antagonist/vassal/proc/on_moved()
