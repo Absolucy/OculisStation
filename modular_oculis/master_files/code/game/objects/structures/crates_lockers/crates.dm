@@ -80,6 +80,12 @@
 		return CLICK_ACTION_SUCCESS
 	return NONE
 
+/obj/structure/closet/crate/coffin/relaymove(mob/living/user, direction)
+	if(user.stat == CONSCIOUS && user.mind == resident && user.body_position == STANDING_UP && !opened)
+		open(user)
+		return
+	return ..()
+
 /obj/structure/closet/crate/coffin/container_resist_act(mob/living/user, loc_required)
 	if(user.stat == CONSCIOUS && user.mind == resident && !opened)
 		open(user)
