@@ -331,7 +331,7 @@
 
 	if(!owner?.current)
 		return
-	to_chat(owner, vassal_warning_message, type = MESSAGE_TYPE_WARNING)
+	to_chat(owner, vassal_warning_message || vampire_warning_message, type = MESSAGE_TYPE_WARNING)
 
 	switch(danger_level)
 		if(DANGER_LEVEL_FIRST_WARNING)
