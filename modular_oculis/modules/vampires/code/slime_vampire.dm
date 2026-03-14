@@ -25,8 +25,13 @@
 /datum/antagonist/vampire/proc/slime_self_revive(obj/item/organ/brain/slime/core)
 	if(QDELETED(core) || final_death)
 		return
+#ifdef is_slime_core
+	var/mob/living/carbon/human/new_body = core.rebuild_body(nugget = FALSE)
+	to_chat(new_body, span_cultlarge("You recollect yourself, your vitae reforming your body from your core!"), type = MESSAGE_TYPE_INFO)
+#else
 	core.regenerate()
 	to_chat(owner.current, span_cult_large("You recollect yourself, your vitae reforming your body from your core!"), type = MESSAGE_TYPE_INFO)
+#endif
 
 /// Stupid datum used for, to avoid a bunch of slime-specific vars on the vampire datum
 /datum/vampire_slime_reviver
