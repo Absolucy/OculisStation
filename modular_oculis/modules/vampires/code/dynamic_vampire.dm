@@ -27,6 +27,7 @@
 	midround_type = LIGHT_MIDROUND
 	pref_flag = ROLE_VAMPIRIC_ACCIDENT
 	jobban_flag = ROLE_VAMPIRE
+	ruleset_flags = RULESET_VARIATION
 	min_antag_cap = 1
 	// higher for testing purposes, since it's surprisingly uncommon for us to reach the min pop anyways
 	weight = alist(
