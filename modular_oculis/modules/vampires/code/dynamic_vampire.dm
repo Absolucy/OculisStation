@@ -59,6 +59,7 @@
 /datum/dynamic_ruleset/midround/from_living/vampire/mass
 	name = "Mass Vampires"
 	config_tag = "Mass Vampires"
+	min_antag_cap = 2
 	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
 	midround_type = HEAVY_MIDROUND
 
