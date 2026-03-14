@@ -21,14 +21,13 @@
 	candidate.add_antag_datum(/datum/antagonist/vampire)
 
 /datum/dynamic_ruleset/midround/from_living/vampire
-	name = "Vampire"
+	name = "Midround Vampire"
 	config_tag = "Midround Vampire"
 	preview_antag_datum = /datum/antagonist/vampire
 	midround_type = LIGHT_MIDROUND
 	pref_flag = ROLE_VAMPIRIC_ACCIDENT
 	jobban_flag = ROLE_VAMPIRE
 	min_antag_cap = 1
-	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
 	// higher for testing purposes, since it's surprisingly uncommon for us to reach the min pop anyways
 	weight = alist(
 		DYNAMIC_TIER_LOW = /* 8 */ 10,
@@ -56,6 +55,12 @@
 /datum/dynamic_ruleset/midround/from_living/vampire/collect_candidates()
 	var/list/candidates = ..()
 	return poll_candidates_for_one(trim_candidates(candidates))
+
+/datum/dynamic_ruleset/midround/from_living/vampire/mass
+	name = "Mass Vampires"
+	config_tag = "Mass Vampires"
+	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
+	midround_type = HEAVY_MIDROUND
 
 /**
  * Polls a group of candidates to see if they want to be a vampire.
@@ -98,7 +103,7 @@
 	return yes_candidates
 
 /datum/dynamic_ruleset/latejoin/vampire
-	name = "Vampire"
+	name = "Latejoin Vampire"
 	config_tag = "Latejoin Vampire"
 	preview_antag_datum = /datum/antagonist/vampire
 	pref_flag = ROLE_VAMPIRE_BREAKOUT
