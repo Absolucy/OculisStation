@@ -206,10 +206,11 @@
 
 	owner.AddElement(/datum/element/relay_attackers)
 	RegisterSignal(owner, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(on_attacked))
+	RegisterSignal(owner, COMSIG_LIVING_SLAPPED, PROC_REF(on_slapped))
 	return TRUE
 
 /datum/status_effect/commanded/on_remove()
-	UnregisterSignal(owner, COMSIG_ATOM_WAS_ATTACKED)
+	UnregisterSignal(owner, list(COMSIG_ATOM_WAS_ATTACKED, COMSIG_LIVING_SLAPPED))
 	REMOVE_TRAIT(owner, TRAIT_PACIFISM, TRAIT_STATUS_EFFECT(id))
 	unbrainwash(owner, directives)
 	owner.balloon_alert(caster, "[owner] snapped out of [owner.p_their()] trance!")
@@ -227,6 +228,15 @@
 		caster.Stun(0.5 SECONDS, TRUE)
 	to_chat(owner, span_awe(span_reallybig("You quickly come back to your senses as you're hit by [attacker]!")))
 	qdel(src)
+
+/datum/status_effect/commanded/proc/on_slapped(datum/source, mob/living/carbon/human/slapper)
+	SIGNAL_HANDLER
+	// gotta slap 'em in the face
+	if(slapper.zone_selected != BODY_ZONE_HEAD && slapper.zone_selected != BODY_ZONE_PRECISE_MOUTH)
+		return
+	if(slapper == caster || prob(10))
+		to_chat(owner, span_awe(span_reallybig("You quickly come back to your senses as you're slapped by [slapper]!")))
+		qdel(src)
 
 /atom/movable/screen/alert/status_effect/commanded
 	name = "Commanded"
