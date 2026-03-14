@@ -209,7 +209,7 @@
 	current_mob.update_sight()
 	current_mob.clear_mood_event("vampcandle")
 
-	add_team_hud(current_mob)
+	addtimer(CALLBACK(src, TYPE_PROC_REF(/datum/antagonist, add_team_hud), current_mob), 0.5 SECONDS, TIMER_OVERRIDE | TIMER_UNIQUE) //i don't trust this to not act weird
 
 	current_mob.add_faction(FACTION_VAMPIRE)
 
