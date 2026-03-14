@@ -27,7 +27,7 @@
 		return
 #ifdef is_slime_core
 	var/mob/living/carbon/human/new_body = core.rebuild_body(nugget = FALSE)
-	to_chat(new_body, span_cultlarge("You recollect yourself, your vitae reforming your body from your core!"), type = MESSAGE_TYPE_INFO)
+	to_chat(new_body, span_cult_large("You recollect yourself, your vitae reforming your body from your core!"), type = MESSAGE_TYPE_INFO)
 #else
 	core.regenerate()
 	to_chat(owner.current, span_cult_large("You recollect yourself, your vitae reforming your body from your core!"), type = MESSAGE_TYPE_INFO)
