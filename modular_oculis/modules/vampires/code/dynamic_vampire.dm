@@ -40,7 +40,6 @@
 	blacklisted_roles = list(
 		JOB_CURATOR,
 	)
-	var/static/list/vampire_current_polling = list()
 
 /datum/dynamic_ruleset/midround/from_living/vampire/assign_role(datum/mind/candidate)
 	var/wait_time = 0
@@ -60,7 +59,7 @@
 /datum/dynamic_ruleset/midround/from_living/vampire/mass
 	name = "Mass Vampires"
 	config_tag = "Mass Vampires"
-	min_antag_cap = 2
+	min_antag_cap = 1
 	max_antag_cap = list("denominator" = 25, offset = 1) // note: the amount of existing vampires is taken off of existing pop
 	midround_type = HEAVY_MIDROUND
 
@@ -71,38 +70,48 @@
  */
 /datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(list/candidates)
 	var/max_candidates = get_antag_cap(length(GLOB.alive_player_list) - length(GLOB.all_vampires), max_antag_cap || min_antag_cap)
-	message_admins("Attempting to poll [length(candidates)] people individually to become a Vampire, trying to select [max_candidates]")
+	message_admins("Attempting to poll [length(candidates)] people individually for the [name] ruleset, trying to select [max_candidates]")
+	log_dynamic("Attempting to poll [length(candidates)] people individually for the [name] ruleset, trying to select [max_candidates]")
 	var/list/yes_candidates = list()
-	while((length(yes_candidates) < max_candidates) && length(candidates))
+	var/sanity = 5
+	while((length(yes_candidates) < max_candidates) && length(candidates) && sanity > 0)
+		sanity--
 		var/mob/living/candidate = pick_n_take(candidates)
 		if(QDELETED(candidate) || candidate.stat == DEAD || !candidate.client)
 			continue
-		vampire_current_polling += candidate
-		var/list/response = SSpolling.poll_candidates(
-			question = "Do you want to be a Vampire?",
-			group = list(candidate),
-			poll_time = 15 SECONDS,
-			flash_window = TRUE,
-			start_signed_up = FALSE,
-			announce_chosen = FALSE,
-			role_name_text = "Vampiric Accident",
-			alert_pic = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
-			custom_response_messages = list(
-				POLL_RESPONSE_SIGNUP = "You have signed up to be a vampire!",
-				POLL_RESPONSE_ALREADY_SIGNED = "You are already signed up to be a vampire.",
-				POLL_RESPONSE_NOT_SIGNED = "You aren't signed up to be a vampire.",
-				POLL_RESPONSE_TOO_LATE_TO_UNREGISTER = "It's too late to decide against being a vampire.",
-				POLL_RESPONSE_UNREGISTERED = "You decide against being a vampire.",
-			),
-			chat_text_border_icon = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
-		)
-		vampire_current_polling -= candidate
-		if(response)
-			yes_candidates += response
+		log_dynamic("Polling candidate [key_name(candidate)] for the [name] ruleset.")
+		if(poll_for_vampire(candidate, yes_candidates))
+			log_dynamic("[name]: Candidate [key_name(candidate)] has accepted being a Vampire")
 		else
-			message_admins("Candidate [candidate] has declined to be a vampire.")
+			log_dynamic("[name]: Candidate [key_name(candidate)] has declined to be a Vampire")
 
+	log_dynamic("[name]: [length(yes_candidates)] candidates accepted")
 	return yes_candidates
+
+/datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_for_vampire(mob/living/candidate, list/yes_candidates)
+	var/list/response = SSpolling.poll_candidates(
+		question = "Do you want to be a Vampire?",
+		group = list(candidate),
+		poll_time = 15 SECONDS,
+		flash_window = TRUE,
+		start_signed_up = FALSE,
+		announce_chosen = FALSE,
+		role_name_text = "Vampiric Accident",
+		alert_pic = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
+		custom_response_messages = list(
+			POLL_RESPONSE_SIGNUP = "You have signed up to be a vampire!",
+			POLL_RESPONSE_ALREADY_SIGNED = "You are already signed up to be a vampire.",
+			POLL_RESPONSE_NOT_SIGNED = "You aren't signed up to be a vampire.",
+			POLL_RESPONSE_TOO_LATE_TO_UNREGISTER = "It's too late to decide against being a vampire.",
+			POLL_RESPONSE_UNREGISTERED = "You decide against being a vampire.",
+		),
+		chat_text_border_icon = image('modular_oculis/modules/vampires/icons/actions_vampire.dmi', "clanselect"),
+	)
+	if(response)
+		yes_candidates += response
+		return TRUE
+	else
+		return FALSE
 
 /datum/dynamic_ruleset/latejoin/vampire
 	name = "Latejoin Vampire"
