@@ -55,8 +55,8 @@
 		qdel(src)
 		return BULLET_ACT_HIT
 
-	if(istype(target, /obj/machinery/door/airlock))
-		var/obj/machinery/door/airlock/airlock = target
+	if(istype(target, /obj/machinery/door/airlock) || istype(target, /obj/machinery/door/window))
+		var/obj/machinery/door/airlock = target
 		airlock.open(FORCING_DOOR_CHECKS)
 		qdel(src)
 		return BULLET_ACT_HIT
