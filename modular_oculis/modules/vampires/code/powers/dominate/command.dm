@@ -231,6 +231,9 @@
 
 /datum/status_effect/commanded/proc/on_slapped(datum/source, mob/living/carbon/human/slapper)
 	SIGNAL_HANDLER
+	// no slapping yourself out of it
+	if(slapper == owner)
+		return
 	// gotta slap 'em in the face
 	if(slapper.zone_selected != BODY_ZONE_HEAD && slapper.zone_selected != BODY_ZONE_PRECISE_MOUTH)
 		return
