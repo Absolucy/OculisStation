@@ -70,8 +70,8 @@
  */
 /datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(list/candidates)
 	var/max_candidates = get_antag_cap(length(GLOB.alive_player_list) - length(GLOB.all_vampires), max_antag_cap || min_antag_cap)
-	message_admins("Attempting to poll [length(candidates)] people individually for the [name] ruleset, trying to select [max_candidates]")
-	log_dynamic("Attempting to poll [length(candidates)] people individually for the [name] ruleset, trying to select [max_candidates]")
+	message_admins("[name]: Attempting to poll [length(candidates)] people individually, trying to select [max_candidates]")
+	log_dynamic("[name]: Attempting to poll [length(candidates)] people individually, trying to select [max_candidates]")
 	var/list/yes_candidates = list()
 	var/sanity = 5
 	while((length(yes_candidates) < max_candidates) && length(candidates) && sanity > 0)
@@ -79,7 +79,7 @@
 		var/mob/living/candidate = pick_n_take(candidates)
 		if(QDELETED(candidate) || candidate.stat == DEAD || !candidate.client)
 			continue
-		log_dynamic("Polling candidate [key_name(candidate)] for the [name] ruleset.")
+		log_dynamic("[name]: Polling candidate [key_name(candidate)]")
 		if(poll_for_vampire(candidate, yes_candidates))
 			log_dynamic("[name]: Candidate [key_name(candidate)] has accepted being a Vampire")
 		else
