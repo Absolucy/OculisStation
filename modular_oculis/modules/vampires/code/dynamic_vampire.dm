@@ -12,7 +12,7 @@
 	)
 	min_pop = 15
 	min_antag_cap = 2
-	max_antag_cap = list("denominator" = 15, "offset" = 2)
+	max_antag_cap = 2
 	blacklisted_roles = list(
 		JOB_CURATOR,
 	)
