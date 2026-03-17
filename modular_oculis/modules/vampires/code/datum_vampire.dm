@@ -869,3 +869,9 @@
 	name = "Vampiric Blood"
 	description = "A mysterious vial filled with a strange viscous, red substance, said to turn the user into a \"Vampire\"."
 	admin_note = "Vampire antag granter."
+
+/obj/item/clothing/neck/necklace/memento_mori/memento(mob/living/carbon/human/user)
+	if(IS_VAMPIRE(user))
+		to_chat(user, span_warning("\The [src] rejects you."))
+		return FALSE
+	return ..()
