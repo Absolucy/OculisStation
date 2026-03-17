@@ -299,12 +299,6 @@ GLOBAL_LIST_EMPTY(preferences_datums)
 			character_preview_view.update_body()
 			return TRUE
 
-		// IRIS EDIT ADDITION START: Background Selection from https://github.com/Bubberstation/Bubberstation/pull/3015
-		if("update_background")
-			update_preference(GLOB.preference_entries[/datum/preference/choiced/background_state], params["new_background"])
-			return TRUE
-		//IRIS EDIT ADDITION END: Background Selection
-
 		if ("open_food")
 			GLOB.food_prefs_menu.ui_interact(usr)
 			return TRUE
