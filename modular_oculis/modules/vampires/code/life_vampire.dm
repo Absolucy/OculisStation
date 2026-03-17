@@ -83,6 +83,9 @@
 	else if(HAS_TRAIT(carbon_owner, TRAIT_SLIME_HYDROPHOBIA))
 		healing_multiplier = 0.75
 
+	if(current.has_status_effect(/datum/status_effect/frenzy))
+		healing_multiplier *= 0.25
+
 	var/brute_heal = min(carbon_owner.get_brute_loss(), actual_regen)
 	var/burn_heal = min(carbon_owner.get_fire_loss(), actual_regen) * 0.5
 
