@@ -1,0 +1,4 @@
+author: "Absolucy"
+delete-after: True
+changes:
+  - balance: "Anyone with an Antag Opt-In status of Kill or Round Remove can be chosen as a heretic sacrifice target, rather than just security and command."
