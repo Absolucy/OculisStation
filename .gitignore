@@ -301,3 +301,5 @@ tgui/packages/tgui/interfaces/PreferencesMenu/preferences/features/character_pre
 tgui/packages/tgui/interfaces/PreferencesMenu/preferences/features/game_preferences/nova/erp_preferences.tsx
 
 code/_DEFINES/~nova_defines/lewd_defines.dm
+
+!libdatum_refscanner.so

@@ -288,9 +288,36 @@ SUBSYSTEM_DEF(garbage)
 	if(detail)
 		LAZYADD(type_info.extra_details, detail)
 
+	var/do_native_scan = !istype(D, /client) // don't care about clients.
+	if(do_native_scan && !refscanner_ensure_ready())
+		do_native_scan = FALSE
+		stack_trace("failed to ensure refscanner is ready")
+
 	var/tick_usage = TICK_USAGE
+	if(do_native_scan)
+		refscanner_clear()
+		rustg_time_reset("native_refscan")
+		refscanner_arm_once()
 	del(D)
 	tick_usage = TICK_USAGE_TO_MS(tick_usage)
+	if(do_native_scan)
+		var/time = rustg_time_milliseconds("native_refscan")
+		var/list/debug_lines = refscanner_debug_drain()
+		var/list/findings = refscanner_report()
+
+		if(length(findings))
+			message_admins("native refscan complete for [type] ([refID]), [length(findings)] findings, took [time] ms (see runtime.log for more info)")
+			log_runtime("native refscan complete for [type] ([refID]), took [time] ms\n=== [length(findings)] finding(s)===\n[jointext(findings, "\n")]")
+		else
+			message_admins("native refscan complete for [type] ([refID]), took [time] ms, but nothing was found.")
+			log_runtime("native refscan complete for [type] ([refID]), took [time] ms, nothing was found")
+
+		if(debug_lines)
+			var/filename = "[replacetext("[type]", "/", "_")]-[refID]"
+			var/debug_file = file("[GLOB.log_directory]/refscanner_debug/[sanitize_filename(filename)].txt")
+			debug_file << "Native RefScanner debug ([type] | [refID]):"
+			for(var/line in debug_lines)
+				debug_file << "  [line]"
 
 	type_info.hard_deletes++
 	type_info.hard_delete_time += tick_usage
