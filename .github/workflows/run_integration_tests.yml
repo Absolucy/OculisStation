@@ -56,6 +56,11 @@ jobs:
       - name: Install dreamluau
         run: |
           bash tools/ci/install_dreamluau.sh
+      - name: Copy refscanner
+        run: |
+          cp libdatum_refscanner.so ~/.byond/bin/libdatum_refscanner.so
+          chmod +x ~/.byond/bin/libdatum_refscanner.so
+          ldd ~/.byond/bin/libdatum_refscanner.so
       - name: Run Tests
         id: run_tests
         run: |
