@@ -288,7 +288,7 @@ SUBSYSTEM_DEF(garbage)
 	if(detail)
 		LAZYADD(type_info.extra_details, detail)
 
-	var/do_native_scan = !istype(D, /client) // don't care about clients.
+	var/do_native_scan = !istype(D, /client) && !istype(D, /datum/parsed_map) && !istype(D, /datum/controller) // don't run it for things that intentionally harddel
 	if(do_native_scan && !refscanner_ensure_ready())
 		do_native_scan = FALSE
 		stack_trace("failed to ensure refscanner is ready")
