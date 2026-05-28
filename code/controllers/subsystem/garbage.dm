@@ -313,9 +313,7 @@ SUBSYSTEM_DEF(garbage)
 			log_runtime("native refscan complete for [type] ([refID]), took [time] ms, nothing was found")
 
 		if(debug_lines)
-			var/filename = "[replacetext("[type]", "/", "_")]-[refID]"
-			if(copytext(filename, 1, 2) == "_")
-				filename = copytext(filename, 2)
+			var/filename = "[replacetext(copytext("[type]", 2), "/", "_")]-[copytext(refID, 2, -1)]"
 			var/debug_file = file("[GLOB.log_directory]/refscanner_debug/[sanitize_filename(filename)].txt")
 			debug_file << "Native RefScanner debug ([type] | [refID]):"
 			for(var/line in debug_lines)
