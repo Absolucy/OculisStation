@@ -114,19 +114,17 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 		label += ".[var_name]"
 	return label
 
-#ifdef TESTING
+#if defined(TESTING) || defined(ABSOLUTE_MINIMUM)
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
 
-/// A holder datum whose var keeps a reference to another datum after Destroy().
-/// Used by the test verb to produce a detectable reference leak.
+/// Holder datum that deliberately does NOT null held_ref in Destroy(),
+/// simulating a reference leak for the native scanner to detect.
 /datum/refscanner_test_holder
 	var/datum/held_ref
-	var/list/list_that_holds_ref
 
 /datum/refscanner_test_holder/Destroy(force)
-	// Deliberately do NOT null held_ref — this simulates the leak we want to detect.
 	return ..()
 
 // ---------------------------------------------------------------------------
@@ -135,70 +133,71 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 
 GLOBAL_VAR(meow_a)
 GLOBAL_VAR(meow_b)
-
 GLOBAL_LIST(meow_c)
 
+/proc/_refscanner_print_results(mob/user, scenario)
+	var/list/lines = refscanner_report()
+	if(!length(lines))
+		to_chat(user, span_warning("=== RefScanner: [scenario] — no findings ==="))
+		return
+	to_chat(user, span_boldnotice("=== RefScanner: [scenario] — [length(lines)] finding(s) ==="))
+	for(var/line in lines)
+		to_chat(user, span_notice("  [line]"))
+
 ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
-	"Creates datum/global/list references, forces a hard-delete, then shows native pre/post-erasure scanner output.", \
+	"Runs two reference-leak scenarios through the native pre-erasure scanner.", \
 	ADMIN_CATEGORY_DEBUG)
 
 	if(!refscanner_ensure_ready())
 		to_chat(user, span_warning("datum_refscanner.dll could not be loaded — check the game log for details."))
 		return
 
-	// holder.held_ref and GLOB.meow_b keep victim alive before erasure. On current
-	// 516.1669 these references are erased by BYOND's own erasure() pass, so the
-	// native hook returns pre-erasure/reftracker-style findings and uses debug
-	// output to show what survives the post-erasure scan.
+	// --- Scenario 1: direct datum var + global var ---
+	// holder.held_ref and GLOB.meow_b both point at victim; neither is nulled
+	// before HardDelete, so the pre-erasure scan should report both.
 	var/datum/refscanner_test_holder/holder = new()
 	var/datum/victim = new()
 	holder.held_ref = victim
-	holder.list_that_holds_ref = list(victim)
 	GLOB.meow_a = holder
 	GLOB.meow_b = victim
-	// Also hold a reference via a list, to exercise the list scanner path.
-	var/list/holder_list = list(victim)
 
-	GLOB.meow_c = list(victim)
-
-	// refscanner_arm_once()
-	// del(victim)
-
-	SSgarbage.HardDelete(victim)
-
-	// var/list/findings = refscanner_drain()
-	/* var/list/debug_lines = refscanner_debug_drain()
-	var/findings = refscanner_findings_json() */
+	refscanner_clear()
+	refscanner_arm_once()
+	del(victim)
+	_refscanner_print_results(user, "scenario 1 — direct datum+global refs")
 
 	victim = null
 	GLOB.meow_a = null
 	GLOB.meow_b = null
-	GLOB.meow_c = null
-	holder_list = null
-	/* if(!findings)
-		to_chat(user, span_notice("Native RefScanner returned no pre-erasure references. Check the debug trace for hook/scanner behavior."))
-		if(debug_lines)
-			to_chat(user, span_boldnotice("Native RefScanner debug:"))
-			fdel("ref_debug.txt")
-			var/debug_file = file("ref_debug.txt")
-			debug_file << "Native RefScanner debug:"
-			for(var/line in debug_lines)
-				to_chat(user, span_notice("  [line]"))
-				debug_file << "  [line]"
-		else
-			to_chat(user, span_warning("Native RefScanner debug buffer was empty."))
-		qdel(holder)
-		return
-
-	if(debug_lines)
-		to_chat(user, span_boldnotice("Native RefScanner debug:"))
-		for(var/line in debug_lines)
-			to_chat(user, span_notice("  [line]"))
-
-	world.log << "\n[findings]\n"
-	to_chat(world, boxed_message("[findings]")) */
-
 	holder.held_ref = null
-	holder.list_that_holds_ref = null
 	qdel(holder)
+
+	// --- Scenario 2: nested lists (BFS owner chaining) ---
+	// victim2 is held inside inner_list, which is an element of outer_list,
+	// which is an element of GLOB.meow_c. The BFS expansion in the Rust scanner
+	// should chase the chain: victim2 → inner_list → outer_list → meow_c backing
+	// list, then report the global var meow_c as a list_owner.
+	//
+	// Expected output (four entries):
+	//   [finding]    global #N.meow_b
+	//   [list]       list #X [index 0] (len=1, ...)    <- inner_list
+	//   [list_owner] list #Y [index 0] -> list #X      <- outer_list holds inner_list
+	//   [list_owner] list #Z [index 0] -> list #Y      <- meow_c backing list holds outer_list
+	//   [list_owner] global #M.meow_c -> list #Z       <- global meow_c holds the backing list
+	var/datum/victim2 = new()
+	var/list/inner_list = list(victim2)
+	var/list/outer_list = list(inner_list)
+	GLOB.meow_b = victim2
+	GLOB.meow_c = list(outer_list)
+
+	refscanner_clear()
+	refscanner_arm_once()
+	del(victim2)
+	_refscanner_print_results(user, "scenario 2 — nested list BFS")
+
+	victim2 = null
+	inner_list = null
+	outer_list = null
+	GLOB.meow_b = null
+	GLOB.meow_c = null
 #endif
