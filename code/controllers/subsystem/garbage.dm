@@ -314,6 +314,8 @@ SUBSYSTEM_DEF(garbage)
 
 		if(debug_lines)
 			var/filename = "[replacetext("[type]", "/", "_")]-[refID]"
+			if(copytext(filename, 1, 2) == "_")
+				filename = copytext(filename, 2)
 			var/debug_file = file("[GLOB.log_directory]/refscanner_debug/[sanitize_filename(filename)].txt")
 			debug_file << "Native RefScanner debug ([type] | [refID]):"
 			for(var/line in debug_lines)
