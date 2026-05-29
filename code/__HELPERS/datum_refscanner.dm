@@ -82,8 +82,12 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 	var/kind = f["holder_kind"]
 	switch(kind)
 		if("list")
-			// The list itself holds the leaked reference directly.
+			// The list itself holds the leaked reference directly (vector slot).
 			return "\[list\]       list #[f["list_id"]] \[index [f["index"]]\] (len=[f["length"]], refs=[f["ref_count"]])"
+
+		if("list_assoc_value")
+			// The datum is held as an assoc value inside this list.
+			return "\[list_assoc\]  list #[f["list_id"]] (assoc value) (len=[f["length"]], refs=[f["ref_count"]])"
 
 		if("list_owner")
 			// A var or list slot holds a list that contains the leaked reference.
@@ -134,13 +138,18 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 GLOBAL_VAR(meow_a)
 GLOBAL_VAR(meow_b)
 GLOBAL_LIST(meow_c)
+GLOBAL_LIST(meow_d)
+GLOBAL_LIST(meow_e)
+
+/client
+	var/datum/meow
 
 /proc/_refscanner_print_results(mob/user, scenario)
 	var/list/lines = refscanner_report()
 	if(!length(lines))
-		to_chat(user, span_warning("=== RefScanner: [scenario] — no findings ==="))
+		to_chat(user, span_warning("=== RefScanner: [scenario] - no findings ==="))
 		return
-	to_chat(user, span_boldnotice("=== RefScanner: [scenario] — [length(lines)] finding(s) ==="))
+	to_chat(user, span_boldnotice("=== RefScanner: [scenario] - [length(lines)] finding(s) ==="))
 	for(var/line in lines)
 		to_chat(user, span_notice("  [line]"))
 
@@ -149,7 +158,7 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	ADMIN_CATEGORY_DEBUG)
 
 	if(!refscanner_ensure_ready())
-		to_chat(user, span_warning("datum_refscanner.dll could not be loaded — check the game log for details."))
+		to_chat(user, span_warning("datum_refscanner.dll could not be loaded - check the game log for details."))
 		return
 
 	// --- Scenario 1: direct datum var + global var ---
@@ -160,16 +169,33 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	holder.held_ref = victim
 	GLOB.meow_a = holder
 	GLOB.meow_b = victim
+	GLOB.meow_d = list(
+		victim = "meow",
+	)
+	GLOB.meow_e = list(
+		"hi" = victim
+	)
+	user.meow = victim
 
 	refscanner_clear()
 	refscanner_arm_once()
 	del(victim)
-	_refscanner_print_results(user, "scenario 1 — direct datum+global refs")
+	_refscanner_print_results(user, "scenario 1 - direct datum+global refs")
+
+	var/list/debug_lines = refscanner_debug_drain()
+	if(debug_lines)
+		world.log << "Native RefScanner debug (scenario 1 - direct datum+global refs):"
+		for(var/line in debug_lines)
+			world.log << "  [line]"
 
 	victim = null
 	GLOB.meow_a = null
 	GLOB.meow_b = null
+	GLOB.meow_c = null
+	GLOB.meow_e = null
+	GLOB.meow_e = null
 	holder.held_ref = null
+	user.meow = null
 	qdel(holder)
 
 	// --- Scenario 2: nested lists (BFS owner chaining) ---
@@ -189,15 +215,31 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	var/list/outer_list = list(inner_list)
 	GLOB.meow_b = victim2
 	GLOB.meow_c = list(outer_list)
+	GLOB.meow_d = list(
+		list(victim) = "meow",
+	)
+	GLOB.meow_e = list(
+		"hi" = list(victim)
+	)
+	user.meow = list(outer_list)
 
 	refscanner_clear()
 	refscanner_arm_once()
 	del(victim2)
-	_refscanner_print_results(user, "scenario 2 — nested list BFS")
+	_refscanner_print_results(user, "scenario 2 - nested list BFS")
+
+	debug_lines = refscanner_debug_drain()
+	if(debug_lines)
+		world.log << "Native RefScanner debug (scenario 2 - nested list BFS):"
+		for(var/line in debug_lines)
+			world.log << "  [line]"
 
 	victim2 = null
 	inner_list = null
 	outer_list = null
 	GLOB.meow_b = null
 	GLOB.meow_c = null
+	GLOB.meow_d = null
+	GLOB.meow_e = null
+	user.meow = null
 #endif
