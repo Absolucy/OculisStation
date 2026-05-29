@@ -1,3 +1,7 @@
+/datum/log_category/refscanner
+	category = "refscanner"
+
+
 /* This comment bypasses grep checks */ /var/__refscanner
 #define REFSCANNER_DLL (world.system_type == MS_WINDOWS ? "datum_refscanner.dll" : (__refscanner ||= __detect_auxtools("datum_refscanner")))
 
@@ -99,6 +103,16 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 				osrc = _refscanner_fmt_holder(owner_kind, f["holder_id"], f["typepath"], f["var_name"])
 			return "\[list_owner\] [osrc] -> list #[f["list_id"]]"
 
+		if("suspended_proc")
+			// A sleeping proc's local variable / src / usr / dot holds the reference.
+			var/proc_name = f["proc_name"] || "?proc"
+			var/oloc = f["filename"] ? "[f["filename"]]:[f["line"]]" : "?"
+			var/field = f["field"]
+			if(field == "local")
+				return "\[suspended_proc\] [proc_name] local#[f["local_index"]] @ [oloc]"
+			else
+				return "\[suspended_proc\] [proc_name] .[field] @ [oloc]"
+
 		else
 			// A datum/obj/mob/global var holds the leaked reference directly.
 			return "\[finding\]    [_refscanner_fmt_holder(kind, f["holder_id"], f["typepath"], f["var_name"])]"
@@ -118,7 +132,7 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 		label += ".[var_name]"
 	return label
 
-#if defined(TESTING) || defined(ABSOLUTE_MINIMUM)
+#if defined(TESTING) || defined(ABSOLUTE_MINIMUM) || defined(SPACEMAN_DMM)
 // ---------------------------------------------------------------------------
 // Test helpers
 // ---------------------------------------------------------------------------
@@ -126,7 +140,7 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 /// Holder datum that deliberately does NOT null held_ref in Destroy(),
 /// simulating a reference leak for the native scanner to detect.
 /datum/refscanner_test_holder
-	var/datum/held_ref
+	var/datum/victim/held_ref
 
 /datum/refscanner_test_holder/Destroy(force)
 	return ..()
@@ -141,8 +155,19 @@ GLOBAL_LIST(meow_c)
 GLOBAL_LIST(meow_d)
 GLOBAL_LIST(meow_e)
 
+/datum/victim
+
+/datum/victim/Destroy()
+	..()
+	return QDEL_HINT_HARDDEL_NOW
+
 /client
-	var/datum/meow
+	var/datum/victim/meow
+
+/proc/eepy_proc(a)
+	var/datum/victim/victim = a
+	sleep(5 SECONDS)
+	return victim
 
 /proc/_refscanner_print_results(mob/user, scenario)
 	var/list/lines = refscanner_report()
@@ -165,7 +190,7 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	// holder.held_ref and GLOB.meow_b both point at victim; neither is nulled
 	// before HardDelete, so the pre-erasure scan should report both.
 	var/datum/refscanner_test_holder/holder = new()
-	var/datum/victim = new()
+	var/datum/victim/victim = new()
 	holder.held_ref = victim
 	GLOB.meow_a = holder
 	GLOB.meow_b = victim
@@ -177,16 +202,12 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	)
 	user.meow = victim
 
-	refscanner_clear()
-	refscanner_arm_once()
-	del(victim)
-	_refscanner_print_results(user, "scenario 1 - direct datum+global refs")
+	INVOKE_ASYNC(GLOBAL_PROC, GLOBAL_PROC_REF(eepy_proc), victim)
 
-	var/list/debug_lines = refscanner_debug_drain()
-	if(debug_lines)
-		world.log << "Native RefScanner debug (scenario 1 - direct datum+global refs):"
-		for(var/line in debug_lines)
-			world.log << "  [line]"
+	// refscanner_clear()
+	// refscanner_arm_once()
+	qdel(victim)
+	_refscanner_print_results(user, "scenario 1 - direct datum+global refs")
 
 	victim = null
 	GLOB.meow_a = null
@@ -210,7 +231,7 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	//   [list_owner] list #Y [index 0] -> list #X      <- outer_list holds inner_list
 	//   [list_owner] list #Z [index 0] -> list #Y      <- meow_c backing list holds outer_list
 	//   [list_owner] global #M.meow_c -> list #Z       <- global meow_c holds the backing list
-	var/datum/victim2 = new()
+	var/datum/victim/victim2 = new()
 	var/list/inner_list = list(victim2)
 	var/list/outer_list = list(inner_list)
 	GLOB.meow_b = victim2
@@ -223,16 +244,9 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	)
 	user.meow = list(outer_list)
 
-	refscanner_clear()
-	refscanner_arm_once()
-	del(victim2)
-	_refscanner_print_results(user, "scenario 2 - nested list BFS")
-
-	debug_lines = refscanner_debug_drain()
-	if(debug_lines)
-		world.log << "Native RefScanner debug (scenario 2 - nested list BFS):"
-		for(var/line in debug_lines)
-			world.log << "  [line]"
+	// refscanner_clear()
+	// refscanner_arm_once()
+	qdel(victim2)
 
 	victim2 = null
 	inner_list = null

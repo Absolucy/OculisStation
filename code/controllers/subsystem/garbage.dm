@@ -306,11 +306,11 @@ SUBSYSTEM_DEF(garbage)
 		var/list/findings = refscanner_report()
 
 		if(length(findings))
-			message_admins("native refscan complete for [type] ([refID]), [length(findings)] findings, took [time] ms (see runtime.log for more info)")
-			log_runtime("native refscan complete for [type] ([refID]), took [time] ms\n=== [length(findings)] finding(s)===\n[jointext(findings, "\n")]")
+			message_admins("native refscan complete for [type] ([refID]), [length(findings)] findings, took [time] ms (see refscanner.log for more info)")
+			logger.Log("refscanner", "native refscan complete for [type] ([refID]), took [time] ms\n=== [length(findings)] finding(s)===\n[jointext(findings, "\n")]")
 		else
 			message_admins("native refscan complete for [type] ([refID]), took [time] ms, but nothing was found.")
-			log_runtime("native refscan complete for [type] ([refID]), took [time] ms, nothing was found")
+			logger.Log("refscanner", "native refscan complete for [type] ([refID]), took [time] ms, nothing was found")
 
 		if(debug_lines)
 			var/filename = "[replacetext(copytext("[type]", 2), "/", "_")]-[copytext(refID, 2, -1)]"
