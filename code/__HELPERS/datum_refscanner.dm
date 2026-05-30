@@ -6,6 +6,7 @@
 #define REFSCANNER_DLL (world.system_type == MS_WINDOWS ? "datum_refscanner.dll" : (__refscanner ||= __detect_auxtools("datum_refscanner")))
 
 GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
+GLOBAL_VAR_INIT(datum_refscanner_enabled, TRUE)
 
 /// Attempt to initialize datum_refscanner.dll. Returns TRUE on success.
 /// Safe to call multiple times; init is only attempted once.
@@ -131,6 +132,12 @@ GLOBAL_VAR_INIT(datum_refscanner_ready, FALSE)
 	if(var_name)
 		label += ".[var_name]"
 	return label
+
+ADMIN_VERB(toggle_native_refscanner, R_DEBUG, "Toggle Native RefScanner", "Toggle the native refscanner.", ADMIN_CATEGORY_DEBUG)
+	GLOB.datum_refscanner_enabled = !GLOB.datum_refscanner_enabled
+	message_admins("[key_name(user)] [GLOB.datum_refscanner_enabled ? "enabled" : "disabled"] the native refscanner.")
+	log_admin("[key_name(user)] [GLOB.datum_refscanner_enabled ? "enabled" : "disabled"] the native refscanner.")
+	BLACKBOX_LOG_ADMIN_VERB("Toggle Native RefScanner")
 
 #if defined(TESTING) || defined(ABSOLUTE_MINIMUM) || defined(SPACEMAN_DMM)
 // ---------------------------------------------------------------------------
