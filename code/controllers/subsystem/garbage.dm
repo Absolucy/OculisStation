@@ -279,6 +279,29 @@ SUBSYSTEM_DEF(garbage)
 
 //this is mainly to separate things profile wise.
 /datum/controller/subsystem/garbage/proc/HardDelete(datum/D)
+	var/static/list/dont_scan_these_types
+	if(isnull(dont_scan_these_types))
+		dont_scan_these_types = list(
+			// always hard delete anyways
+			/client,
+			/datum/controller,
+			/datum/parsed_map,
+			// native reftracker can't properly find these yet - just disable the native scanner for these until the issue can be fixed
+			/atom/movable/screen/alert,
+			/atom/movable/screen/map_view/char_preview,
+			/datum/status_effect/incapacitating,
+			/mob/dead/observer,
+			/mob/living/carbon/human,
+			/obj/effect/decal/cleanable/blood,
+			// already known - skipping to avoid tidi spikes for info we already have
+			/datum/ai_controller/basic_controller,
+			/datum/computer_file/program/robotact,
+			/datum/ductnet,
+			/datum/picture,
+			/obj/machinery/camera,
+			/obj/structure/closet/crate/secure/owned,
+		)
+
 	++delslasttick
 	++totaldels
 	var/type = D.type
@@ -288,7 +311,7 @@ SUBSYSTEM_DEF(garbage)
 	if(detail)
 		LAZYADD(type_info.extra_details, detail)
 
-	var/do_native_scan = GLOB.datum_refscanner_enabled && !istype(D, /client) && !istype(D, /datum/parsed_map) && !istype(D, /datum/controller) // don't run it for things that intentionally harddel
+	var/do_native_scan = GLOB.datum_refscanner_enabled && !is_type_in_list(D, dont_scan_these_types) // don't run it for things that intentionally harddel
 	if(do_native_scan && !refscanner_ensure_ready())
 		do_native_scan = FALSE
 		stack_trace("failed to ensure refscanner is ready")
