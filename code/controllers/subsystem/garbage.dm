@@ -298,7 +298,7 @@ SUBSYSTEM_DEF(garbage)
 			/datum/computer_file/program/robotact,
 			/datum/ductnet,
 			/datum/picture,
-			/obj/machinery/camera,
+			/* /obj/machinery/camera, */
 			/obj/structure/closet/crate/secure/owned,
 		)
 
