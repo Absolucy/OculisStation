@@ -100,7 +100,10 @@ GLOBAL_VAR_INIT(datum_refscanner_enabled, TRUE)
 			var/osrc
 			if(owner_kind == "list")
 				if(f["slot"] == "assoc_value")
-					osrc = "list #[f["holder_id"]] \[assoc value\]"
+					if(f["key"])
+						osrc = "list #[f["holder_id"]] \[assoc value key \"[f["key"]]\"\]"
+					else
+						osrc = "list #[f["holder_id"]] \[assoc value\]"
 				else
 					osrc = "list #[f["holder_id"]] \[index [f["index"]]\]"
 			else
@@ -279,7 +282,8 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	// Expected output includes:
 	//   [list]       list #X [index 0] (len=1, ...)       <- contents_list
 	//   [list_owner] list #Y [index 0] -> list #X         <- room_storage holds contents_list
-	//   [list_owner] list #Z [assoc value] -> list #Y     <- storedRooms["roomnumber"] holds room_storage
+	//   [list_owner] list #Z [assoc value key "roomnumber"] -> list #Y
+	//                                                        <- storedRooms["roomnumber"] holds room_storage
 	//   [list_owner] datum #N (/datum/refscanner_test_holder).storedRooms -> list #Z
 	var/datum/refscanner_test_holder/assoc_holder = new()
 	var/datum/victim/victim3 = new()
