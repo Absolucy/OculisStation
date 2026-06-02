@@ -99,7 +99,10 @@ GLOBAL_VAR_INIT(datum_refscanner_enabled, TRUE)
 			var/owner_kind = f["owner_kind"]
 			var/osrc
 			if(owner_kind == "list")
-				osrc = "list #[f["holder_id"]] \[index [f["index"]]\]"
+				if(f["slot"] == "assoc_value")
+					osrc = "list #[f["holder_id"]] \[assoc value\]"
+				else
+					osrc = "list #[f["holder_id"]] \[index [f["index"]]\]"
 			else
 				osrc = _refscanner_fmt_holder(owner_kind, f["holder_id"], f["typepath"], f["var_name"])
 			return "\[list_owner\] [osrc] -> list #[f["list_id"]]"
@@ -148,6 +151,7 @@ ADMIN_VERB(toggle_native_refscanner, R_DEBUG, "Toggle Native RefScanner", "Toggl
 /// simulating a reference leak for the native scanner to detect.
 /datum/refscanner_test_holder
 	var/datum/victim/held_ref
+	var/list/storedRooms
 
 /datum/refscanner_test_holder/Destroy(force)
 	return ..()
@@ -186,7 +190,7 @@ GLOBAL_LIST(meow_e)
 		to_chat(user, span_notice("  [line]"))
 
 ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
-	"Runs two reference-leak scenarios through the native pre-erasure scanner.", \
+	"Runs three reference-leak scenarios through the native pre-erasure scanner.", \
 	ADMIN_CATEGORY_DEBUG)
 
 	if(!refscanner_ensure_ready())
@@ -220,7 +224,7 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	GLOB.meow_a = null
 	GLOB.meow_b = null
 	GLOB.meow_c = null
-	GLOB.meow_e = null
+	GLOB.meow_d = null
 	GLOB.meow_e = null
 	holder.held_ref = null
 	user.meow = null
@@ -254,6 +258,7 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	// refscanner_clear()
 	// refscanner_arm_once()
 	qdel(victim2)
+	_refscanner_print_results(user, "scenario 2 - nested vector list owners")
 
 	victim2 = null
 	inner_list = null
@@ -263,4 +268,35 @@ ADMIN_VERB(refscanner_run_test, R_DEBUG, "Test Native RefScanner", \
 	GLOB.meow_d = null
 	GLOB.meow_e = null
 	user.meow = null
+
+	// --- Scenario 3: nested lists through an associative value ---
+	// victim3 is held inside contents_list, which is an element of room_storage,
+	// which is stored as the assoc value of assoc_holder.storedRooms["roomnumber"].
+	// The scanner should chase:
+	// victim3 -> contents_list -> room_storage -> storedRooms assoc value
+	// -> assoc_holder.storedRooms datum var.
+	//
+	// Expected output includes:
+	//   [list]       list #X [index 0] (len=1, ...)       <- contents_list
+	//   [list_owner] list #Y [index 0] -> list #X         <- room_storage holds contents_list
+	//   [list_owner] list #Z [assoc value] -> list #Y     <- storedRooms["roomnumber"] holds room_storage
+	//   [list_owner] datum #N (/datum/refscanner_test_holder).storedRooms -> list #Z
+	var/datum/refscanner_test_holder/assoc_holder = new()
+	var/datum/victim/victim3 = new()
+	var/list/contents_list = list(victim3)
+	var/list/room_storage = list(contents_list)
+	assoc_holder.storedRooms = list("roomnumber" = room_storage)
+	GLOB.meow_a = assoc_holder
+
+	// refscanner_clear()
+	// refscanner_arm_once()
+	qdel(victim3)
+	_refscanner_print_results(user, "scenario 3 - assoc-value list owner BFS")
+
+	victim3 = null
+	contents_list = null
+	room_storage = null
+	assoc_holder.storedRooms = null
+	GLOB.meow_a = null
+	qdel(assoc_holder)
 #endif
