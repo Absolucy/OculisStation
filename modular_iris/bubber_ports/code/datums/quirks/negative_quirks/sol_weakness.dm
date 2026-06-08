@@ -17,12 +17,6 @@
 	quirk_flags = QUIRK_HIDE_FROM_SCAN | QUIRK_HUMAN_ONLY
 	COOLDOWN_DECLARE(sun_burn)
 
-	var/atom/movable/screen/vampire/sunlight_counter/sun_hud
-
-/datum/quirk/sol_weakness/Destroy()
-	. = ..()
-	QDEL_NULL(sun_hud)
-
 /datum/quirk/sol_weakness/add()
 	RegisterSignal(SSsol, COMSIG_SOL_RISE_TICK, PROC_REF(sun_risen))
 	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(sun_warning))
@@ -36,10 +30,6 @@
 	remove_sun_timer_hud()
 	UnregisterSignal(quirk_holder, COMSIG_MOB_HEMO_BLOOD_REGEN_TICK)
 	UnregisterSignal(SSsol, list(COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
-	if(sun_hud && quirk_holder?.hud_used?.infodisplay)
-		quirk_holder.hud_used.infodisplay -= sun_hud
-		quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
-	QDEL_NULL(sun_hud)
 
 /datum/quirk/sol_weakness/proc/on_blood_healing(mob/living/owner, seconds_between_ticks, datum/status_effect/blood_regen_active/effect)
 	if(effect && in_coffin())
@@ -51,25 +41,11 @@
 	return SSsol.sunlight_active ? COMSIG_CANCEL_MOB_HEMO_BLOOD_REGEN : NONE
 
 /datum/quirk/sol_weakness/proc/add_sun_timer_hud()
-	if(!QDELETED(sun_hud))
-		return
-	if(!quirk_holder.hud_used)
-		CRASH("Sol Weakness quirk holder has no HUD")
-	UnregisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED)
-	sun_hud = new(null, quirk_holder.hud_used)
-	quirk_holder.hud_used.infodisplay += sun_hud
-	quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
+	quirk_holder.hud_used?.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUB_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
 
 /datum/quirk/sol_weakness/proc/remove_sun_timer_hud()
-	if(QDELETED(sun_hud))
-		return
-	if(!quirk_holder.hud_used?.infodisplay)
-		QDEL_NULL(sun_hud)
-		return
-	quirk_holder.hud_used.infodisplay -= sun_hud
-	quirk_holder.hud_used.show_hud(quirk_holder.hud_used.hud_version)
-	QDEL_NULL(sun_hud)
 	UnregisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED)
+	quirk_holder.hud_used?.remove_screen_object(HUB_VAMPIRE_SUNLIGHT)
 
 /datum/quirk/sol_weakness/proc/sun_risen()
 	SIGNAL_HANDLER

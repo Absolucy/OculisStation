@@ -555,6 +555,7 @@
 #include "code\__DEFINES\~~oculis_defines\crafting.dm"
 #include "code\__DEFINES\~~oculis_defines\do_afters.dm"
 #include "code\__DEFINES\~~oculis_defines\factions.dm"
+#include "code\__DEFINES\~~oculis_defines\hud.dm"
 #include "code\__DEFINES\~~oculis_defines\is_helpers.dm"
 #include "code\__DEFINES\~~oculis_defines\language.dm"
 #include "code\__DEFINES\~~oculis_defines\loadout.dm"
