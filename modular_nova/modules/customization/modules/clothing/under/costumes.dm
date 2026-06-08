@@ -8,7 +8,7 @@
 	body_parts_covered = CHEST|ARMS|GROIN|LEGS
 	supports_variations_flags = NONE
 	can_adjust = FALSE
-	supports_variations_flags = CLOTHING_DIGITIGRADE_MASK
+	supports_variations_flags = CLOTHING_DIGITIGRADE_MASK | CLOTHING_BIG_LEGS_MASK
 
 /obj/item/clothing/under/costume/cybersleek/long
 	name = "long modern coat"
@@ -27,3 +27,4 @@
 	greyscale_config_worn = /datum/greyscale_config/maid_costume/worn
 	greyscale_colors = "#7b9ab5#edf9ff"
 	flags_1 = IS_PLAYER_COLORABLE_1
+

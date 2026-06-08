@@ -16,7 +16,7 @@
 		SPECIES_LIZARD = 1,
 		SPECIES_MAMMAL = 1,
 	)
-	organ_type = /obj/item/organ/wings
+	organ_type = /obj/item/organ/wings/custom
 	relevent_layers = list(BODY_BEHIND_LAYER, BODY_FRONT_LAYER, BODY_ADJ_LAYER)
 
 /datum/sprite_accessory/wings/is_hidden(mob/living/carbon/human/wearer)
@@ -33,13 +33,15 @@
 	return (wearer.obscured_slots & HIDEJUMPSUIT)
 
 /datum/bodypart_overlay/mutant/wings/can_draw_on_bodypart(obj/item/bodypart/bodypart_owner)
+	if(!..())
+		return FALSE
 	if(isnull(bodypart_owner.owner))
-		return ..()
+		return TRUE
 
 	var/mob/living/carbon/human/wearer = bodypart_owner.owner
 	var/obj/item/clothing/suit/mod/worn_suit = wearer.wear_suit
 	if(isnull(wearer.w_uniform) && isnull(worn_suit))
-		return ..()
+		return TRUE
 
 	// Can hide if wearing uniform
 	if(feature_key in wearer.try_hide_mutant_parts)
@@ -173,6 +175,11 @@
 /datum/sprite_accessory/wings/mammal/feathery/alt2
 	name = "Feathery (Alt 2)"
 	icon_state = "featheryalt2"
+
+/datum/sprite_accessory/wings/mammal/triple
+	name = "Tri-wings"
+	icon_state = "triwings"
+	color_src = USE_MATRIXED_COLORS
 
 /datum/sprite_accessory/wings/mammal/harpy
 	name = "Harpy"
@@ -345,9 +352,9 @@
 	name = "Moth (Deathshead)"
 	icon_state = "deathhead"
 
-/datum/sprite_accessory/wings/moth/featherful // Is actually 'feathery' on upstream
-	name = "Moth (Featherful)"
-	icon_state = "featherful"
+/datum/sprite_accessory/wings/moth/feathery
+	name = "Moth (Feathery)"
+	icon_state = "feathery"
 
 /datum/sprite_accessory/wings/moth/firewatch
 	name = "Moth (Firewatch)"

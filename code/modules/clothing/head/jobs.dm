@@ -134,6 +134,7 @@
 	greyscale_config_worn = /datum/greyscale_config/beret_badge/worn
 	greyscale_colors = "#0070B7#FFCE5B"
 	hair_mask = /datum/hair_mask/standard_hat_middle
+	armor_type = /datum/armor/hats_caphat
 
 //Head of Personnel
 /obj/item/clothing/head/hats/hopcap
@@ -187,7 +188,6 @@
 	/// Cooldown for retrieving precious candy corn with rmb
 	COOLDOWN_DECLARE(candy_cooldown)
 
-
 /datum/armor/fedora_det_hat
 	melee = 25
 	bullet = 5
@@ -238,6 +238,12 @@
 
 /obj/item/clothing/head/fedora/det_hat/minor
 	flask_path = /obj/item/reagent_containers/cup/glass/flask/det/minor
+
+/obj/item/clothing/head/fedora/det_hat/noir
+	name = "detective's noir fedora"
+	desc = "There's only one man who can recklessly discharge a firearm into a crowded street while trying to stop a criminal, \
+		and he's likely wearing this hat."
+	icon_state = /obj/item/clothing/head/fedora::icon_state
 
 ///Detectives Fedora, but like Inspector Gadget. Not a subtype to not inherit candy corn stuff
 /obj/item/clothing/head/fedora/inspector_hat
@@ -713,7 +719,7 @@
 	. = ..()
 	UnregisterSignal(user, COMSIG_MOB_EXAMINING_MORE)
 
-/obj/item/clothing/head/utility/head_mirror/proc/examining(mob/living/examiner, atom/examining, list/examine_list)
+/obj/item/clothing/head/utility/head_mirror/proc/examining(mob/living/examiner, atom/examining, list/examine_list, list/examine_overrides)
 	SIGNAL_HANDLER
 	if(!ishuman(examining) || examining == examiner || examiner.is_blind() || !examiner.Adjacent(examining))
 		return
@@ -850,7 +856,7 @@
 //Independant Militia
 /obj/item/clothing/head/beret/militia
 	name = "\improper Militia General's Beret"
-	desc = "A rallying cry for the inhabitants of the Cabriole Sector, the heroes that wear this keep the horrors of the galaxy at bay. Call them, and they'll be there in a minute!"
+	desc = "A rallying cry for the inhabitants of the Eidolon Sector, the heroes that wear this keep the horrors of the galaxy at bay. Call them, and they'll be there in a minute!" // OCULIS EDIT
 	icon_state = "/obj/item/clothing/head/beret/militia"
 	post_init_icon_state = "beret_badge"
 	greyscale_config = /datum/greyscale_config/beret_badge

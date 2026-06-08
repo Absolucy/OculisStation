@@ -48,7 +48,8 @@
 		/datum/gas/proto_nitrate,
 		/datum/gas/halon,
 		/datum/gas/tritium,
-		/datum/gas/zauker
+		/datum/gas/zauker,
+		/datum/gas/water_vapor, // OCULIS EDIT ADDITION
 		)
 
 /obj/item/gas_filter/examine(mob/user)
@@ -70,26 +71,26 @@
 	for(var/gas_id in breath.gases)
 		if(gas_id in high_filtering_gases)
 			if(breath.gases[gas_id][MOLES] > HIGH_FILTERING_MOLES)
-				breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_high * filter_efficiency * HIGH_FILTERING_RATIO, 0)
+				breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_high * filter_efficiency * HIGH_FILTERING_RATIO, 0))
 				danger_points += 1
 				continue
-			breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_high * filter_efficiency * LOW_FILTERING_RATIO, 0)
+			breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_high * filter_efficiency * LOW_FILTERING_RATIO, 0))
 			danger_points += 0.2
 			continue
 		if(gas_id in mid_filtering_gases)
 			if(breath.gases[gas_id][MOLES] > MID_FILTERING_MOLES)
-				breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_mid * filter_efficiency * HIGH_FILTERING_RATIO, 0)
+				breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_mid * filter_efficiency * HIGH_FILTERING_RATIO, 0))
 				danger_points += 1.25
 				continue
-			breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_mid * filter_efficiency * LOW_FILTERING_RATIO, 0)
+			breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_mid * filter_efficiency * LOW_FILTERING_RATIO, 0))
 			danger_points += 0.25
 			continue
 		if(gas_id in low_filtering_gases)
 			if(breath.gases[gas_id][MOLES] > LOW_FILTERING_MOLES)
-				breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_low * filter_efficiency * HIGH_FILTERING_RATIO, 0)
+				breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_low * filter_efficiency * HIGH_FILTERING_RATIO, 0))
 				danger_points += 1.5
 				continue
-			breath.gases[gas_id][MOLES] = max(breath.gases[gas_id][MOLES] - filter_strength_low * filter_efficiency * LOW_FILTERING_RATIO, 0)
+			breath.set_gas(gas_id, max(breath.gases[gas_id][MOLES] - filter_strength_low * filter_efficiency * LOW_FILTERING_RATIO, 0))
 			danger_points += 0.5
 			continue
 

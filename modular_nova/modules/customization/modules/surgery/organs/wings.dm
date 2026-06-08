@@ -15,6 +15,8 @@
 	///Whether the owner of wings has flight thanks to the wings
 	var/granted_flight
 
+/obj/item/organ/wings/custom
+
 /datum/bodypart_overlay/mutant/wings
 	color_source = ORGAN_COLOR_OVERRIDE
 
@@ -65,6 +67,9 @@
 	COOLDOWN_DECLARE(dash_cooldown)
 
 /datum/action/cooldown/spell/moth_and_dash/Trigger(trigger_flags, action, atom/target)
+	. = ..()
+	if(!.)
+		return
 	if (!isliving(owner))
 		return
 

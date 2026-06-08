@@ -11,6 +11,7 @@ import {
   Tooltip,
 } from 'tgui-core/components';
 import { createSearch } from 'tgui-core/string';
+import { CharacterPreview } from '../../common/CharacterPreview'; // NOVA EDIT ADDITION
 
 import {
   type PreferencesMenuData,
@@ -98,6 +99,7 @@ function QuirkDisplay(props: QuirkDisplayProps) {
   const { icon, value, name, description, customizable, failTooltip } = quirk;
 
   const [customizationExpanded, setCustomizationExpanded] = useState(false);
+  const { data } = useBackend<PreferencesMenuData>(); // NOVA EDIT ADDITION
 
   const className = 'PreferencesMenu__Quirks__QuirkList__quirk';
 
@@ -345,7 +347,7 @@ function QuirkPage() {
     }
   });
 
-  let balance = -data.default_quirk_balance;
+  const balance = -data.quirks_balance; // NOVA EDIT CHANGE - ORIGINAL: let balance = -data.default_quirk_balance;
   let positiveQuirks = 0;
 
   for (const selectedQuirkName of selectedQuirks) {
@@ -358,7 +360,7 @@ function QuirkPage() {
       positiveQuirks += 1;
     }
 
-    balance += selectedQuirk.value;
+    // balance += selectedQuirk.value; // NOVA EDIT REMOVAL - use DM data.quirks_balance
   }
 
   function getReasonToNotAdd(quirkName: string) {
@@ -478,7 +480,29 @@ function QuirkPage() {
       </Stack.Item>
 
       <Stack.Item align="center">
-        <Icon name="exchange-alt" size={1.5} ml={2} mr={2} />
+        {/* <Icon name="exchange-alt" size={1.5} ml={2} mr={2} /> // NOVA EDIT REMOVAL - moved down */}
+        {/* NOVA EDIT ADDITION START */}
+        <Stack vertical fill align="center">
+          {/* Keep the CharacterPreview alive but "hidden", so that traits that affect appearance (e.g. Oversized) refresh rendering calculations immediately. */}
+          <Stack.Item
+            style={{
+              position: 'absolute',
+              left: '-10000px',
+              top: '-10000px',
+              width: '1px',
+              height: '1px',
+              pointerEvents: 'none',
+            }}
+          >
+            <CharacterPreview
+              id={data.character_preview_view}
+              height="1px"
+              width="1px"
+            />
+          </Stack.Item>
+          <Icon name="exchange-alt" size={1.5} ml={2} mr={2} />
+        </Stack>
+        {/* NOVA EDIT ADDITION END */}
       </Stack.Item>
 
       <Stack.Item basis="50%">

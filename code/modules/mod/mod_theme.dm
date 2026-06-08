@@ -1223,7 +1223,7 @@
 
 /datum/mod_theme/syndicate
 	name = "syndicate"
-	desc = "A suit designed by Gorlex Marauders, offering armor ruled illegal in most of Cabriole Stellar." //IRIS EDIT
+	desc = "A suit designed by Gorlex Marauders, offering armor ruled illegal in most of Eidolon Stellar." // OCULIS EDIT
 	extended_desc = "An advanced combat suit adorned in a sinister crimson red color scheme, produced and manufactured \
 		for special mercenary operations. The build is a streamlined layering consisting of shaped Plasteel, \
 		and composite ceramic, while the under suit is lined with a lightweight Kevlar and durathread hybrid weave \
@@ -1583,9 +1583,10 @@
 	inbuilt_modules = list(/obj/item/mod/module/anti_magic/wizard)
 	hearing_protection = EAR_PROTECTION_NORMAL
 	allowed_suit_storage = list(
-		/obj/item/teleportation_scroll,
-		/obj/item/highfrequencyblade/wizard,
 		/obj/item/gun/magic,
+		/obj/item/highfrequencyblade/wizard,
+		/obj/item/storage/belt/wand_bandolier,
+		/obj/item/teleportation_scroll,
 	)
 	variants = list(
 		"enchanted" = list(
