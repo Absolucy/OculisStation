@@ -231,10 +231,10 @@
 		if(701 to INFINITY)
 			valuecolor = "#ffffff"
 
-	var/atom/movable/screen/vampire/blood_counter/blood_display = hud.screen_objects[HUB_VAMPIRE_BLOOD]
+	var/atom/movable/screen/vampire/blood_counter/blood_display = hud.screen_objects[HUD_VAMPIRE_BLOOD]
 	blood_display?.maptext = FORMAT_VAMPIRE_HUD_TEXT(valuecolor, current_vitae)
 
-	var/atom/movable/screen/vampire/rank_counter/vamprank_display = hud.screen_objects[HUB_VAMPIRE_RANK]
+	var/atom/movable/screen/vampire/rank_counter/vamprank_display = hud.screen_objects[HUD_VAMPIRE_RANK]
 	if(vamprank_display)
 		if(vampire_level_unspent > 0)
 			vamprank_display.icon_state = "[initial(vamprank_display.icon_state)]_up"
@@ -242,7 +242,7 @@
 			vamprank_display.icon_state = initial(vamprank_display.icon_state)
 		vamprank_display.maptext = FORMAT_VAMPIRE_HUD_TEXT("#ffd8d8", vampire_level)
 
-	var/atom/movable/screen/vampire/humanity_counter/humanity_display = hud.screen_objects[HUB_VAMPIRE_HUMANITY]
+	var/atom/movable/screen/vampire/humanity_counter/humanity_display = hud.screen_objects[HUD_VAMPIRE_HUMANITY]
 	if(humanity_display)
 		var/humanityvaluecolor
 		switch(humanity)

@@ -1,5 +1,7 @@
 // THIS IS AN OCULIS UI FILE
 
+import '../styles/interfaces/AntagInfoVampire.scss';
+
 import { type SetStateAction, useState } from 'react';
 import { sanitizeText } from 'tgui/sanitize';
 import {
@@ -14,7 +16,6 @@ import {
 import type { BooleanLike } from 'tgui-core/react';
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
-import { AntagInfoHeader } from './common/AntagInfoHeader';
 import {
   type Objective,
   ObjectivePrintout,
@@ -25,6 +26,10 @@ type VampireInformation = {
   clan: ClanInfo[];
   in_clan: BooleanLike;
   powers: PowerInfo[];
+  vassal_count: number;
+  max_vassals: number;
+  objectives: Objective[];
+  can_change_objective: BooleanLike;
 };
 
 type ClanInfo = {
@@ -44,10 +49,6 @@ type PowerInfo = {
   cooldown: string;
 };
 
-type Info = {
-  objectives: Objective[];
-};
-
 enum InfoTab {
   General = 1,
   Basics,
@@ -58,54 +59,29 @@ export const AntagInfoVampire = () => {
   // Set default to 2 so Basics (now in the middle) opens by default
   const [tab, setTab] = useState(InfoTab.Basics);
 
-  // Styles for the top-level tabs:
-  const topTabsStyle = {
-    display: 'flex',
-    width: '100%',
-    fontFamily:
-      '"Cinzel Decorative", "Uncial Antiqua", "Old English Text MT", serif',
-  } as const;
-  const topTabStyle = {
-    flex: 1,
-    fontSize: '25px',
-    padding: '10px 12px',
-    display: 'flex',
-    justifyContent: 'center',
-    alignItems: 'center',
-    textAlign: 'center',
-    fontWeight: 900,
-    letterSpacing: '0.5px',
-    textShadow: '0 1px 0 rgba(0,0,0,0.6)',
-    fontFamily:
-      '"Cinzel Decorative", "Uncial Antiqua", "Old English Text MT", serif',
-  } as const;
-
   return (
-    <Window width={700} height={750} theme="ntos_spooky">
+    <Window width={700} height={750} theme="spookyconsole">
       <Window.Content>
         <Box align="center" style={{ width: '100%' }}>
-          <Tabs style={topTabsStyle}>
-            {/* Guide on the left */}
+          <Tabs className="vamp-top-tabs">
             <Tabs.Tab
-              style={topTabStyle}
+              className="vamp-top-tab"
               selected={tab === InfoTab.General}
               onClick={() => setTab(InfoTab.General)}
             >
               General Guide
             </Tabs.Tab>
 
-            {/* Basics in the middle (slightly larger/bold for emphasis) */}
             <Tabs.Tab
-              style={{ ...topTabStyle, fontSize: '30px', fontWeight: 900 }}
+              className="vamp-top-tab vamp-top-tab--featured"
               selected={tab === InfoTab.Basics}
               onClick={() => setTab(InfoTab.Basics)}
             >
               Basics
             </Tabs.Tab>
 
-            {/* Powers on the right */}
             <Tabs.Tab
-              style={topTabStyle}
+              className="vamp-top-tab"
               selected={tab === InfoTab.Powers}
               onClick={() => setTab(InfoTab.Powers)}
             >
@@ -114,7 +90,6 @@ export const AntagInfoVampire = () => {
           </Tabs>
         </Box>
 
-        {/* Re-map which component shows for each tab index to match the new ordering */}
         {tab === InfoTab.General && <VampireGuide />}
         {tab === InfoTab.Basics && <VampireIntroduction setTab={setTab} />}
         {tab === InfoTab.Powers && <PowerSection />}
@@ -126,17 +101,15 @@ export const AntagInfoVampire = () => {
 const VampireIntroduction = (props: {
   setTab: React.Dispatch<SetStateAction<InfoTab>>;
 }) => {
-  const { data } = useBackend<Info>();
-  const { objectives, can_change_objective } = data;
+  const { data } = useBackend<VampireInformation>();
+  const { objectives, vassal_count, max_vassals, can_change_objective } = data;
   return (
     <Stack vertical fill>
-      <Stack.Item>
-        <AntagInfoHeader name={'Vampire'} asset="vampire.png" indefinite />
-      </Stack.Item>
       <Stack.Item grow maxHeight="220px">
-        <Section title="Objectives">
+        <Section fill scrollable title="Objectives">
           <ObjectivePrintout
             objectives={objectives}
+            titleMessage=""
             objectiveFollowup={
               <ReplaceObjectivesButton
                 can_change_objective={can_change_objective}
@@ -146,6 +119,16 @@ const VampireIntroduction = (props: {
             }
           />
         </Section>
+      </Stack.Item>
+      <Stack.Item textAlign="center">
+        <Box
+          fontSize="130%"
+          mb={1}
+          bold
+          className={vassal_count >= max_vassals ? 'vamp-blood' : undefined}
+        >
+          Vassals: {vassal_count} / {max_vassals}
+        </Box>
       </Stack.Item>
       <Stack.Item textAlign="center">
         <Button
@@ -169,7 +152,7 @@ enum GuideTab {
   Masquerade,
   Humanity,
   Society,
-  Sol,
+  Leveling,
   Vitae,
   Combat,
   Haven,
@@ -180,91 +163,88 @@ enum GuideTab {
 const VampireGuide = () => {
   const [tab, setTab] = useState(GuideTab.Basics);
 
-  // small vertical padding for each tab; tweak values as desired
-  const guideTabStyle = { paddingTop: '10px', paddingBottom: '10px' } as const;
-
   return (
     <Section title="Guide">
       <Stack>
         <Stack.Item>
           <Tabs vertical>
             <Tabs.Tab
-              icon="book-atlas"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Basics}
               onClick={() => setTab(GuideTab.Basics)}
-              style={guideTabStyle}
             >
               The Basics
             </Tabs.Tab>
             <Tabs.Tab
-              icon="mask"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Masquerade}
               onClick={() => setTab(GuideTab.Masquerade)}
-              style={guideTabStyle}
             >
               The Masquerade
             </Tabs.Tab>
             <Tabs.Tab
-              icon="heart"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Humanity}
               onClick={() => setTab(GuideTab.Humanity)}
-              style={guideTabStyle}
             >
               Humanity
             </Tabs.Tab>
             <Tabs.Tab
-              icon="crown"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Society}
               onClick={() => setTab(GuideTab.Society)}
-              style={guideTabStyle}
             >
               Princes & Society
             </Tabs.Tab>
             <Tabs.Tab
-              icon="sun"
-              selected={tab === GuideTab.Sol}
-              onClick={() => setTab(GuideTab.Sol)}
-              style={guideTabStyle}
+              icon="list"
+              className="vamp-guide-tab"
+              selected={tab === GuideTab.Leveling}
+              onClick={() => setTab(GuideTab.Leveling)}
             >
-              Sol & Leveling
+              Leveling
             </Tabs.Tab>
             <Tabs.Tab
-              icon="droplet"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Vitae}
               onClick={() => setTab(GuideTab.Vitae)}
-              style={guideTabStyle}
             >
               Vitae
             </Tabs.Tab>
             <Tabs.Tab
-              icon="hand-fist"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Combat}
               onClick={() => setTab(GuideTab.Combat)}
-              style={guideTabStyle}
             >
               Combat
             </Tabs.Tab>
             <Tabs.Tab
-              icon="house"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Haven}
               onClick={() => setTab(GuideTab.Haven)}
-              style={guideTabStyle}
             >
               Your Haven
             </Tabs.Tab>
             <Tabs.Tab
-              icon="screwdriver-wrench"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Structures}
               onClick={() => setTab(GuideTab.Structures)}
-              style={guideTabStyle}
             >
               Structures
             </Tabs.Tab>
             <Tabs.Tab
-              icon="arrows-to-eye"
+              icon="list"
+              className="vamp-guide-tab"
               selected={tab === GuideTab.Vassals}
               onClick={() => setTab(GuideTab.Vassals)}
-              style={guideTabStyle}
             >
               Vassals
             </Tabs.Tab>
@@ -273,57 +253,48 @@ const VampireGuide = () => {
         <Stack.Divider />
         <Stack.Item grow basis={0} style={{ overflow: 'auto' }}>
           {tab === GuideTab.Basics && (
-            // The Basics
             <Box>
-              <Box fontSize="18px" textColor="blue" bold>
+              <Box fontSize="18px" className="vamp-arcane" bold>
                 So you&apos;re a big bad vampire. Congrats.
               </Box>
-              <Box fontSize="26px" textColor="red" bold>
+              <Box fontSize="26px" className="vamp-blood" bold>
                 Now keep it to yourself.
               </Box>
-              <Box align="right" fontSize="10px" textColor="grey">
+              <Box align="right" fontSize="10px" className="vamp-muted">
                 - &apos;Smiling&apos; Jack, Los Angeles, circa 2001-2008.
               </Box>
               <br />
               Vampires survive because mortals think they&apos;re myths.
               That&apos;s the{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade
               </Box>
               . The wolf doesn&apos;t want the sheep to know they&apos;re there.
               Except these sheep have guns.
-              <Box inline fontSize="14px" textColor="red" bold>
+              <Box inline fontSize="14px" className="vamp-blood" bold>
                 {' '}
                 You <i>must</i> stay hidden.
               </Box>
               <br />
               <br />
-              <Box fontSize="16px" textColor="gold" bold>
+              <Box fontSize="16px" className="vamp-masquerade" bold>
                 Blending In
               </Box>
               You&apos;re dead: no breath, heartbeat, or need for food. That
               makes you stand out. Avoid doctors, health scans, and especially
               the{' '}
-              <Box inline textColor="pink">
+              <Box inline className="vamp-curator">
                 Curator
               </Box>
               . They know vampires exist and can expose you.
-              <Box
-                mt={1}
-                fontSize="13px"
-                textColor="blue"
-                style={{
-                  borderLeft: '2px solid #4444ff',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-tip">
                 <b>Tip:</b> You have incredible powers, but using them draws
                 attention. Wise kindred blend in by acting like mortals. Use a
                 gun instead of claws. Walk instead of leaping across rooms.
                 Reserve your powers for when you truly need them.
               </Box>
               <br />
-              <Box fontSize="16px" textColor="green" bold>
+              <Box fontSize="16px" className="vamp-lair" bold>
                 First Steps
               </Box>
               Take a moment to look at your screen. See those icons on the left?
@@ -334,81 +305,82 @@ const VampireGuide = () => {
               Your next priority should be finding another kindred. They can
               help you learn the ropes, and they might point you toward the
               local{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Prince
               </Box>
               .
               <br />
-              <Box
-                mt={1}
-                style={{
-                  border: '2px solid #ff4444',
-                  borderRadius: '6px',
-                  padding: '8px',
-                  backgroundColor: 'rgba(255, 0, 0, 0.1)',
-                }}
-              >
-                <Box fontSize="15px" textColor="red" bold textAlign="center">
+              <Box mt={1} className="vamp-danger-box">
+                <Box
+                  fontSize="15px"
+                  className="vamp-blood"
+                  bold
+                  textAlign="center"
+                >
                   #1 RULE OF SURVIVAL
                 </Box>
-                <Box fontSize="18px" textColor="gold" bold textAlign="center">
+                <Box
+                  fontSize="18px"
+                  className="vamp-masquerade"
+                  bold
+                  textAlign="center"
+                >
                   Keep vitae above 300.
                 </Box>
                 <Box fontSize="12px" textAlign="center">
                   A starving vampire is a dead vampire. Panic leads to mistakes.
                 </Box>
-                <Box fontSize="11px" textColor="grey" textAlign="center">
+                <Box fontSize="11px" className="vamp-muted" textAlign="center">
                   Feed often. Feed smart. Stay alive.
                 </Box>
               </Box>
             </Box>
           )}
           {tab === GuideTab.Masquerade && (
-            // The Masquerade
             <Box>
-              <Box fontSize="18px" textColor="gold" bold>
+              <Box fontSize="18px" className="vamp-masquerade" bold>
                 The Masquerade
               </Box>
-              <Box fontSize="13px" textColor="gold">
+              <Box fontSize="13px" className="vamp-masquerade">
                 How to keep from getting us all killed.
               </Box>
               <br />
               The{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade
               </Box>{' '}
               is an organized disinformation campaign enforced by{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Kindred
               </Box>{' '}
               society (mainly the{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Camarilla
               </Box>
               ) to convince humans that vampires do not exist.
               <br />
               <br />
               If a mortal witnesses anything suspicious, you receive a{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Masquerade Infraction
               </Box>
               . After <b>three</b>, you are exiled and{' '}
-              <Box inline textColor="red" bold>
+              <Box inline className="vamp-blood" bold>
                 ALL
               </Box>{' '}
               vampires turn against you.
               <br />
               <br />
               The{' '}
-              <Box inline textColor="pink">
+              <Box inline className="vamp-curator">
                 Curator
               </Box>{' '}
               possesses the{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 Archive of the Kindred
               </Box>
               , which can instantly expose you. However, if your{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade Ability
               </Box>{' '}
               is active, even this ancient tome cannot see through your
@@ -416,32 +388,24 @@ const VampireGuide = () => {
               <br />
               <br />
               At{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 humanity
               </Box>{' '}
               above 7, you gain the{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade Ability
               </Box>
               , which fools health analyzers and the{' '}
-              <Box inline textColor="pink">
+              <Box inline className="vamp-curator">
                 Curator
               </Box>
               . <b>However, you will not heal normally while it is active.</b>
-              <Box
-                mt={1}
-                fontSize="13px"
-                textColor="blue"
-                style={{
-                  borderLeft: '2px solid #4444ff',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-tip">
                 <b>Tip:</b> Too many bloodloss patients in medbay is just as
                 suspicious as a bloodless corpse in the halls.
               </Box>
               <br />
-              <Box fontSize="16px" textColor="red" bold>
+              <Box fontSize="16px" className="vamp-blood" bold>
                 I broke the Masquerade. Now what?
               </Box>
               <Box fontSize="13px">
@@ -454,36 +418,35 @@ const VampireGuide = () => {
             </Box>
           )}
           {tab === GuideTab.Humanity && (
-            // Humanity
             <Box>
-              <Box fontSize="18px" textColor="blue" bold>
+              <Box fontSize="18px" className="vamp-arcane" bold>
                 Humanity
               </Box>
-              <Box fontSize="13px" textColor="blue">
+              <Box fontSize="13px" className="vamp-arcane">
                 Are we human? Or are we dancer?
               </Box>
               <br />
               Most{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Kindred
               </Box>{' '}
               were human before their Embrace. Clinging to{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 humanity
               </Box>{' '}
               is how they resist the{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 Beast&apos;s
               </Box>{' '}
               feral nature.
               <br />
               <br />
               Your{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 humanity
               </Box>{' '}
               directly affects the vampiric curse. Lower{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 humanity
               </Box>{' '}
               means:
@@ -492,29 +455,22 @@ const VampireGuide = () => {
                 • Harder to interact with mortals
                 <br />• Difficult to stay active during daylight
                 <br />• Longer{' '}
-                <Box inline textColor="orange">
+                <Box inline className="vamp-beast">
                   torpor
                 </Box>{' '}
                 recovery
               </Box>
               <br />
-              <Box
-                fontSize="13px"
-                textColor="gold"
-                style={{
-                  borderLeft: '2px solid #ffd700',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-gold-note">
                 Click the humanity counter on your HUD for detailed information.
               </Box>
               <br />
               Why call it{' '}
-              <Box inline textColor="blue">
+              <Box inline className="vamp-arcane">
                 Humanity
               </Box>{' '}
               when not all{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 kindred
               </Box>{' '}
               were human? Simple: tradition. Centuries-old vampires are slow to
@@ -522,141 +478,100 @@ const VampireGuide = () => {
             </Box>
           )}
           {tab === GuideTab.Society && (
-            // Society
             <Box>
-              <Box fontSize="18px" textColor="darkred" bold>
+              <Box fontSize="18px" className="vamp-blood-dark" bold>
                 Princes & Scourges
               </Box>
               <br />A{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Prince
               </Box>{' '}
               is an elder vampire entrusted by the{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Camarilla
               </Box>{' '}
               to rule a territory. They keep track of every{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 kindred
               </Box>{' '}
               present and enforce the{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade
               </Box>{' '}
               with an iron fist.
               <br />
               <br />
               Of course, they do not work alone. Many{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Princes
               </Box>{' '}
               employ a{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Scourge
               </Box>
               , a personal enforcer loyal only to them. Scourges are often
               chosen from clans like the Tremere, though some rare{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Princes
               </Box>{' '}
               have been known to employ even Brujah.
-              <Box
-                mt={1}
-                fontSize="13px"
-                textColor="blue"
-                style={{
-                  borderLeft: '2px solid #4444ff',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-tip">
                 <b>Important:</b> Princes have higher expectations placed upon
                 them. They must protect the Masquerade at all costs and deliver
                 final death to misbehaving kindred without hesitation.
               </Box>
               <br />
-              <Box fontSize="18px" textColor="purple" bold>
+              <Box fontSize="18px" className="vamp-kindred" bold>
                 The Camarilla
               </Box>
               <br />
               The{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Camarilla
               </Box>{' '}
               is the most organized vampiric sect: an elite club that favors
               tradition and covert control of mortals from behind the scenes.
               Most vampire clans are part of them, though the{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 Brujah notably insist on remaining independent
               </Box>
               .
               <br />
               <br />
               Every city, station, colony, or outpost with a{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 kindred
               </Box>{' '}
               presence has a{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Prince
               </Box>{' '}
               assigned by the{' '}
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Camarilla
               </Box>{' '}
               to oversee it. They are the chief enforcers of the{' '}
-              <Box inline textColor="gold">
+              <Box inline className="vamp-masquerade">
                 Masquerade
               </Box>
               .
             </Box>
           )}
-          {tab === GuideTab.Sol && (
-            // Sol
+          {tab === GuideTab.Leveling && (
             <Box>
-              <Box fontSize="32px" textColor="orange" bold>
-                Sol
+              <Box fontSize="32px" className="vamp-beast" bold>
+                Leveling
               </Box>
-              <Box inline textColor="yellow">
-                Sol
-              </Box>{' '}
-              refers to the nearby temperamental star, not Earth&apos;s sun.
-              Vampires do well in space. You are just unlucky enough to be near
-              this one.
-              <br />
-              <br />
-              <Box fontSize="14px" bold>
-                Key Facts
-              </Box>
-              <Box fontSize="13px">
-                • Click the HUD icon for more detailed information
-                <br />• You cannot die to Sol if you are protected by lockers,
-                maintenance tunnels, or coffins
-                <br />• If you are caught unprotected, you will burn to dust
-                <br />• Higher humanity grants partial resistance to Sol&apos;s
-                effects
-              </Box>
-              <br />
-              <Box fontSize="14px" bold textColor="red">
-                During Sol
-              </Box>
-              <Box fontSize="13px">
-                • You cannot passively heal; only coffins can restore you
-                <br />• You take 50% more damage from all sources
-                <br />• Your powers have doubled cooldowns, increased vitae
-                costs, and some are blocked entirely
-              </Box>
-              <br />
-              <Box fontSize="16px" textColor="darkred" bold>
+              <Box fontSize="16px" className="vamp-blood-dark" bold>
                 Growing in Power
               </Box>
               As a vampire, you grow stronger over time by meeting your feeding
               requirements. Click your blood meter on the HUD to see your
               current progress toward the next rank.
               <br />
-              <br />
-              After each Sol cycle, if you have consumed enough vitae to meet
-              your goal, you will gain a Rank. Each rank provides significant
-              benefits:
+              If you have consumed enough vitae to meet your goal, you will gain
+              a Rank whenever you next sleep in a coffin. Each rank provides
+              significant benefits:
               <Box fontSize="13px" ml={1}>
                 • Increased physical strength
                 <br />• Greater health pool
@@ -665,22 +580,22 @@ const VampireGuide = () => {
                 <br />• Additional discipline points to unlock new powers
               </Box>
               <br />
-              In addition, will gain one rank whenever you vassalize a mortal
-              into your servant.
+              In addition, you also passively gain a few ranks over time, and
+              will gain one rank whenever you vassalize a mortal into your
+              servant.
             </Box>
           )}
           {tab === GuideTab.Vitae && (
-            // Vitae
             <Box>
-              <Box fontSize="18px" textColor="red" bold>
+              <Box fontSize="18px" className="vamp-blood" bold>
                 Vitae
               </Box>
               <br />
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 Vitae
               </Box>{' '}
               is the lifeblood that sustains every vampire. The{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 Beast
               </Box>{' '}
               within you demands constant feeding, and ignoring this need is not
@@ -690,7 +605,7 @@ const VampireGuide = () => {
               <br />
               <br />
               Your current rank determines how much{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 vitae
               </Box>{' '}
               you can store and utilize at any given time.
@@ -698,7 +613,7 @@ const VampireGuide = () => {
               <br />
               <Box bold>
                 Sources of{' '}
-                <Box inline textColor="red">
+                <Box inline className="vamp-blood">
                   vitae
                 </Box>
                 :
@@ -709,33 +624,25 @@ const VampireGuide = () => {
                 <br />• Mice
                 <br />• Bloodbags
               </Box>
-              <Box
-                mt={1}
-                fontSize="13px"
-                textColor="blue"
-                style={{
-                  borderLeft: '2px solid #4444ff',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-tip">
                 <b>Tip:</b> Feed from crew regularly. Mice and monkeys will not
                 sustain you in the long run.
               </Box>
               <br />
-              <Box fontSize="16px" textColor="orange" bold>
+              <Box fontSize="16px" className="vamp-beast" bold>
                 Frenzy
               </Box>
               When your{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 vitae
               </Box>{' '}
               is completely depleted, you lose control and enter a state known
               as{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 frenzy
               </Box>
               . In this feral state, the{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 Beast
               </Box>{' '}
               takes over and compels you to attack the nearest mortal without
@@ -743,27 +650,27 @@ const VampireGuide = () => {
               <br />
               <br />
               While in{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 frenzy
               </Box>
               , you gain the ability to grab victims instantly, making you
               extremely dangerous but also highly conspicuous. The only way to
               regain control of yourself is to feed until you have enough{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 vitae
               </Box>{' '}
               to suppress the{' '}
-              <Box inline textColor="orange">
+              <Box inline className="vamp-beast">
                 Beast
               </Box>
               .
               <br />
               <br />
-              <Box fontSize="16px" textColor="blue" bold>
+              <Box fontSize="16px" className="vamp-arcane" bold>
                 Powers & Vitae
               </Box>
               All of your vampiric powers require{' '}
-              <Box inline textColor="red">
+              <Box inline className="vamp-blood">
                 vitae
               </Box>{' '}
               to use. Some abilities drain blood continuously while they remain
@@ -772,9 +679,8 @@ const VampireGuide = () => {
             </Box>
           )}
           {tab === GuideTab.Combat && (
-            // Combat
             <Box>
-              <Box fontSize="18px" textColor="blue" bold>
+              <Box fontSize="18px" className="vamp-arcane" bold>
                 Combat
               </Box>
               <br />
@@ -782,7 +688,7 @@ const VampireGuide = () => {
               critical weaknesses that can be exploited.
               <br />
               <br />
-              <Box fontSize="15px" textColor="green" bold>
+              <Box fontSize="15px" className="vamp-haven" bold>
                 Strengths
               </Box>
               <Box fontSize="13px">
@@ -792,11 +698,11 @@ const VampireGuide = () => {
                 <br />
                 <b>Undead Physiology:</b> No need to breathe, sleep, or eat. You
                 are immune to disease. Fatal wounds put you into{' '}
-                <Box inline textColor="orange">
+                <Box inline className="vamp-beast">
                   Torpor
                 </Box>{' '}
                 instead of killing you. You will rise again if you have{' '}
-                <Box inline textColor="red">
+                <Box inline className="vamp-blood">
                   vitae
                 </Box>{' '}
                 and are not staked.
@@ -810,13 +716,13 @@ const VampireGuide = () => {
                 damage, scaling with your rank.
               </Box>
               <br />
-              <Box fontSize="15px" textColor="red" bold>
+              <Box fontSize="15px" className="vamp-blood" bold>
                 Weaknesses
               </Box>
               <Box fontSize="13px">
                 <b>Stakes:</b> Paralyze you, disable powers, halt healing, and
                 prevent revival from{' '}
-                <Box inline textColor="orange">
+                <Box inline className="vamp-beast">
                   Torpor
                 </Box>
                 .
@@ -826,23 +732,18 @@ const VampireGuide = () => {
                 offers minimal protection.
                 <br />
                 <br />
-                <b>Sol:</b> Every 45 minutes, sunlight cripples you unless
-                protected by a coffin or similar shelter.
-                <br />
-                <br />
                 <b>The Masquerade:</b> Break it and every vampire turns against
                 you. You will be hunted by kindred and mortals alike.
               </Box>
             </Box>
           )}
           {tab === GuideTab.Haven && (
-            // Havens
             <Box>
-              <Box fontSize="18px" textColor="green" bold>
+              <Box fontSize="18px" className="vamp-haven" bold>
                 Your Haven
               </Box>
               <br />A{' '}
-              <Box inline textColor="green">
+              <Box inline className="vamp-haven">
                 haven
               </Box>{' '}
               is a location you have claimed as your own, where you can rest in
@@ -852,32 +753,26 @@ const VampireGuide = () => {
               <br />
               <Box bold>
                 Do You Need a{' '}
-                <Box inline textColor="green">
+                <Box inline className="vamp-haven">
                   Haven
                 </Box>
                 ?
               </Box>
               <Box fontSize="13px">
                 Honestly? Probably not. A{' '}
-                <Box inline textColor="green">
+                <Box inline className="vamp-haven">
                   haven
                 </Box>{' '}
                 is only necessary if you intend to create{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   vassals
                 </Box>{' '}
-                or use certain structures. If you just need somewhere to hide
-                during{' '}
-                <Box inline textColor="yellow">
-                  Sol
-                </Box>
-                , any dark corner with a locker will do. The more infrastructure
-                you build, the more evidence you leave behind.
+                or use certain structures.
               </Box>
               <br />
               <Box bold>
                 Claiming a{' '}
-                <Box inline textColor="green">
+                <Box inline className="vamp-haven">
                   Haven
                 </Box>
               </Box>
@@ -887,25 +782,17 @@ const VampireGuide = () => {
                 <i>truly hidden</i>, place the coffin, and rest inside to claim
                 the area. Once claimed, you can anchor vampiric structures like
                 the{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   Vassalization Rack
                 </Box>{' '}
                 or{' '}
-                <Box inline textColor="darkred">
+                <Box inline className="vamp-blood-dark">
                   Blood Throne
                 </Box>
                 .
               </Box>
               <br />
-              <Box
-                mt={1}
-                fontSize="13px"
-                textColor="blue"
-                style={{
-                  borderLeft: '2px solid #4444ff',
-                  paddingLeft: '8px',
-                }}
-              >
+              <Box mt={1} className="vamp-tip">
                 <b>Warning:</b> Maintenance is the first place people look. If
                 someone finds your haven, they find everything: your coffin,
                 your structures, your vassals, and you.
@@ -913,29 +800,28 @@ const VampireGuide = () => {
             </Box>
           )}
           {tab === GuideTab.Structures && (
-            // Structures
             <Box>
-              <Box fontSize="18px" textColor="blue" bold>
+              <Box fontSize="18px" className="vamp-arcane" bold>
                 Structures
               </Box>
-              <Box fontSize="13px" textColor="blue">
+              <Box fontSize="13px" className="vamp-arcane">
                 These can be built via the Vampire crafting tab.
               </Box>
               <br />
-              <Box textColor="purple" bold>
+              <Box className="vamp-kindred" bold>
                 Vassalization Rack
               </Box>
               <Box fontSize="13px">
                 The vassalization rack is your tool for converting captured
                 crewmembers into loyal{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   vassals
                 </Box>{' '}
                 who will serve your every command.
                 <br />
                 <br />
                 <b>Usage:</b> Secure the rack in your{' '}
-                <Box inline textColor="green">
+                <Box inline className="vamp-haven">
                   haven
                 </Box>{' '}
                 → restrain your target → drag them onto the rack → click the
@@ -944,36 +830,36 @@ const VampireGuide = () => {
               <br />
               <Box fontSize="13px">
                 Crewmembers with{' '}
-                <Box inline textColor="blue">
+                <Box inline className="vamp-arcane">
                   mindshields
                 </Box>{' '}
                 or strong loyalties require their mental defenses to be weakened
                 first.{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   Eldritch servants
                 </Box>{' '}
                 are completely immune and can never be converted.
               </Box>
               <br />
-              <Box textColor="yellow" bold>
+              <Box className="vamp-ember" bold>
                 Candelabrum
               </Box>
               <Box fontSize="13px">
                 A vampiric candelabra that radiates an unsettling aura. Any
                 mortal who gazes upon its{' '}
-                <Box inline textColor="orange">
+                <Box inline className="vamp-beast">
                   flame
                 </Box>{' '}
                 will find their sanity slowly draining away.
               </Box>
               <br />
-              <Box textColor="darkred" bold>
+              <Box className="vamp-blood-dark" bold>
                 Blood Throne
               </Box>
               <Box fontSize="13px">
                 When you sit upon a Blood Throne, your words are broadcast
                 telepathically to all{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   kindred
                 </Box>{' '}
                 on the station. Other vampires will need their own throne if
@@ -982,13 +868,12 @@ const VampireGuide = () => {
             </Box>
           )}
           {tab === GuideTab.Vassals && (
-            // Vassals
             <Box>
-              <Box fontSize="18px" textColor="purple" bold>
+              <Box fontSize="18px" className="vamp-kindred" bold>
                 Vassals
               </Box>
               <br />
-              <Box inline textColor="purple">
+              <Box inline className="vamp-kindred">
                 Vassals
               </Box>{' '}
               are mortals who have been rendered addicted to your vitae, binding
@@ -1000,16 +885,16 @@ const VampireGuide = () => {
               <Box bold>Creating Vassals</Box>
               <Box fontSize="13px">
                 To create a vassal, you will need a{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   Vassalization Rack
                 </Box>{' '}
                 secured within your{' '}
-                <Box inline textColor="green">
+                <Box inline className="vamp-haven">
                   haven
                 </Box>
                 . Capture your target and restrain them so they cannot escape,
                 then drag them onto the rack. Click the rack to begin the{' '}
-                <Box inline textColor="red">
+                <Box inline className="vamp-blood">
                   vassalization
                 </Box>{' '}
                 process that will give them an addiction to your blood, binding
@@ -1019,12 +904,12 @@ const VampireGuide = () => {
               <Box bold>Limitations</Box>
               <Box fontSize="13px">
                 Crewmembers protected by{' '}
-                <Box inline textColor="blue">
+                <Box inline className="vamp-arcane">
                   mindshields
                 </Box>{' '}
                 or those with strong existing loyalties cannot be converted
                 until their mental defenses have been weakened. Those who serve{' '}
-                <Box inline textColor="purple">
+                <Box inline className="vamp-kindred">
                   eldritch powers
                 </Box>{' '}
                 are completely immune and can never be turned.
@@ -1032,7 +917,7 @@ const VampireGuide = () => {
                 <br />
                 Once someone has become your vassal, the only way to free them
                 is through implantation of a{' '}
-                <Box inline textColor="blue">
+                <Box inline className="vamp-arcane">
                   mindshield
                 </Box>
                 .
@@ -1091,7 +976,7 @@ const PowerSection = () => {
             (power, index) =>
               tab === index && (
                 <Box key={index}>
-                  <Box inline bold textColor="red">
+                  <Box inline bold className="vamp-blood">
                     {power.cost !== '0' && <>BLOOD COST: {power.cost}</>}
                     {power.cost !== '0' && power.constant_cost !== '0' && (
                       <br />
@@ -1140,7 +1025,7 @@ const ClanSection = () => {
       <Section title="Clan">
         <Stack vertical>
           <Stack.Item fontSize="20px">
-            <Box inline textColor="red">
+            <Box inline className="vamp-blood">
               You are not in a clan!
             </Box>
           </Stack.Item>
@@ -1169,7 +1054,7 @@ const ClanSection = () => {
           </Stack.Item>
           <Stack.Item grow>
             <Stack.Item textAlign="center">
-              <Box inline fontSize="20px" textColor="red">
+              <Box inline fontSize="20px" className="vamp-blood">
                 You are part of the <b>{ClanInfo.name}!</b>
               </Box>
             </Stack.Item>

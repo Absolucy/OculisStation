@@ -18,8 +18,6 @@
 	var/datum/team/vampire/vampire_team
 	/// List of Powers, like Vampires.
 	var/list/datum/action/powers = list()
-	/// A link to our team monitor, used to track our master.
-	var/atom/movable/screen/tracking_arrow/tracking_arrow
 
 	/// How much time has been spent away from their master, used for moodlets.
 	var/time_away_from_master = 0
@@ -37,8 +35,9 @@
 	RegisterSignal(current_mob, COMSIG_ATOM_EXAMINE, PROC_REF(on_examine))
 	RegisterSignals(current_mob, list(COMSIG_MOB_LOGIN, COMSIG_MOVABLE_Z_CHANGED), PROC_REF(on_login))
 	RegisterSignal(current_mob, COMSIG_MOB_UPDATE_SIGHT, PROC_REF(on_update_sight))
-	RegisterSignal(current_mob, COMSIG_MOVABLE_MOVED, PROC_REF(on_moved))
+	RegisterSignal(current_mob, COMSIG_MOVABLE_MOVED, PROC_REF(update_tracker))
 	RegisterSignal(current_mob, COMSIG_LIVING_LIFE, PROC_REF(on_life))
+	RegisterSignal(current_mob, COMSIG_MOVABLE_HEAR, PROC_REF(handle_hearing))
 
 	current_mob.update_sight()
 
@@ -70,6 +69,7 @@
 		COMSIG_MOB_HUD_CREATED,
 		COMSIG_MOVABLE_MOVED,
 		COMSIG_LIVING_LIFE,
+		COMSIG_MOVABLE_HEAR,
 	))
 	current_mob.update_sight()
 	current_mob.clear_mood_event("vassal")
@@ -86,7 +86,7 @@
 	. = ..()
 	if(!master)
 		owner.remove_antag_datum(src)
-		CRASH("[owner.current] was vassilized without a master!")
+		CRASH("[owner.current] was vassalized without a master!")
 
 	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(give_warning))
 
@@ -238,15 +238,6 @@
 		antag_hud.show_to(target)
 		hud.show_to(antag_hud.target)
 
-/* /datum/antagonist/vassal/proc/setup_monitor(mob/target)
-	QDEL_NULL(monitor)
-	if(QDELETED(master?.owner?.current) || QDELETED(master.tracker))
-		return
-
-	monitor = target.AddComponent(/datum/component/team_monitor, REF(master))
-	monitor.add_to_tracking_network(master.tracker.tracking_beacon)
-	monitor.show_hud(target) */
-
 /datum/antagonist/vassal/proc/on_examine(datum/source, mob/examiner, list/examine_text)
 	SIGNAL_HANDLER
 
@@ -276,28 +267,14 @@
 /datum/antagonist/vassal/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
 	var/datum/hud/hud_used = owner.current.hud_used
-
-	tracking_arrow = hud_used.add_screen_object(/atom/movable/screen/tracking_arrow, REF(src), HUD_GROUP_STATIC, update_screen = TRUE)
-	UnregisterSignal(owner.current, COMSIG_MOB_HUD_CREATED)
+	var/atom/movable/screen/tracking_arrow/tracking_arrow = hud_used.add_screen_object(/atom/movable/screen/tracking_arrow, HUD_VASSAL_TRACKER, HUD_GROUP_STATIC, update_screen = TRUE)
 
 	var/mob/living/master_body = master?.owner?.current
 	if(!QDELETED(master_body))
 		tracking_arrow.update(owner.current, master_body)
 
 /datum/antagonist/vassal/proc/remove_hud_elements(mob/living/current_mob)
-	var/datum/hud/hud_used = current_mob?.hud_used?.remove_screen_object(tracking_arrow)
-	QDEL_NULL(tracking_arrow)
-
-/datum/antagonist/vassal/proc/on_moved()
-	SIGNAL_HANDLER
-	if(!tracking_arrow)
-		return
-	var/mob/living/our_mob = owner.current
-	var/mob/living/master_mob = master?.owner?.current
-	if(QDELETED(our_mob) || QDELETED(master_mob))
-		tracking_arrow.invisibility = INVISIBILITY_ABSTRACT
-		return
-	tracking_arrow.update(our_mob, master_mob)
+	current_mob?.hud_used?.remove_screen_object(HUD_VASSAL_TRACKER)
 
 /datum/antagonist/vassal/proc/on_life(datum/source)
 	SIGNAL_HANDLER
@@ -319,6 +296,19 @@
 		current.add_mood_event("vassal", /datum/mood_event/vassal_away)
 	else
 		current.clear_mood_event("vassal")
+
+/datum/antagonist/vassal/proc/update_tracker()
+	SIGNAL_HANDLER
+	var/atom/movable/screen/tracking_arrow/tracking_arrow = owner.current?.hud_used?.screen_objects[HUD_VASSAL_TRACKER]
+	tracking_arrow?.update(owner.current, master?.owner?.current)
+
+/**
+ * Makes it so stuff our master's speech is more noticable by adding a chat effect to it.
+ */
+/datum/antagonist/vassal/proc/handle_hearing(datum/source, list/hearing_args)
+	SIGNAL_HANDLER
+	if(hearing_args[HEARING_SPEAKER] == master.owner?.current)
+		hearing_args[HEARING_SPANS] = list("vampire_master") + hearing_args[HEARING_SPANS]
 
 /datum/antagonist/vassal/proc/give_warning(atom/source, danger_level, vampire_warning_message, vassal_warning_message)
 	SIGNAL_HANDLER

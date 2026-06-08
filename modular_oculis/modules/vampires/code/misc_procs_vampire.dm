@@ -432,3 +432,13 @@
 	if(!istype(carbon_owner.handcuffed, /obj/item/restraints/handcuffs/silver))
 		qdel(src)
  */
+
+/proc/max_vampire_vassals()
+	var/total_players = length(GLOB.player_list)
+	switch(total_players)
+		if(1 to 20)
+			return 1
+		if(21 to 30)
+			return 2
+		else
+			return 3

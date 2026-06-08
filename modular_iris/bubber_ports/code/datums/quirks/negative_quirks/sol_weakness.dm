@@ -41,11 +41,11 @@
 	return SSsol.sunlight_active ? COMSIG_CANCEL_MOB_HEMO_BLOOD_REGEN : NONE
 
 /datum/quirk/sol_weakness/proc/add_sun_timer_hud()
-	quirk_holder.hud_used?.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUB_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
+	quirk_holder.hud_used?.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUD_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
 
 /datum/quirk/sol_weakness/proc/remove_sun_timer_hud()
 	UnregisterSignal(quirk_holder, COMSIG_MOB_HUD_CREATED)
-	quirk_holder.hud_used?.remove_screen_object(HUB_VAMPIRE_SUNLIGHT)
+	quirk_holder.hud_used?.remove_screen_object(HUD_VAMPIRE_SUNLIGHT)
 
 /datum/quirk/sol_weakness/proc/sun_risen()
 	SIGNAL_HANDLER

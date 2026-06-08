@@ -85,7 +85,7 @@
 	var/vampire_level = 0
 	var/vampire_level_unspent = VAMPIRE_STARTING_LEVELS
 
-	/// If this guy has suffered final death.
+	/// If the poor sap has suffered final death.
 	var/final_death = FALSE
 
 	/// Additional regeneration when the vampire has a lot of blood
@@ -272,19 +272,19 @@
 	var/datum/hud/vampire_hud = current_mob?.hud_used
 	if(!vampire_hud)
 		return
-	vampire_hud.remove_screen_object(HUB_VAMPIRE_BLOOD, update = FALSE)
-	vampire_hud.remove_screen_object(HUB_VAMPIRE_RANK, update = FALSE)
-	vampire_hud.remove_screen_object(HUB_VAMPIRE_HUMANITY, update = FALSE)
-	vampire_hud.remove_screen_object(HUB_VAMPIRE_SUNLIGHT)
+	vampire_hud.remove_screen_object(HUD_VAMPIRE_BLOOD, update = FALSE)
+	vampire_hud.remove_screen_object(HUD_VAMPIRE_RANK, update = FALSE)
+	vampire_hud.remove_screen_object(HUD_VAMPIRE_HUMANITY, update = FALSE)
+	vampire_hud.remove_screen_object(HUD_VAMPIRE_SUNLIGHT)
 
 /datum/antagonist/vampire/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
 	var/datum/hud/vampire_hud = owner.current.hud_used
 
-	vampire_hud.add_screen_object(/atom/movable/screen/vampire/blood_counter, HUB_VAMPIRE_BLOOD, HUD_GROUP_INFO)
-	vampire_hud.add_screen_object(/atom/movable/screen/vampire/rank_counter, HUB_VAMPIRE_RANK, HUD_GROUP_INFO)
-	vampire_hud.add_screen_object(/atom/movable/screen/vampire/humanity_counter, HUB_VAMPIRE_HUMANITY, HUD_GROUP_INFO)
-	vampire_hud.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUB_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
+	vampire_hud.add_screen_object(/atom/movable/screen/vampire/blood_counter, HUD_VAMPIRE_BLOOD, HUD_GROUP_INFO)
+	vampire_hud.add_screen_object(/atom/movable/screen/vampire/rank_counter, HUD_VAMPIRE_RANK, HUD_GROUP_INFO)
+	vampire_hud.add_screen_object(/atom/movable/screen/vampire/humanity_counter, HUD_VAMPIRE_HUMANITY, HUD_GROUP_INFO)
+	vampire_hud.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUD_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
 
 /datum/antagonist/vampire/get_admin_commands()
 	. = ..()
@@ -387,11 +387,6 @@
 	old_body?.remove_traits(vampire_traits + always_traits, TRAIT_VAMPIRE)
 	new_body.add_traits(vampire_traits + always_traits, TRAIT_VAMPIRE)
 
-/*
-/datum/antagonist/vampire/after_body_transfer(mob/living/old_body, mob/living/new_body)
-	addtimer(CALLBACK(src, TYPE_PROC_REF(/datum/antagonist, add_team_hud), new_body), 0.5 SECONDS, TIMER_OVERRIDE | TIMER_UNIQUE) //i don't trust this to not act weird
-*/
-
 /datum/antagonist/vampire/greet()
 	if(silent)
 		return
@@ -429,6 +424,12 @@
 /datum/antagonist/vampire/ui_assets(mob/user)
 	return list(
 		get_asset_datum(/datum/asset/simple/vampire_header),
+	)
+
+/datum/antagonist/vampire/ui_data(mob/user)
+	return list(
+		"vassal_count" = count_vassals(),
+		"max_vassals" = max_vampire_vassals(),
 	)
 
 /datum/antagonist/vampire/ui_static_data(mob/user)
@@ -488,21 +489,15 @@
 	// Now list their vassals
 	if(length(vassals))
 		report += span_header("<br>Their vassals were...")
+		var/list/vassal_minds = list()
 		for(var/datum/antagonist/vassal/vassal in vassals)
-			if(!vassal.owner)
-				continue
-
-			var/list/vassal_report = list()
-			vassal_report += "<b>[vassal.owner.name]</b>"
-
-			if(vassal.owner.assigned_role)
-				vassal_report += " the [vassal.owner.assigned_role.title]"
-			report += vassal_report.Join()
+			vassal_minds += vassal.owner
+		report += printplayerlist(vassal_minds)
 
 	if(objectives_complete)
-		report += span_greentext(span_big("<br>The [name] was successful!"))
+		report += span_greentext(span_big("The [name] was successful!"))
 	else
-		report += span_redtext(span_big("<br>The [name] has failed!"))
+		report += span_redtext(span_big("The [name] has failed!"))
 
 	return report.Join("<br>")
 
@@ -573,14 +568,12 @@
 	newheart?.Restart()
 
 /datum/antagonist/vampire/proc/claim_coffin(obj/structure/closet/crate/coffin/claimed)
-	var/static/list/banned_areas_typecache
-	if(isnull(banned_areas_typecache))
-		banned_areas_typecache = typecacheof(list(
-			/area/icemoon,
-			/area/lavaland,
-			/area/ocean,
-			/area/space,
-		))
+	var/list/banned_areas = list(
+		/area/icemoon,
+		/area/lavaland,
+		/area/ocean,
+		/area/space,
+	)
 
 	// ALREADY CLAIMED
 	if(claimed.resident)
@@ -595,7 +588,7 @@
 	var/valid_haven_area = TRUE
 	if(!coffin_turf)
 		valid_haven_area = FALSE
-	else if(is_type_in_typecache(current_area, banned_areas_typecache) || (istype(current_area, /area/ruin) && current_area.outdoors))
+	else if(is_type_in_list(current_area, banned_areas) || (istype(current_area, /area/ruin) && current_area.outdoors))
 		valid_haven_area = FALSE
 	if(!valid_haven_area)
 		claimed.balloon_alert(owner.current, "ineligible area!")
@@ -704,16 +697,6 @@
 				continue
 		.++
 
-/datum/antagonist/vampire/proc/get_max_vassals()
-	var/total_players = length(GLOB.player_list)
-	switch(total_players)
-		if(1 to 20)
-			return 1
-		if(21 to 30)
-			return 2
-		else
-			return 3
-
 /datum/antagonist/vampire/proc/on_examine(datum/source, mob/examiner, list/examine_text)
 	SIGNAL_HANDLER
 	var/text
@@ -725,12 +708,11 @@
 		text = "<img class='icon' src='\ref['modular_oculis/modules/vampires/icons/vampiric.dmi']?state=vampire'> "
 
 	if(IS_VASSAL(examiner) in vassals)
-		text += span_cult("<EM>This is, [return_full_name()] your Master!</EM>")
+		text += span_vampire_master("<EM>This is, [return_full_name()] your Master!</EM>")
 		examine_text += text
 		return
 
 	if(HAS_MIND_TRAIT(examiner, TRAIT_VAMPIRE_ALIGNED))
-
 		if(my_clan)
 			text += span_cult("<EM>[return_full_name()], of the [my_clan].</EM>")
 		else
@@ -742,7 +724,7 @@
 			if(prince)
 				text += span_cult_large("<br><EM>[owner.current.p_They()] [owner.current.p_are()] your Prince!</EM>")
 			if(broke_masquerade)
-				text += span_cult_large("<br><EM>You recognize [owner.current.p_them(TRUE)] as a masquerade breaker!</EM>")
+				text += span_cult_large("<br><EM>You recognize [owner.current.p_them()] as a masquerade breaker!</EM>")
 
 		examine_text += text
 

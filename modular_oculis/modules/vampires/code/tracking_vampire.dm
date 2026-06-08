@@ -41,4 +41,5 @@
 		var/mob/living/vassal_mob = vassal.owner.current
 		if(QDELETED(vassal_mob))
 			continue
-		vassal.tracking_arrow?.update(vassal_mob, owner.current)
+		var/atom/movable/screen/tracking_arrow/tracking_arrow = vassal_mob.hud_used?.screen_objects[HUD_VASSAL_TRACKER]
+		tracking_arrow?.update(vassal_mob, owner.current)
