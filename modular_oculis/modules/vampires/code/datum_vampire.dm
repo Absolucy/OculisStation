@@ -1,3 +1,8 @@
+#define HUB_VAMPIRE_BLOOD "vampire_blood"
+#define HUB_VAMPIRE_RANK "vampire_rank"
+#define HUB_VAMPIRE_HUMANITY "vampire_humanity"
+#define HUB_VAMPIRE_SUNLIGHT "vampire_sunlight"
+
 /datum/antagonist/vampire
 	name = "\improper Vampire"
 	roundend_category = "vampires"
@@ -270,6 +275,7 @@
 	QDEL_NULL(blood_display)
 	QDEL_NULL(vamprank_display)
 	QDEL_NULL(humanity_display)
+	QDEL_NULL(sunlight_display)
 
 	current_mob.remove_faction(FACTION_VAMPIRE)
 
@@ -281,36 +287,26 @@
 		my_clan?.remove_effects(current_mob)
 
 /datum/antagonist/vampire/proc/remove_hud_elements(mob/living/current_mob)
-	var/datum/hud/hud_used = current_mob?.hud_used
-	if(hud_used)
-		hud_used.infodisplay -= blood_display
-		hud_used.infodisplay -= vamprank_display
-		hud_used.infodisplay -= humanity_display
-		hud_used.infodisplay -= sunlight_display
-		hud_used.show_hud(hud_used.hud_version)
-	QDEL_NULL(blood_display)
-	QDEL_NULL(vamprank_display)
-	QDEL_NULL(humanity_display)
-	QDEL_NULL(sunlight_display)
+	var/datum/hud/vampire_hud = current_mob?.hud_used
+	vampire_hud.remove_screen_object(blood_display, update = FALSE)
+	vampire_hud.remove_screen_object(vamprank_display, update = FALSE)
+	vampire_hud.remove_screen_object(humanity_display, update = FALSE)
+	vampire_hud.remove_screen_object(sunlight_display)
+	blood_display = null
+	vamprank_display = null
+	humanity_display = null
+	sunlight_display = null
 
 /datum/antagonist/vampire/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
 	var/datum/hud/vampire_hud = owner.current.hud_used
 
-	blood_display = new /atom/movable/screen/vampire/blood_counter(null, vampire_hud)
-	vampire_hud.infodisplay += blood_display
-
-	vamprank_display = new /atom/movable/screen/vampire/rank_counter(null, vampire_hud)
-	vampire_hud.infodisplay += vamprank_display
-
-	humanity_display = new /atom/movable/screen/vampire/humanity_counter(null, vampire_hud)
-	vampire_hud.infodisplay += humanity_display
-
-	sunlight_display = new /atom/movable/screen/vampire/sunlight_counter(null, vampire_hud)
-	vampire_hud.infodisplay += sunlight_display
-
-	vampire_hud.show_hud(vampire_hud.hud_version)
+	blood_display = vampire_hud.add_screen_object(/atom/movable/screen/vampire/blood_counter, HUB_VAMPIRE_BLOOD, HUD_GROUP_INFO)
+	vamprank_display = vampire_hud.add_screen_object(/atom/movable/screen/vampire/rank_counter, HUB_VAMPIRE_RANK, HUD_GROUP_INFO)
+	humanity_display = vampire_hud.add_screen_object(/atom/movable/screen/vampire/humanity_counter, HUB_VAMPIRE_HUMANITY, HUD_GROUP_INFO)
+	sunlight_display = vampire_hud.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUB_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO)
 	UnregisterSignal(owner.current, COMSIG_MOB_HUD_CREATED)
+	vampire_hud.show_hud(owner.current)
 
 /datum/antagonist/vampire/get_admin_commands()
 	. = ..()

@@ -277,10 +277,7 @@
 	SIGNAL_HANDLER
 	var/datum/hud/hud_used = owner.current.hud_used
 
-	tracking_arrow = new /atom/movable/screen/tracking_arrow(null, hud_used)
-	hud_used.static_inventory |= tracking_arrow
-
-	hud_used.show_hud(hud_used.hud_version)
+	tracking_arrow = hud_used.add_screen_object(/atom/movable/screen/tracking_arrow, REF(src), HUD_GROUP_STATIC, update_screen = TRUE)
 	UnregisterSignal(owner.current, COMSIG_MOB_HUD_CREATED)
 
 	var/mob/living/master_body = master?.owner?.current
@@ -288,10 +285,7 @@
 		tracking_arrow.update(owner.current, master_body)
 
 /datum/antagonist/vassal/proc/remove_hud_elements(mob/living/current_mob)
-	var/datum/hud/hud_used = current_mob?.hud_used
-	if(hud_used)
-		hud_used.static_inventory -= tracking_arrow
-		hud_used.show_hud(hud_used.hud_version)
+	var/datum/hud/hud_used = current_mob?.hud_used?.remove_screen_object(tracking_arrow)
 	QDEL_NULL(tracking_arrow)
 
 /datum/antagonist/vassal/proc/on_moved()
