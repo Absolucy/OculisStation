@@ -35,7 +35,7 @@
 	else if(!(locate(/datum/action/cooldown/vampire/clanselect) in powers))
 		grant_power(new /datum/action/cooldown/vampire/clanselect)
 
-	// Set our body's blood_volume to mimick our vampire one (if we aren't using the Masquerade power)
+	// Set our body's blood_volume to mimick our vampire one (if we aren't using the Feign Life power)
 	update_hud()
 
 /**
@@ -59,7 +59,7 @@
 		return FALSE
 
 	var/in_torpor = HAS_TRAIT(current, TRAIT_TORPOR)
-	if(!in_torpor && HAS_TRAIT(current, TRAIT_MASQUERADE))
+	if(!in_torpor && HAS_TRAIT(current, TRAIT_FEIGN_LIFE))
 		return FALSE
 
 	// oh god why
@@ -105,8 +105,8 @@
 		// If in a coffin: heal 5x as fast, heal burn damage at full capacity, set vitaecost to 50%, and regenerate limbs
 		// If not: heal 3x as fast and heal burn damage at 80%
 		if(istype(carbon_owner.loc, /obj/structure/closet/crate/coffin))
-			if(HAS_TRAIT(owner.current, TRAIT_MASQUERADE) && COOLDOWN_FINISHED(src, vampire_spam_healing))
-				to_chat(carbon_owner, span_alert("You do not heal while your Masquerade ability is active."))
+			if(HAS_TRAIT(owner.current, TRAIT_FEIGN_LIFE) && COOLDOWN_FINISHED(src, vampire_spam_healing))
+				to_chat(carbon_owner, span_alert("You do not heal while your Feign Life ability is active."))
 				COOLDOWN_START(src, vampire_spam_healing, VAMPIRE_SPAM_MASQUERADE)
 				return FALSE
 
@@ -184,7 +184,7 @@
 		organ.set_organ_damage(0)
 
 	// Heart
-	if(!HAS_TRAIT(carbon_user, TRAIT_MASQUERADE))
+	if(!HAS_TRAIT(carbon_user, TRAIT_FEIGN_LIFE))
 		var/obj/item/organ/heart/current_heart = carbon_user.get_organ_slot(ORGAN_SLOT_HEART)
 		current_heart?.Stop()
 
@@ -244,7 +244,7 @@
 	// Set nutrition
 	owner.current.set_nutrition(min(current_vitae, NUTRITION_LEVEL_WELL_FED))
 
-	if(HAS_TRAIT(owner.current, TRAIT_MASQUERADE))
+	if(HAS_TRAIT(owner.current, TRAIT_FEIGN_LIFE))
 		owner.current.set_blood_volume(BLOOD_VOLUME_NORMAL)
 	else
 		owner.current.set_blood_volume(current_vitae, BLOOD_VOLUME_BAD, BLOOD_VOLUME_NORMAL) // we want to get pale but not completely fucked up
@@ -254,7 +254,7 @@
 		owner.current.remove_status_effect(/datum/status_effect/frenzy)
 
 	// Blood is low, lets show some effects
-	if(current_vitae < 100 && !HAS_TRAIT(owner.current, TRAIT_MASQUERADE))
+	if(current_vitae < 100 && !HAS_TRAIT(owner.current, TRAIT_FEIGN_LIFE))
 		owner.current.set_jitter_if_lower(6 SECONDS)
 
 	// Enter frenzy if our blood is low enough

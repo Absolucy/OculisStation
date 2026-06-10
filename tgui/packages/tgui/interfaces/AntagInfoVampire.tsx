@@ -381,7 +381,7 @@ const VampireGuide = () => {
               </Box>
               , which can instantly expose you. However, if your{' '}
               <Box inline className="vamp-masquerade">
-                Masquerade Ability
+                Feign Life Ability
               </Box>{' '}
               is active, even this ancient tome cannot see through your
               disguise.
@@ -393,7 +393,7 @@ const VampireGuide = () => {
               </Box>{' '}
               above 7, you gain the{' '}
               <Box inline className="vamp-masquerade">
-                Masquerade Ability
+                Feign Life Ability
               </Box>
               , which fools health analyzers and the{' '}
               <Box inline className="vamp-curator">

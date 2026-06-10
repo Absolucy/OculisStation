@@ -65,7 +65,7 @@
 
 	owner.grab_ghost()
 	owner.remove_traits(torpor_traits, TRAIT_STATUS_EFFECT(id))
-	if(!HAS_TRAIT(owner, TRAIT_MASQUERADE))
+	if(!HAS_TRAIT(owner, TRAIT_FEIGN_LIFE))
 		ADD_TRAIT(owner, TRAIT_SLEEPIMMUNE, TRAIT_VAMPIRE)
 
 	vampire_datum.heal_vampire_organs()

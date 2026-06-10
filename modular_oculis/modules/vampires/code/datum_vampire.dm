@@ -124,7 +124,7 @@
 		/datum/antagonist/clock_cultist,
 	)
 
-	/// List of traits that the Masquerade ability does not remove.
+	/// List of traits that the Feign Life ability does not remove.
 	var/static/list/always_traits = list(
 		TRAIT_DRINKS_BLOOD,
 		TRAIT_GENELESS, // prevents vamps from having genes at all. masquerade will work around this being an antag test with TRAIT_FAKEGENES
@@ -532,7 +532,7 @@
  * Removes all Vampire related Powers/Stats changes, setting them back to pre-Vampire
  * Order of steps and reason why:
  * Remove clan - Clans like Nosferatu give Powers on removal, we have to make sure this is given before removing Powers.
- * Powers - Remove all Powers, so things like Masquerade are off.
+ * Powers - Remove all Powers, so things like Feign Life are off.
  * Species traits, Traits, MaxHealth, Language - Misc stuff, has no priority.
  * Organs - At the bottom to ensure everything that changes them has reverted themselves already.
  * Update Sight - Done after Eyes are regenerated.

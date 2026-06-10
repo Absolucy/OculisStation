@@ -3,7 +3,7 @@
  *
  *	A book that can only be used by Curators and Monster Hnters.
  *	When used on a player, after a short timer, will reveal if the player is a Vampire, including their real name and Clan.
- *	This book should not work on Vampires using the Masquerade ability.
+ *	This book should not work on Vampires using the Feign Life ability.
  *	If it reveals a Vampire, the Curator will then be able to tell they are a Vampire on examine (Like a vassal).
  *	Reading it normally will allow Curators to read what each Clan does, with some extra flavor text ones.
  *
@@ -50,7 +50,7 @@
 
 	var/datum/antagonist/vampire/vampiredatum = IS_VAMPIRE(target)
 	// Are we a Vampire | Are we on Masquerade. If one is true, they will fail.
-	if(vampiredatum && !HAS_TRAIT(target, TRAIT_MASQUERADE))
+	if(vampiredatum && !HAS_TRAIT(target, TRAIT_FEIGN_LIFE))
 		if(vampiredatum.broke_masquerade)
 			to_chat(user, span_warning("[target], also known as '[vampiredatum.return_full_name()]', is indeed a Vampire, but you already knew this."))
 			return ITEM_INTERACT_SUCCESS

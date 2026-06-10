@@ -1,25 +1,25 @@
-/datum/action/cooldown/vampire/masquerade
-	name = "Masquerade"
+/datum/action/cooldown/vampire/feign_life
+	name = "Feign Life"
 	desc = "Feign the vital signs of a mortal, and escape both casual and medical notice as the monster you truly are."
 	button_icon_state = "power_human"
-	power_explanation = "Masquerade will forge your identity to be practically identical to that of a human.\n\
+	power_explanation = "Feign Life will forge your identity to be practically identical to that of a human.\n\
 		You lose nearly all Vampire benefits, including your passive healing.\n\
 		You gain a Genetic sequence, and appear to have 100% blood when scanned by a Health Analyzer.\n\
 		You won't appear as pale when examined. Anything further than pale, however, will not be hidden.\n\
-		After deactivating Masquerade, you will re-gain your Vampiric abilities, as well as lose any Diseases or mutations you might have gained."
+		After deactivating Feign Life, you will re-gain your Vampiric abilities, as well as lose any Diseases or mutations you might have gained."
 	vampire_power_flags = BP_AM_TOGGLE | BP_AM_STATIC_COOLDOWN | BP_AM_COSTLESS_UNCONSCIOUS
 	vampire_check_flags = BP_CANT_USE_IN_FRENZY | BP_CANT_USE_IN_TORPOR | BP_CANT_USE_WHILE_STAKED | BP_ALLOW_WHILE_SILVER_CUFFED
 	vitaecost = 15
 	cooldown_time = 5 SECONDS
 	constant_vitaecost = 0.5
 
-/datum/action/cooldown/vampire/masquerade/activate_power()
+/datum/action/cooldown/vampire/feign_life/activate_power()
 	. = ..()
 	var/mob/living/carbon/carbon_owner = owner
 	carbon_owner.balloon_alert(carbon_owner, "masquerade turned on.")
 	carbon_owner.apply_status_effect(/datum/status_effect/masquerade)
 
-/datum/action/cooldown/vampire/masquerade/deactivate_power()
+/datum/action/cooldown/vampire/feign_life/deactivate_power()
 	. = ..()
 	var/mob/living/carbon/carbon_owner = owner
 	carbon_owner.balloon_alert(carbon_owner, "masquerade turned off.")
@@ -29,11 +29,11 @@
 	id = "masquerade"
 	duration = STATUS_EFFECT_PERMANENT
 	tick_interval = STATUS_EFFECT_NO_TICK
-	alert_type = /atom/movable/screen/alert/status_effect/masquerade
+	alert_type = /atom/movable/screen/alert/status_effect/feign_life
 
-/atom/movable/screen/alert/status_effect/masquerade
-	name = "Masquerade"
-	desc = "You are currently hiding your identity using the Masquerade power. This halts Vampiric healing."
+/atom/movable/screen/alert/status_effect/feign_life
+	name = "Feign Life"
+	desc = "You are currently hiding your identity using the Feign Life power. This halts Vampiric healing."
 	icon = 'modular_oculis/modules/vampires/icons/actions_vampire.dmi'
 	icon_state = "masquerade_alert"
 	alerttooltipstyle = "cult"
@@ -46,7 +46,7 @@
 
 	// Handle Traits
 	carbon_owner.remove_traits(vampiredatum.vampire_traits - vampiredatum.always_traits, TRAIT_VAMPIRE)
-	carbon_owner.add_traits(list(TRAIT_MASQUERADE, TRAIT_FAKEGENES), TRAIT_STATUS_EFFECT(id))
+	carbon_owner.add_traits(list(TRAIT_FEIGN_LIFE, TRAIT_FAKEGENES), TRAIT_STATUS_EFFECT(id))
 
 	// Handle organs
 	var/obj/item/organ/heart/vampheart = carbon_owner.get_organ_slot(ORGAN_SLOT_HEART)
@@ -70,7 +70,7 @@
 
 	// Handle Traits
 	carbon_owner.add_traits(vampiredatum.vampire_traits, TRAIT_VAMPIRE)
-	carbon_owner.remove_traits(list(TRAIT_MASQUERADE, TRAIT_FAKEGENES), TRAIT_STATUS_EFFECT(id))
+	carbon_owner.remove_traits(list(TRAIT_FEIGN_LIFE, TRAIT_FAKEGENES), TRAIT_STATUS_EFFECT(id))
 
 	// Handle organs
 	var/obj/item/organ/heart/vampheart = carbon_owner.get_organ_slot(ORGAN_SLOT_HEART)

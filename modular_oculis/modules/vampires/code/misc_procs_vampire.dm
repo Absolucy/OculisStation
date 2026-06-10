@@ -167,9 +167,9 @@
 	// Are we adding or removing?
 	if(count > 0)
 		// We are adding
-		if(temp_humanity >= VAMPIRE_HUMANITY_MASQUERADE_POWER && !is_type_in_list(/datum/action/cooldown/vampire/masquerade, powers))
+		if(temp_humanity >= VAMPIRE_HUMANITY_MASQUERADE_POWER && !is_type_in_list(/datum/action/cooldown/vampire/feign_life, powers))
 			// Grant_power might fail, so we need to check if it actually got granted
-			var/was_granted = grant_power(new /datum/action/cooldown/vampire/masquerade)
+			var/was_granted = grant_power(new /datum/action/cooldown/vampire/feign_life)
 			if(was_granted)
 				power_given = TRUE
 
@@ -183,7 +183,7 @@
 	else
 		// We are removing
 		if(temp_humanity < VAMPIRE_HUMANITY_MASQUERADE_POWER)
-			for(var/datum/action/cooldown/vampire/masquerade/power in powers)
+			for(var/datum/action/cooldown/vampire/feign_life/power in powers)
 				remove_power(power)
 				power_removed = TRUE
 

@@ -24,7 +24,7 @@
 
 /datum/vampire_clan/nosferatu
 	name = CLAN_NOSFERATU
-	description = "The Nosferatu Clan is unable to blend in with the crew, with no abilities such as Masquerade and Veil. \n\
+	description = "The Nosferatu Clan is unable to blend in with the crew, with no abilities such as Feign Life and Veil. \n\
 		Additionally, has a permanent bad back and looks like a Vampire upon a simple examine, and is entirely unidentifiable, \n\
 		they can fit in the vents regardless of their form and equipment."
 	joinable_clan = FALSE

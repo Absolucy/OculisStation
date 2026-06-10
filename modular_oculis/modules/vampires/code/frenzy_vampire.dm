@@ -114,6 +114,6 @@
 	blacklisted_movetypes = FLYING | FLOATING
 	multiplicative_slowdown = -0.1 // Might seem very low but at this point we are already slow as balls from hunger
 
-/atom/movable/screen/alert/status_effect/masquerade/MouseEntered(location,control,params)
+/atom/movable/screen/alert/status_effect/feign_life/MouseEntered(location,control,params)
 	desc = initial(desc)
 	return ..()

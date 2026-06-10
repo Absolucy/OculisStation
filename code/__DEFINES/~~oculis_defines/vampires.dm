@@ -187,7 +187,7 @@
 
 // Traits
 /// Falsifies Health analyzer blood levels
-#define TRAIT_MASQUERADE "masquerade"
+#define TRAIT_FEIGN_LIFE "feign_life"
 /// For people in the middle of being staked
 #define TRAIT_BEINGSTAKED "beingstaked"
 /// This vampire is currently in a frenzy,
