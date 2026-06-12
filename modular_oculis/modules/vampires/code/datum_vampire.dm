@@ -32,8 +32,6 @@
 	/// Our disciplines
 	var/list/owned_disciplines = list()
 
-	/// Timer between alerts for Burn messages
-	COOLDOWN_DECLARE(vampire_spam_sol_burn)
 	/// Timer between alerts for Healing messages
 	COOLDOWN_DECLARE(vampire_spam_healing)
 
@@ -84,6 +82,9 @@
 	/// The rank this vampire is at, used to level abilities and strength up
 	var/vampire_level = 0
 	var/vampire_level_unspent = VAMPIRE_STARTING_LEVELS
+	/// How many more "free" levels this vampire will get.
+	var/free_levels_remaining = VAMPIRE_FREE_LEVELS
+
 
 	/// If the poor sap has suffered final death.
 	var/final_death = FALSE
@@ -102,9 +103,6 @@
 	/// Haven
 	var/area/vampire_haven_area
 	var/obj/structure/closet/crate/coffin/coffin
-
-	/// To make sure we don't spam sol damage messages
-	var/were_shielded = FALSE
 
 	/// List of limbs we've applied modifications to.
 	var/list/affected_limbs = list(
@@ -275,7 +273,6 @@
 	vampire_hud.remove_screen_object(HUD_VAMPIRE_BLOOD, update = FALSE)
 	vampire_hud.remove_screen_object(HUD_VAMPIRE_RANK, update = FALSE)
 	vampire_hud.remove_screen_object(HUD_VAMPIRE_HUMANITY, update = FALSE)
-	vampire_hud.remove_screen_object(HUD_VAMPIRE_SUNLIGHT)
 
 /datum/antagonist/vampire/proc/on_hud_created(datum/source)
 	SIGNAL_HANDLER
@@ -284,7 +281,6 @@
 	vampire_hud.add_screen_object(/atom/movable/screen/vampire/blood_counter, HUD_VAMPIRE_BLOOD, HUD_GROUP_INFO)
 	vampire_hud.add_screen_object(/atom/movable/screen/vampire/rank_counter, HUD_VAMPIRE_RANK, HUD_GROUP_INFO)
 	vampire_hud.add_screen_object(/atom/movable/screen/vampire/humanity_counter, HUD_VAMPIRE_HUMANITY, HUD_GROUP_INFO)
-	vampire_hud.add_screen_object(/atom/movable/screen/vampire/sunlight_counter, HUD_VAMPIRE_SUNLIGHT, HUD_GROUP_INFO, update_screen = TRUE)
 
 /datum/antagonist/vampire/get_admin_commands()
 	. = ..()
@@ -310,12 +306,6 @@
 	RegisterSignal(owner, COMSIG_SLIME_CORE_EJECTED, PROC_REF(on_slime_core_ejected))
 	RegisterSignal(owner, COMSIG_SLIME_REVIVED, PROC_REF(on_slime_revive))
 
-	RegisterSignal(SSsol, COMSIG_SOL_NEAR_START, PROC_REF(sol_near_start))
-	RegisterSignal(SSsol, COMSIG_SOL_END, PROC_REF(on_sol_end))
-	RegisterSignal(SSsol, COMSIG_SOL_NEAR_END, PROC_REF(sol_near_end))
-	RegisterSignal(SSsol, COMSIG_SOL_RISE_TICK, PROC_REF(handle_sol))
-	RegisterSignal(SSsol, COMSIG_SOL_WARNING_GIVEN, PROC_REF(give_warning))
-
 	owner.teach_crafting_recipe(list(
 		/datum/crafting_recipe/vassalrack,
 		/datum/crafting_recipe/candelabrum,
@@ -336,11 +326,13 @@
 	give_starting_powers()
 	GLOB.all_vampires += src
 
+	SSvampire_leveling.check_enable()
+
 	// Start society if we're the first vampire
 	check_start_society()
 
 	if(!QDELETED(owner.current))
-		for(var/quirk_type in typesof(/datum/quirk/item_quirk/addict) + /datum/quirk/skittish + /datum/quirk/sol_weakness)
+		for(var/quirk_type in typesof(/datum/quirk/item_quirk/addict) + /datum/quirk/skittish)
 			owner.current.remove_quirk(quirk_type)
 
 #ifdef VAMPIRE_TESTING
@@ -352,7 +344,6 @@
 /datum/antagonist/vampire/on_removal()
 	REMOVE_TRAIT(owner, TRAIT_VAMPIRE_ALIGNED, REF(src))
 	UnregisterSignal(owner, list(COMSIG_SLIME_CORE_EJECTED, COMSIG_SLIME_REVIVED))
-	UnregisterSignal(SSsol, list(COMSIG_SOL_NEAR_END, COMSIG_SOL_NEAR_START, COMSIG_SOL_END, COMSIG_SOL_RISE_TICK, COMSIG_SOL_WARNING_GIVEN))
 
 	owner.forget_crafting_recipe(list(
 		/datum/crafting_recipe/vassalrack,
@@ -363,6 +354,7 @@
 
 	clear_powers_and_stats()
 	GLOB.all_vampires -= src
+	SSvampire_leveling.check_enable()
 	check_cancel_society()
 
 	if(iscarbon(owner.current))

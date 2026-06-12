@@ -73,8 +73,6 @@
 		return 0
 	if(istype(core.loc, /obj/structure/closet/crate/coffin))
 		return SLIME_VAMPIRE_REVIVE_COFFIN_MULTIPLIER
-	if(SSsol.sunlight_active) // if we're not in a coffin, we won't regen during Sol
-		return 0
 	var/mob/living/holder = get(core, /mob/living)
 	if(!QDELETED(holder))
 		if(HAS_MIND_TRAIT(holder, TRAIT_VAMPIRE_ALIGNED))

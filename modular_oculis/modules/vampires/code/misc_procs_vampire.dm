@@ -442,3 +442,12 @@
 			return 2
 		else
 			return 3
+
+/proc/count_vampires()
+	. = 0
+	for(var/datum/antagonist/vampire/vampire as anything in GLOB.all_vampires)
+		if(vampire.final_death)
+			continue
+		var/mob/living/body = vampire.owner?.current
+		if(!QDELETED(body))
+			.++

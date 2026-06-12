@@ -15,7 +15,7 @@
 **/
 /datum/antagonist/vampire/proc/check_begin_torpor()
 	var/mob/living/carbon/carbon_owner = owner.current
-	if(QDELETED(carbon_owner) || SSsol.sunlight_active)
+	if(QDELETED(carbon_owner))
 		return
 	var/total_damage = carbon_owner.get_brute_loss() + carbon_owner.get_fire_loss()
 	if(total_damage >= 10 || length(carbon_owner.all_wounds))
@@ -55,11 +55,9 @@
 	vampire_datum.disable_all_powers()
 	to_chat(owner, span_notice("You enter the horrible slumber of deathless Torpor. You will heal until you are renewed."))
 	COOLDOWN_START(src, force_heal_time, 5 MINUTES)
-	RegisterSignal(SSsol, COMSIG_SOL_END, PROC_REF(check_after_sol_ends))
 	return TRUE
 
 /datum/status_effect/vampire_torpor/on_remove()
-	UnregisterSignal(SSsol, COMSIG_SOL_END)
 	if(!iscarbon(owner) || vampire_datum.final_death)
 		return
 
@@ -84,16 +82,9 @@
 		owner.revive(HEAL_ALL)
 		qdel(src)
 
-/datum/status_effect/vampire_torpor/proc/check_after_sol_ends()
-	SIGNAL_HANDLER
-	if(should_end())
-		qdel(src)
-
 /datum/status_effect/vampire_torpor/proc/should_end()
 	if(HAS_TRAIT(owner, TRAIT_FRENZY))
 		return TRUE
-	if(SSsol.sunlight_active)
-		return FALSE
 
 	var/total_brute = owner.get_brute_loss()
 	var/total_burn = owner.get_fire_loss()

@@ -41,16 +41,11 @@
 		JOB_CURATOR,
 	)
 
+	/// Prevents can_be_selected from returning false after we've already started polling.
+	var/locked_in = FALSE
+
 /datum/dynamic_ruleset/midround/from_living/vampire/assign_role(datum/mind/candidate)
-	var/wait_time = 0
-	if(SSsol.sunlight_active)
-		wait_time = (SSsol.time_til_cycle + 5) SECONDS // 5 seconds after sol ends
-	else if(SSsol.time_til_cycle < 75)
-		wait_time = (SSsol.time_til_cycle + TIME_VAMPIRE_DAY + 5) SECONDS
-	if(wait_time)
-		addtimer(CALLBACK(candidate, TYPE_PROC_REF(/datum/mind, add_antag_datum), /datum/antagonist/vampire), wait_time)
-	else
-		candidate.add_antag_datum(/datum/antagonist/vampire)
+	candidate.add_antag_datum(/datum/antagonist/vampire)
 
 /datum/dynamic_ruleset/midround/from_living/vampire/collect_candidates()
 	var/list/candidates = ..()
@@ -69,6 +64,7 @@
  * @param candidates a list containing a candidate mobs
  */
 /datum/dynamic_ruleset/midround/from_living/vampire/proc/poll_candidates_for_one(list/candidates)
+	locked_in = TRUE
 	var/max_candidates = get_antag_cap(length(GLOB.alive_player_list) - length(GLOB.all_vampires), max_antag_cap || min_antag_cap)
 	message_admins("[name]: Attempting to poll [length(candidates)] people individually, trying to select [max_candidates]")
 	log_dynamic("[name]: Attempting to poll [length(candidates)] people individually, trying to select [max_candidates]")
@@ -113,6 +109,16 @@
 	else
 		return FALSE
 
+/datum/dynamic_ruleset/midround/from_living/vampire/execute()
+	. = ..()
+	locked_in = FALSE
+
+/datum/dynamic_ruleset/midround/from_living/vampire/can_be_selected()
+	return locked_in || count_vampires() < 3
+
+/datum/dynamic_ruleset/midround/from_living/vampire/mass/can_be_selected()
+	return locked_in || count_vampires() < 2
+
 /datum/dynamic_ruleset/latejoin/vampire
 	name = "Latejoin Vampire"
 	config_tag = "Latejoin Vampire"
@@ -132,12 +138,4 @@
 	)
 
 /datum/dynamic_ruleset/latejoin/vampire/assign_role(datum/mind/candidate)
-	var/wait_time = 0
-	if(SSsol.sunlight_active)
-		wait_time = (SSsol.time_til_cycle + 5) SECONDS // 5 seconds after sol ends
-	else if(SSsol.time_til_cycle < 75)
-		wait_time = (SSsol.time_til_cycle + TIME_VAMPIRE_DAY + 5) SECONDS
-	if(wait_time)
-		addtimer(CALLBACK(candidate, TYPE_PROC_REF(/datum/mind, add_antag_datum), /datum/antagonist/vampire), wait_time)
-	else
-		candidate.add_antag_datum(/datum/antagonist/vampire)
+	candidate.add_antag_datum(/datum/antagonist/vampire)

@@ -30,6 +30,8 @@
 
 /// How many starting levels do we want each one to have?
 #define VAMPIRE_STARTING_LEVELS 3
+/// How many free levels the vampire gets gradually.
+#define VAMPIRE_FREE_LEVELS 3
 /// Vampire's default stamina resist.
 #define VAMPIRE_INHERENT_STAMINA_RESIST 0.75
 
