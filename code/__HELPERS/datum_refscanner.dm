@@ -22,7 +22,37 @@ GLOBAL_VAR_INIT(datum_refscanner_enabled, TRUE)
 		stack_trace("datum_refscanner: failed to load DLL: [e]")
 		return FALSE
 	GLOB.datum_refscanner_ready = TRUE
+	// Log table coverage once, right after init succeeds. On a build with only
+	// partial support this warns that some tables aren't scanned so a partial
+	// scan is never mistaken for a complete clean scan.
+	refscanner_log_coverage()
 	return TRUE
+
+/// Decoded coverage report: which tables this build supports. Assoc list with
+/// "build", "complete", "scanned", "fallback" and "unavailable" keys, or null if
+/// the scanner isn't ready. "complete" is falsy when the scan is only partial.
+/proc/refscanner_coverage()
+	if(!GLOB.datum_refscanner_ready)
+		return null
+	var/json = call_ext(REFSCANNER_DLL, "refscanner_get_coverage")()
+	if(!json)
+		return null
+	return json_decode(json)
+
+/// One-time coverage report to the log (and admins, if partial). Called from
+/// refscanner_ensure_ready the first time init succeeds.
+/proc/refscanner_log_coverage()
+	var/list/coverage = refscanner_coverage()
+	if(!islist(coverage))
+		return
+	if(coverage["complete"])
+		logger.Log("refscanner", "native refscanner coverage complete on build [coverage["build"]]")
+		return
+	var/list/unavailable = coverage["unavailable"]
+	var/skipped = islist(unavailable) ? jointext(unavailable, ", ") : "?"
+	var/msg = "native refscanner has PARTIAL coverage on build [coverage["build"]] - not scanned: [skipped]. Findings for these tables will be missing."
+	message_admins(msg)
+	logger.Log("refscanner", msg)
 
 /// Drain the findings buffer and return a list of finding strings, or null if empty.
 /// Each entry is "holder_kind=<datum|atom_a|atom_b|global_var> holder_id=N var_name=foo".
