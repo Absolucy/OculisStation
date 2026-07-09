@@ -32,7 +32,7 @@ GLOBAL_VAR_INIT(datum_refscanner_enabled, TRUE)
 	if(!GLOB.datum_refscanner_ready)
 		return null
 	var/json = call_ext(REFSCANNER_DLL, "refscanner_get_coverage")()
-	i(json)
+	if(json)
 		return json_decode(json)
 
 /// One-time coverage report to the log (and admins, if partial). Called from
