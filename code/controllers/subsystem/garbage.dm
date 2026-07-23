@@ -286,7 +286,7 @@ SUBSYSTEM_DEF(garbage)
 			/client,
 			/datum/controller,
 			/datum/parsed_map,
-			// native reftracker can't properly find these yet - just disable the native scanner for these until the issue can be fixed
+/* 			// native reftracker can't properly find these yet - just disable the native scanner for these until the issue can be fixed
 			/atom/movable/screen/alert,
 			/atom/movable/screen/map_view/char_preview,
 			/datum/status_effect/incapacitating,
@@ -299,7 +299,7 @@ SUBSYSTEM_DEF(garbage)
 			/datum/ductnet,
 			/datum/picture,
 			/* /obj/machinery/camera, */
-			/obj/structure/closet/crate/secure/owned,
+			/obj/structure/closet/crate/secure/owned, */
 		)
 
 	++delslasttick
