@@ -46,7 +46,7 @@
 	var/useable = TRUE
 
 	/// Food reagents if the organ is edible
-	var/list/food_reagents = list(/datum/reagent/consumable/nutriment = 5)
+	var/list/food_reagents = list()
 	/// Foodtypes if the organ is edible
 	var/foodtype_flags = RAW | MEAT | GORE
 	/// Overrides tastes if the organ is edible
