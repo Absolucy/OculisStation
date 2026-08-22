@@ -226,15 +226,35 @@ type DDOptions = {
   namedDmVersion?: string | null;
 };
 
+async function resolveDdExePath(
+  options: DDOptions,
+  exeName: string,
+): Promise<string> {
+  const dmPath = await getDmPath(options.namedDmVersion);
+  const baseDir = path.dirname(dmPath);
+  return baseDir === '.' ? exeName : path.join(baseDir, exeName);
+}
+
 export async function DreamDaemon(
   options: DDOptions,
   ...args: any[]
 ): Promise<Juke.ExecReturn> {
-  const dmPath = await getDmPath(options.namedDmVersion);
-  const baseDir = path.dirname(dmPath);
   const ddExeName =
     process.platform === 'win32' ? 'dreamdaemon.exe' : 'DreamDaemon';
-  const ddExePath = baseDir === '.' ? ddExeName : path.join(baseDir, ddExeName);
+  const ddExePath = await resolveDdExePath(options, ddExeName);
+
+  return Juke.exec(ddExePath, [options.dmbFile, ...args]);
+}
+
+// dreamdaemon.exe opens a GUI window; dd.exe is the same server without one.
+// Only DreamDaemon() itself has a console-mode split on Windows - `DreamDaemon`
+// is already the right binary name on Linux.
+export async function DreamDaemonConsole(
+  options: DDOptions,
+  ...args: any[]
+): Promise<Juke.ExecReturn> {
+  const ddExeName = process.platform === 'win32' ? 'dd.exe' : 'DreamDaemon';
+  const ddExePath = await resolveDdExePath(options, ddExeName);
 
   return Juke.exec(ddExePath, [options.dmbFile, ...args]);
 }

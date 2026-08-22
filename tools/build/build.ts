@@ -11,7 +11,12 @@ import fs from 'node:fs';
 import Bun from 'bun';
 import Juke from './juke/index.js';
 import { bun } from './lib/bun';
-import { DreamDaemon, DreamMaker, NamedVersionFile } from './lib/byond';
+import {
+  DreamDaemon,
+  DreamDaemonConsole,
+  DreamMaker,
+  NamedVersionFile,
+} from './lib/byond';
 import { downloadFile } from './lib/download';
 import { formatDeps } from './lib/helpers';
 import { prependDefines } from './lib/tgs';
@@ -93,6 +98,54 @@ export const WarningParameter = new Juke.Parameter({
 export const NoWarningParameter = new Juke.Parameter({
   type: 'string[]',
   alias: 'I',
+});
+
+export const DmeowWarmupParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'warmup',
+});
+
+export const DmeowWindowParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'window',
+});
+
+export const DmeowCyclesParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'cycles',
+});
+
+export const DmeowThresholdParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'threshold',
+});
+
+export const DmeowSampleRateParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'sample-rate',
+});
+
+// which synthetic workload the round drives: 'burn' (default) or 'gradient'.
+// an unrecognised name aborts the round in run_dmeow_burn() rather than falling
+// back, so a typo can't quietly measure the wrong thing for four minutes.
+export const DmeowLoadParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'load',
+});
+
+// interior edge length of the room, in turfs. a size the map cannot reserve
+// aborts the round in atmos_room/start(), so there is no ceiling to enforce here.
+export const DmeowRoomSizeParameter = new Juke.Parameter({
+  type: 'string',
+  name: 'room-size',
+});
+
+// runs the equivalence probe instead of the A/B burn round. same build, same
+// launch, different world param - the two share everything except which
+// question the round answers, so cloning the target would duplicate all of it.
+export const DmeowEquivParameter = new Juke.Parameter({
+  type: 'boolean',
+  name: 'equiv',
 });
 
 export const CutterTarget = new Juke.Target({
@@ -493,6 +546,137 @@ export const ServerTarget = new Juke.Target({
       namedDmVersion: get(DmVersionParameter),
     };
     await DreamDaemon(options, port, '-trusted');
+  },
+});
+
+// world-param keys read by run_dmeow_burn() in code/game/world.dm - keep in
+// sync if either side is renamed.
+const DMEOW_BURN_WORLD_PARAMS = [
+  [DmeowWarmupParameter, 'dmeow-warmup'],
+  [DmeowWindowParameter, 'dmeow-window'],
+  [DmeowCyclesParameter, 'dmeow-cycles'],
+  [DmeowThresholdParameter, 'dmeow-threshold'],
+  [DmeowSampleRateParameter, 'dmeow-sample-rate'],
+  [DmeowLoadParameter, 'dmeow-load'],
+  [DmeowRoomSizeParameter, 'dmeow-room-size'],
+] as const;
+
+function newestFileIn(dir: string): string | null {
+  if (!fs.existsSync(dir)) {
+    return null;
+  }
+  const entries = fs.readdirSync(dir).map((name) => {
+    const fullPath = `${dir}/${name}`;
+    return { fullPath, mtimeMs: fs.statSync(fullPath).mtimeMs };
+  });
+  if (entries.length === 0) {
+    return null;
+  }
+  entries.sort((a, b) => b.mtimeMs - a.mtimeMs);
+  return entries[0].fullPath;
+}
+
+export const DmeowBurnTarget = new Juke.Target({
+  parameters: [
+    DefineParameter,
+    DmVersionParameter,
+    WarningParameter,
+    NoWarningParameter,
+    DmeowWarmupParameter,
+    DmeowWindowParameter,
+    DmeowCyclesParameter,
+    DmeowThresholdParameter,
+    DmeowSampleRateParameter,
+    DmeowLoadParameter,
+    DmeowRoomSizeParameter,
+    DmeowEquivParameter,
+  ],
+  // mirrors DmTestTarget's dependencies, not BuildTarget's - this compiles its
+  // own .burn.dmb (below) rather than reusing the plain tgstation.dmb.
+  dependsOn: ({ get }) => [
+    get(DefineParameter).includes('ALL_MAPS') && DmMapsIncludeTarget,
+    IconCutterTarget,
+  ],
+  executes: async ({ get }) => {
+    if (!fs.existsSync('dmeow.dll') && !fs.existsSync('libdmeow.so')) {
+      Juke.logger.error(
+        'dmeow.dll (or libdmeow.so) not found next to the .dmb - the round would abort at dmeow_init() anyway, so failing here saves the wait.',
+      );
+      throw new Juke.ExitCode(1);
+    }
+
+    fs.copyFileSync(`${DME_NAME}.dme`, `${DME_NAME}.burn.dme`);
+    // runtimestation is maps.txt's dedicated low-memory map, and Lavaland/ruins
+    // don't matter to a fire in a sealed room - both just slow the boot down.
+    await DreamMaker(`${DME_NAME}.burn.dme`, {
+      defines: [
+        'CBT',
+        'SKIP_LAVALAND',
+        'FORCE_MAP="runtimestation"',
+        ...get(DefineParameter),
+      ],
+      warningsAsErrors: get(WarningParameter).includes('error'),
+      ignoreWarningCodes: get(NoWarningParameter),
+      namedDmVersion: get(DmVersionParameter),
+    });
+
+    const equiv = get(DmeowEquivParameter);
+    const burnParams: Record<string, string> = equiv
+      ? { 'dmeow-equiv': '1', 'log-directory': 'dmeow-equiv' }
+      : { 'dmeow-burn': '1', 'log-directory': 'dmeow-burn' };
+    // the equivalence probe takes no tunables - it is not a timed measurement,
+    // so warmup/window/cycles have nothing to tune.
+    if (!equiv) {
+      for (const [parameter, worldParamKey] of DMEOW_BURN_WORLD_PARAMS) {
+        const value = get(parameter);
+        if (value) {
+          burnParams[worldParamKey] = value;
+        }
+      }
+    }
+
+    const options = {
+      dmbFile: `${DME_NAME}.burn.dmb`,
+      namedDmVersion: get(DmVersionParameter),
+    };
+    await DreamDaemonConsole(
+      options,
+      '-close',
+      '-trusted',
+      '-verbose',
+      '-params',
+      new URLSearchParams(burnParams).toString(),
+    );
+    Juke.rm('*.burn.*');
+
+    const reportDir = equiv
+      ? 'data/logs/dmeow-equiv/dmeow/equiv'
+      : 'data/logs/dmeow-burn/dmeow/perf';
+    const reportFile = newestFileIn(reportDir);
+    if (!reportFile) {
+      Juke.logger.error(
+        `Round finished but ${reportDir} has no report - check the world log for a DMEOW_${equiv ? 'EQUIV' : 'BURN'}: abort line.`,
+      );
+      throw new Juke.ExitCode(1);
+    }
+    Juke.logger.info(`Report: ${reportFile}`);
+    Juke.logger.info('Debug log: dmeow_debug.jsonl');
+    if (!equiv) {
+      Juke.logger.info(
+        `Read it with (from byond-re): python scripts/dmeow_perf.py ${reportFile}`,
+      );
+      // derived from the report's own path rather than newestFileIn, so a round
+      // that died before writing its rows can't advertise a previous round's.
+      const turfFile = reportFile.replace(
+        '/dmeow/perf/',
+        '/dmeow/turfs/',
+      );
+      if (fs.existsSync(turfFile)) {
+        Juke.logger.info(
+          `Turf rows: python scripts/dmeow_turfs.py ${turfFile} ${reportFile}`,
+        );
+      }
+    }
   },
 });
 
