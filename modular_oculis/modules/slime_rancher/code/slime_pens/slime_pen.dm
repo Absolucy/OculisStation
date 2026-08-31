@@ -8,6 +8,7 @@
 /datum/slime_pen/Destroy(force)
 	for(var/turf/turf as anything in turfs)
 		remove_turf(turf)
+	// cleaning up all turfs SHOULD remove all slimes, but this is BYOND, "should" doesn't mean jack shit, so better safe than sorry
 	for(var/mob/living/basic/slime/slime as anything in slimes)
 		stop_tracking_slime(slime)
 	turfs = null
@@ -45,13 +46,15 @@
 	for(var/mob/living/basic/slime/slime in new_turf)
 		track_slime(slime)
 
-/datum/slime_pen/proc/remove_turf(turf/new_turf)
-	if(!isturf(new_turf))
-		CRASH("somehow tried to add a non-turf as a slime pen turf")
-	if(!(new_turf in turfs))
+/datum/slime_pen/proc/remove_turf(turf/old_turf)
+	if(!isturf(old_turf))
+		CRASH("somehow tried to remove a non-turf from the slime pen turfs?")
+	if(!(old_turf in turfs))
 		return
-	UnregisterSignal(new_turf, list(COMSIG_ATOM_ENTERED, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON))
-	turfs -= new_turf
+	UnregisterSignal(old_turf, list(COMSIG_ATOM_ENTERED, COMSIG_ATOM_AFTER_SUCCESSFUL_INITIALIZED_ON))
+	turfs -= old_turf
+	for(var/mob/living/basic/slime/slime in old_turf)
+		stop_tracking_slime(slime)
 
 /datum/slime_pen/proc/check_entered(datum/source, atom/movable/arrived)
 	SIGNAL_HANDLER
