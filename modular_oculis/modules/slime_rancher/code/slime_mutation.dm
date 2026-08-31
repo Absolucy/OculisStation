@@ -32,23 +32,23 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
 /datum/slime_mutation/blue
 	mutates_into = /datum/slime_type/blue
-	// latch_needed = alist(/mob/living/basic/cockroach/iceroach = 50)
+	latch_needed = alist(/mob/living/basic/cockroach/iceroach = 50)
 
 /datum/slime_mutation/cerulean
 	mutates_into = /datum/slime_type/cerulean
-	// latch_needed = alist(/mob/living/basic/cockroach/recursive = 40)
+	latch_needed = alist(/mob/living/basic/cockroach/recursive = 40)
 
 /datum/slime_mutation/dark_blue
 	mutates_into = /datum/slime_type/dark_blue
-	// latch_needed = alist(/mob/living/basic/xenofauna/diyaab = 75)
+	latch_needed = alist(/mob/living/basic/xenofauna/diyaab = 75)
 
 /datum/slime_mutation/red
 	mutates_into = /datum/slime_type/red
-	// latch_needed = alist(/mob/living/basic/xenofauna/lavadog = 50)
+	latch_needed = alist(/mob/living/basic/xenofauna/lavadog = 50)
 
 /datum/slime_mutation/oil
 	mutates_into = /datum/slime_type/oil
-	// latch_needed = alist(/mob/living/basic/xenofauna/dron = 65)
+	latch_needed = alist(/mob/living/basic/xenofauna/dron = 65)
 
 /datum/slime_mutation/yellow
 	mutates_into = /datum/slime_type/yellow
@@ -56,19 +56,19 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
 /datum/slime_mutation/green
 	mutates_into = /datum/slime_type/green
-	// latch_needed = alist(/mob/living/basic/xenofauna/greeblefly = 65)
+	latch_needed = alist(/mob/living/basic/xenofauna/greeblefly = 65)
 
 /datum/slime_mutation/sepia
 	mutates_into = /datum/slime_type/sepia
-	// latch_needed = alist(/mob/living/basic/xenofauna/possum = 65)
+	latch_needed = alist(/mob/living/basic/xenofauna/possum = 65)
 
 /datum/slime_mutation/black
 	mutates_into = /datum/slime_type/black
-	// latch_needed = alist(/mob/living/basic/xenofauna/thoom = 50)
+	latch_needed = alist(/mob/living/basic/xenofauna/thoom = 50)
 
 /datum/slime_mutation/silver
 	mutates_into = /datum/slime_type/silver
-	// latch_needed = alist(/mob/living/basic/xenofauna/meatbeast = 80)
+	latch_needed = alist(/mob/living/basic/xenofauna/meatbeast = 80)
 
 /datum/slime_mutation/gold
 	mutates_into = /datum/slime_type/gold
@@ -76,7 +76,7 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
 /datum/slime_mutation/adamantine
 	mutates_into = /datum/slime_type/adamantine
-	// needed_items = list(/obj/item/rockroach_shell)
+	needed_items = list(/obj/item/rockroach_shell)
 
 /datum/slime_mutation/darkpurple
 	mutates_into = /datum/slime_type/darkpurple
@@ -84,7 +84,7 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
 /datum/slime_mutation/pink
 	mutates_into = /datum/slime_type/pink
-	// latch_needed = alist(/mob/living/basic/xenofauna/thinbug = 80)
+	latch_needed = alist(/mob/living/basic/xenofauna/thinbug = 80)
 
 /datum/slime_mutation/pyrite
 	mutates_into = /datum/slime_type/pyrite
@@ -96,7 +96,7 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
 /datum/slime_mutation/lightpink
 	mutates_into = /datum/slime_type/lightpink
-	// latch_needed = alist(/mob/living/basic/xenofauna/voxslug = 80)
+	latch_needed = alist(/mob/living/basic/xenofauna/voxslug = 80)
 
 /datum/slime_mutation/darkgrey
 	mutates_into = /datum/slime_type/unique/darkgrey
