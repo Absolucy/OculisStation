@@ -10481,6 +10481,7 @@
 #include "modular_oculis\modules\slime_luxpens\code\medicine_reagents.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_mutation.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_type.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen.dm"
 #include "modular_oculis\modules\species\ethereal\code\ethereal.dm"
 #include "modular_oculis\modules\species\ethereal\code\ethereal_bodyparts.dm"
 #include "modular_oculis\modules\species\ethereal\code\ethereal_eyes.dm"
