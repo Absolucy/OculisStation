@@ -60,3 +60,26 @@
 	SIGNAL_HANDLER
 	if(isslime(arrived))
 		track_slime(arrived)
+
+/datum/slime_pen/ui_data(mob/user)
+	var/list/slime_data = list()
+	for(var/mob/living/basic/slime/slime as anything in slimes)
+		var/list/possible_mutations = list()
+		for(var/datum/slime_mutation/mutation_type as anything in slime.slime_type.possible_mutations)
+			possible_mutations += "[mutation_type]"
+		slime_data += list(list(
+			"name" = slime.name,
+			"life_stage" = slime.life_stage,
+			"amount_grown" = slime.amount_grown,
+			"color" = slime.slime_type.rgb_code,
+			"possible_mutations" = possible_mutations,
+		))
+	return list("slimes" = slime_data)
+
+// keep all these in static data
+/datum/slime_pen/ui_static_data(mob/user)
+	var/list/mutation_types = list()
+	for(var/mutation_type, value in GLOB.slime_mutations)
+		var/datum/slime_mutation/mutation = value
+		mutation_types["[mutation_type]"] = "[mutation.mutates_into::colour]"
+	return list("mutation_types" = mutation_types)
