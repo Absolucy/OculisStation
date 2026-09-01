@@ -106,14 +106,14 @@ GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 /datum/slime_mutation/rainbow
 	mutates_into = /datum/slime_type/rainbow
 	needed_items = list(
-		/obj/item/slime_extract/orange = 1,
-		/obj/item/slime_extract/purple = 1,
-		/obj/item/slime_extract/blue = 1,
-		/obj/item/slime_extract/metal = 1,
-		/obj/item/slime_extract/yellow = 1,
-		/obj/item/slime_extract/darkblue = 1,
-		/obj/item/slime_extract/darkpurple = 1,
-		/obj/item/slime_extract/silver = 1,
+		/obj/item/slime_extract/orange,
+		/obj/item/slime_extract/purple,
+		/obj/item/slime_extract/blue,
+		/obj/item/slime_extract/metal,
+		/obj/item/slime_extract/yellow,
+		/obj/item/slime_extract/darkblue,
+		/obj/item/slime_extract/darkpurple,
+		/obj/item/slime_extract/silver,
 	)
 	syringe_blocked = TRUE
 
