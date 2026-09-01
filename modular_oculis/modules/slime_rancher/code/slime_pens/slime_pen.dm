@@ -69,6 +69,7 @@
 			possible_mutations += "[mutation_type]"
 		slime_data += list(list(
 			"name" = slime.name,
+			"health" = round(slime.health / slime.maxHealth, 1),
 			"life_stage" = slime.life_stage,
 			"amount_grown" = slime.amount_grown,
 			"color" = slime.slime_type.rgb_code,
