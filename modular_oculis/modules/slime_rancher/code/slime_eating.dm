@@ -77,10 +77,12 @@
 	refresh_wanted_items()
 
 /mob/living/basic/slime/get_random_mutation()
-	. = ..()
-	if(transformative_effect == SLIME_TYPE_CERULEAN || transformative_effect == SLIME_TYPE_PYRITE)
-		return
-	return get_unlocked_mutation_type()
+	if(transformative_effect == SLIME_TYPE_PYRITE)
+		return pick(subtypesof(/datum/slime_type) - /datum/slime_type/rainbow - typesof(/datum/slime_type/unique))
+	else if(transformative_effect != SLIME_TYPE_CERULEAN && prob(mutation_chance))
+		return get_unlocked_mutation_type()
+	else
+		return slime_type.type
 
 /// lets a slime eat a wanted item just by attacking it - covers both the AI's own melee attack leaf and a player clicking it themselves
 /mob/living/basic/slime/on_slime_pre_attack(mob/living/basic/slime/our_slime, atom/target, proximity, modifiers)

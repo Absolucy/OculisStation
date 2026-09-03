@@ -228,12 +228,6 @@
 	mutator_used = FALSE
 
 /mob/living/basic/slime/proc/get_random_mutation()
-	// OCULIS EDIT START -- Unique slimes and slime rancher
-	if(transformative_effect == SLIME_TYPE_CERULEAN)
-		return slime_type.type
-	if(transformative_effect == SLIME_TYPE_PYRITE)
-		return pick(subtypesof(/datum/slime_type) - /datum/slime_type/rainbow - typesof(/datum/slime_type/unique))
-	// OCULIS ADDITION END
 	if(mutation_chance >= 100)
 		return /datum/slime_type/rainbow
 	else if(prob(mutation_chance))
