@@ -57,7 +57,7 @@
 	return TRUE
 
 /// The mutation this slime has fully fed for, if any. Random among ties.
-/mob/living/basic/slime/proc/get_unlocked_mutation_type()
+/mob/living/basic/slime/proc/get_unlocked_mutation_type(weight_new_types = FALSE)
 	var/list/unlocked = list()
 	for(var/mutation_type in slime_type.possible_mutations)
 		var/datum/slime_mutation/mutation = GLOB.slime_mutations[mutation_type]
@@ -65,11 +65,13 @@
 			continue
 		if(length(mutation.needed_items - eaten_items))
 			continue
-		unlocked += mutation.mutates_into
+		if(weight_new_types && !(mutation.mutates_into in GLOB.obtained_slime_types))
+			unlocked[mutation.mutates_into] = 10
+		else
+			unlocked[mutation.mutates_into] = 1
 
-	if(!length(unlocked))
-		return null
-	return pick(unlocked)
+	if(length(unlocked))
+		return pick_weight(unlocked)
 
 /mob/living/basic/slime/set_slime_type(new_type = SLIME_TYPE_RANDOM)
 	. = ..()

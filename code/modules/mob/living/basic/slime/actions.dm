@@ -143,7 +143,7 @@
 		balloon_alert(src, "not here!")
 		return
 
-	queued_mutation = get_random_mutation()
+	queued_mutation = get_unlocked_mutation_type(weight_new_types = TRUE)
 	apply_status_effect(/datum/status_effect/slime_reproducing, (queued_mutation == slime_type.type) ? SLIME_SPLIT_WINDUP : SLIME_MUTATE_WINDUP)
 
 ///Does the actual splitting or recoloring, once the wind-up has run its course
@@ -155,6 +155,7 @@
 		return
 
 	if(mutation_target != slime_type.type)
+		LAZYOR(GLOB.obtained_slime_types, mutation_target)
 		set_slime_type(mutation_target)
 		set_life_stage(SLIME_LIFE_STAGE_BABY)
 		set_nutrition(SLIME_STARTING_NUTRITION)

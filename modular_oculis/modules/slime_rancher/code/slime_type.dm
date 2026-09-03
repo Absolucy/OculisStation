@@ -1,3 +1,6 @@
+/// Lazylist of slime types that have been mutated so far
+GLOBAL_LIST(obtained_slime_types)
+
 /datum/slime_type
 	/// List of `/datum/slime_mutation`s this slime type is eligible for.
 	/// Use this instead of the `mutations` list, because modularity or whatever.
