@@ -27,7 +27,7 @@
 /datum/bt_node/ai_behavior/snatch_held_item
 
 /datum/bt_node/ai_behavior/snatch_held_item/perform(seconds_per_tick, datum/ai_controller/controller)
-	if(!SPT_PROB(5, seconds_per_tick))
+	if(!SPT_PROB(15, seconds_per_tick))
 		return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_FAILED
 
 	var/mob/living/basic/slime/slime_pawn = controller.pawn
@@ -46,6 +46,10 @@
 				span_notice("[slime_pawn] snatches [held_name] right out of [neighbor]'s hands!"),
 				span_notice("You snatch [held_name] right out of [neighbor]'s hands!")
 			)
+			slime_pawn.balloon_alert_to_viewers("snatches item out of hand!")
+			if(slime_pawn.current_mood != SLIME_MOOD_MISCHIEVOUS)
+				slime_pawn.current_mood = SLIME_MOOD_MISCHIEVOUS
+				slime_pawn.regenerate_icons()
 			return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_SUCCEEDED
 
 	return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_FAILED

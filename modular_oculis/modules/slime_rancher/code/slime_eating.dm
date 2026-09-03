@@ -50,6 +50,7 @@
 			span_notice("[src] slurps up [meal_name]!"),
 			span_notice("You slurp up [meal_name]!")
 		)
+		balloon_alert_to_viewers("slurps up item")
 	playsound(src, 'sound/items/eatfood.ogg', vol = 50, vary = TRUE) // yumy
 	adjust_nutrition(5)
 	refresh_wanted_items()
