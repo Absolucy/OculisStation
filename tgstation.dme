@@ -10484,6 +10484,7 @@
 #include "modular_oculis\modules\slime_rancher\code\feeding_flora.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating_ai.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_jiggling.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_mutation.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_type.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen.dm"

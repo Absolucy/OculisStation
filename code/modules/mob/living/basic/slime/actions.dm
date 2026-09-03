@@ -138,8 +138,22 @@
 		balloon_alert(src, "overcrowded!")
 		return
 
-	// OCULIS EDIT ADDITION START - slime rancher rework
-	var/mutation_target = get_random_mutation()
+	// OCULIS EDIT ADDITION START - slime rancher rework - wind up first, split later
+	if(!isopenturf(loc))
+		balloon_alert(src, "not here!")
+		return
+
+	queued_mutation = get_random_mutation()
+	apply_status_effect(/datum/status_effect/slime_reproducing, (queued_mutation == slime_type.type) ? SLIME_SPLIT_WINDUP : SLIME_MUTATE_WINDUP)
+
+///Does the actual splitting or recoloring, once the wind-up has run its course
+/mob/living/basic/slime/proc/finish_reproduce()
+	var/mutation_target = queued_mutation
+	queued_mutation = null
+
+	if(life_stage != SLIME_LIFE_STAGE_ADULT)
+		return
+
 	if(mutation_target != slime_type.type)
 		set_slime_type(mutation_target)
 		set_life_stage(SLIME_LIFE_STAGE_BABY)
