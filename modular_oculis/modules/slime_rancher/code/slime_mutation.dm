@@ -9,9 +9,45 @@
 	var/alist/latch_needed
 	/// If TRUE, then you can't get this color from a random mutator syringe
 	var/syringe_blocked = FALSE
+	var/mob/living/basic/slime/our_slime
+
+/datum/slime_mutation/New(mob/living/basic/slime/our_slime)
+	src.our_slime = our_slime
+	RegisterSignal(our_slime, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_item))
+	RegisterSignal(our_slime, COMSIG_SLIME_ATE_ITEM, PROC_REF(on_ate_item))
+	RegisterSignal(our_slime, COMSIG_SLIME_LATCH_DRAINED, PROC_REF(on_latch_drained))
+
+/datum/slime_mutation/Destroy()
+	UnregisterSignal(our_slime, list(COMSIG_SLIME_CHECK_WANTED_ITEM, COMSIG_SLIME_ATE_ITEM, COMSIG_SLIME_LATCH_DRAINED))
+	our_slime = null
+	return ..()
 
 /datum/slime_mutation/proc/is_satisfied()
 	return !length(needed_items) && !length(latch_needed)
+
+/datum/slime_mutation/proc/on_check_wanted_item(mob/living/basic/slime/source, obj/item/meal)
+	SIGNAL_HANDLER
+	for(var/needed_type in needed_items)
+		if(istype(meal, needed_type))
+			return COMPONENT_SLIME_WANTS_ITEM
+
+/datum/slime_mutation/proc/on_ate_item(mob/living/basic/slime/source, meal_type)
+	SIGNAL_HANDLER
+	for(var/needed_type in needed_items)
+		if(ispath(meal_type, needed_type))
+			needed_items -= needed_type
+
+/datum/slime_mutation/proc/on_latch_drained(mob/living/basic/slime/source, mob/living/meal, drained)
+	SIGNAL_HANDLER
+	for(var/mob_type, drain_left in latch_needed)
+		if(!istype(meal, mob_type))
+			continue
+		drain_left -= drained
+		if(drain_left > 0)
+			latch_needed[mob_type] = drain_left
+			continue
+		latch_needed -= mob_type
+		source.refresh_wanted_targets()
 
 /datum/slime_mutation/metal
 	mutates_into = /datum/slime_type/metal

@@ -96,6 +96,9 @@
 
 		to_chat(owner, span_userdanger(pick(pain_lines)))
 
+	// OCULIS EDIT ADDITION START - SLIME_RANCHER - latch-feeding feeds mutation progress
+	SEND_SIGNAL(our_slime, COMSIG_SLIME_LATCH_DRAINED, owner, -totaldamage)
+	// OCULIS EDIT ADDITION END
 	our_slime.adjust_nutrition(-1 * 1.8 * totaldamage) //damage is already modified by seconds_between_ticks
 
 	//Heal yourself.

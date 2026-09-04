@@ -10,6 +10,19 @@
 		return list()
 	return typecache_filter_list(oview(range, pawn), wanted_types)
 
+/// slimes will also chase down critters they still owe a mutation, hungry or not
+/datum/targeting_strategy/slime_food/is_valid_target(mob/living/living_mob, atom/target, vision_range, datum/ai_controller/controller = null)
+	. = ..()
+	if(. || isnull(controller) || QDELETED(target))
+		return .
+
+	var/list/wanted_mobs = controller.blackboard[BB_SLIME_WANTED_MOBS]
+	if(!wanted_mobs?[target.type])
+		return FALSE
+
+	var/mob/living/basic/slime/slimey = living_mob
+	return slimey.can_feed_on(target, silent = TRUE, check_adjacent = FALSE) && can_see(slimey, target, vision_range)
+
 /// check to see if we're free to go eat items laying around
 /datum/bt_node/decorator/bb_key_set/slime_can_forage
 

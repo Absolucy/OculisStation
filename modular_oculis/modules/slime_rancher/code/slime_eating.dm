@@ -11,8 +11,18 @@
 	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
 		. |= mutation.needed_items
 
-/mob/living/basic/slime/proc/refresh_wanted_items()
-	ai_controller?.override_blackboard_key(BB_SLIME_WANTED_ITEMS, typecacheof(get_wanted_item_types()))
+/// returns a list of mob types this slime still needs to drain for mutations
+/mob/living/basic/slime/proc/get_wanted_mob_types() as /list
+	. = list()
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		for(var/mob_type, drain_left in mutation.latch_needed)
+			. |= mob_type
+
+/mob/living/basic/slime/proc/refresh_wanted_targets()
+	if(isnull(ai_controller))
+		return
+	ai_controller.override_blackboard_key(BB_SLIME_WANTED_ITEMS, typecacheof(get_wanted_item_types()))
+	ai_controller.override_blackboard_key(BB_SLIME_WANTED_MOBS, typecacheof(get_wanted_mob_types()))
 
 /// Eats meal, whether it's sitting on the floor or in someone's hands. Returns TRUE if it was eaten.
 /// silent skips the default "slurps up" message, for callers with their own wording (like when it yoinks an item out of your hand).
@@ -22,15 +32,11 @@
 	if(ai_controller?.blackboard[BB_SLIME_ITEM_TARGET] == meal)
 		ai_controller.clear_blackboard_key(BB_SLIME_ITEM_TARGET)
 
-	var/list/matched_types = list()
-	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
-		for(var/needed_type in mutation.needed_items)
-			if(!(needed_type in matched_types) && istype(meal, needed_type))
-				matched_types += needed_type
-	if(!length(matched_types))
+	if(!(SEND_SIGNAL(src, COMSIG_SLIME_CHECK_WANTED_ITEM, meal) & COMPONENT_SLIME_WANTS_ITEM))
 		return FALSE
 
 	var/meal_name = "\the [meal]" // get this bc eating it might delete the item
+	var/meal_type = meal.type
 
 	if(isstack(meal))
 		var/obj/item/stack/meal_stack = meal
@@ -42,8 +48,7 @@
 			return FALSE
 		qdel(meal)
 
-	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
-		mutation.needed_items -= matched_types
+	SEND_SIGNAL(src, COMSIG_SLIME_ATE_ITEM, meal_type)
 
 	if(!silent)
 		visible_message(
@@ -53,7 +58,7 @@
 		balloon_alert_to_viewers("slurps up item")
 	playsound(src, 'sound/items/eatfood.ogg', vol = 50, vary = TRUE) // yumy
 	adjust_nutrition(5)
-	refresh_wanted_items()
+	refresh_wanted_targets()
 	return TRUE
 
 /// The mutation this slime has fully fed for, if any. Random among ties.
@@ -72,8 +77,8 @@
 	QDEL_LIST(mutation_progress)
 	mutation_progress = list()
 	for(var/mutation_type in slime_type.possible_mutations)
-		mutation_progress += new mutation_type
-	refresh_wanted_items()
+		mutation_progress += new mutation_type(src)
+	refresh_wanted_targets()
 
 /mob/living/basic/slime/get_random_mutation()
 	if(transformative_effect == SLIME_TYPE_PYRITE)
