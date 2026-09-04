@@ -1,15 +1,15 @@
 /mob/living/basic/slime
-	/// Requirement typepaths (not object types - a stack sheet's subtype still counts) this slime has already eaten.
-	var/list/eaten_items
+	var/list/datum/slime_mutation/mutation_progress
+
+/mob/living/basic/slime/Destroy()
+	QDEL_LIST(mutation_progress)
+	return ..()
 
 /// returns a list of items this slime can eat for mutations (which it hasn't eaten already)
 /mob/living/basic/slime/proc/get_wanted_item_types() as /list
 	. = list()
-	for(var/mutation_type in slime_type.possible_mutations)
-		var/datum/slime_mutation/mutation = GLOB.slime_mutations[mutation_type]
-		for(var/needed_type in mutation?.needed_items)
-			if(!(needed_type in eaten_items))
-				. += needed_type
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		. |= mutation.needed_items
 
 /mob/living/basic/slime/proc/refresh_wanted_items()
 	ai_controller?.override_blackboard_key(BB_SLIME_WANTED_ITEMS, typecacheof(get_wanted_item_types()))
@@ -22,11 +22,11 @@
 	if(ai_controller?.blackboard[BB_SLIME_ITEM_TARGET] == meal)
 		ai_controller.clear_blackboard_key(BB_SLIME_ITEM_TARGET)
 
-	var/list/wanted_types = get_wanted_item_types()
 	var/list/matched_types = list()
-	for(var/wanted_type in wanted_types)
-		if(istype(meal, wanted_type))
-			matched_types += wanted_type
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		for(var/needed_type in mutation.needed_items)
+			if(!(needed_type in matched_types) && istype(meal, needed_type))
+				matched_types += needed_type
 	if(!length(matched_types))
 		return FALSE
 
@@ -42,8 +42,8 @@
 			return FALSE
 		qdel(meal)
 
-	for(var/needed_type in matched_types)
-		LAZYADD(eaten_items, needed_type)
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		mutation.needed_items -= matched_types
 
 	if(!silent)
 		visible_message(
@@ -59,23 +59,20 @@
 /// The mutation this slime has fully fed for, if any. Random among ties.
 /mob/living/basic/slime/proc/get_unlocked_mutation_type(weight_new_types = FALSE)
 	var/list/unlocked = list()
-	for(var/mutation_type in slime_type.possible_mutations)
-		var/datum/slime_mutation/mutation = GLOB.slime_mutations[mutation_type]
-		if(!length(mutation?.needed_items))
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		if(!mutation.is_satisfied())
 			continue
-		if(length(mutation.needed_items - eaten_items))
-			continue
-		if(weight_new_types && !(mutation.mutates_into in GLOB.obtained_slime_types))
-			unlocked[mutation.mutates_into] = 10
-		else
-			unlocked[mutation.mutates_into] = 1
+		unlocked[mutation.mutates_into] = (weight_new_types && !(mutation.mutates_into in GLOB.obtained_slime_types)) ? 10 : 1
 
 	if(length(unlocked))
 		return pick_weight(unlocked)
 
 /mob/living/basic/slime/set_slime_type(new_type = SLIME_TYPE_RANDOM)
 	. = ..()
-	eaten_items = null
+	QDEL_LIST(mutation_progress)
+	mutation_progress = list()
+	for(var/mutation_type in slime_type.possible_mutations)
+		mutation_progress += new mutation_type
 	refresh_wanted_items()
 
 /mob/living/basic/slime/get_random_mutation()

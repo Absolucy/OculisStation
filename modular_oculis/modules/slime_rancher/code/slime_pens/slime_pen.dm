@@ -80,7 +80,7 @@
 // keep all these in static data
 /datum/slime_pen/ui_static_data(mob/user)
 	var/list/mutation_types = list()
-	for(var/mutation_type, value in GLOB.slime_mutations)
-		var/datum/slime_mutation/mutation = value
-		mutation_types["[mutation_type]"] = "[mutation.mutates_into::colour]"
+	for(var/datum/slime_mutation/mutation_type as anything in valid_subtypesof(/datum/slime_mutation))
+		var/datum/slime_type/mutates_into = mutation_type::mutates_into
+		mutation_types["[mutation_type]"] = "[mutates_into::colour]"
 	return list("mutation_types" = mutation_types)
