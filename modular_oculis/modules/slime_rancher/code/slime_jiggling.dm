@@ -20,20 +20,12 @@
 /datum/status_effect/slime_reproducing
 	id = "slime_reproducing"
 	duration = SLIME_SPLIT_WINDUP
-	tick_interval = 2 SECONDS
+	tick_interval = STATUS_EFFECT_NO_TICK
 	show_duration = TRUE
 	alert_type = /atom/movable/screen/alert/status_effect/slime_reproducing
 	processing_speed = STATUS_EFFECT_PRIORITY // so slimes don't spend half an eternity mutating/splitting if server is laggy
 	var/interrupted = FALSE
 	var/matrix/base_transform
-
-/atom/movable/screen/alert/status_effect/slime_reproducing
-	name = "Reproducing"
-	desc = "You're busy dividing yourself. Hold still."
-
-/datum/status_effect/slime_reproducing/on_creation(mob/living/new_owner, duration = SLIME_SPLIT_WINDUP)
-	src.duration = duration
-	return ..()
 
 /datum/status_effect/slime_reproducing/on_apply()
 	var/mob/living/basic/slime/slime_owner = owner
@@ -55,12 +47,9 @@
 		owner.balloon_alert_to_viewers("mutating...")
 
 	base_transform = matrix(owner.transform)
-	slime_owner.start_undulating(splitting)
+	slime_owner.start_undulating(splitting) // hehe jiggle
 	owner.do_jitter_animation()
 	return TRUE
-
-/datum/status_effect/slime_reproducing/tick(seconds_between_ticks)
-	owner.do_jitter_animation()
 
 /datum/status_effect/slime_reproducing/proc/interrupt()
 	SIGNAL_HANDLER
@@ -84,6 +73,14 @@
 		slime_owner.queued_mutation = null
 	else
 		slime_owner.finish_reproduce()
+
+/atom/movable/screen/alert/status_effect/slime_reproducing
+	name = "Reproducing"
+	desc = "You're busy dividing yourself. Hold still."
+	icon = 'icons/hud/screen_slimecore.dmi'
+	icon_state = "template"
+	overlay_icon = 'icons/mob/actions/actions_slime.dmi'
+	overlay_state = "slimesplit"
 
 /datum/action/innate/slime/reproduce/IsAvailable(feedback = FALSE)
 	return ..() && !owner.has_status_effect(/datum/status_effect/slime_reproducing)

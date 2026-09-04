@@ -10482,6 +10482,7 @@
 #include "modular_oculis\modules\slime_luxpens\code\hypospray.dm"
 #include "modular_oculis\modules\slime_luxpens\code\medicine_reagents.dm"
 #include "modular_oculis\modules\slime_rancher\code\feeding_flora.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating_ai.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_jiggling.dm"

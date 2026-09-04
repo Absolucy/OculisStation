@@ -1,10 +1,3 @@
-/mob/living/basic/slime
-	var/list/datum/slime_mutation/mutation_progress
-
-/mob/living/basic/slime/Destroy()
-	QDEL_LIST(mutation_progress)
-	return ..()
-
 /// returns a list of items this slime can eat for mutations (which it hasn't eaten already)
 /mob/living/basic/slime/proc/get_wanted_item_types() as /list
 	. = list()

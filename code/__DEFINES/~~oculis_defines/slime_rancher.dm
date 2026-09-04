@@ -19,3 +19,5 @@
 // these control how long slimes jiggle when splitting or mutating
 #define SLIME_SPLIT_WINDUP (5 SECONDS)
 #define SLIME_MUTATE_WINDUP (8 SECONDS)
+
+#define EVLOG_CATEGORY_SLIMES "Slimes"

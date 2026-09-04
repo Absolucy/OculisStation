@@ -35,6 +35,7 @@
 	SIGNAL_HANDLER
 	for(var/needed_type in needed_items)
 		if(ispath(meal_type, needed_type))
+			EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "ate [meal_type] (for [type])")
 			needed_items -= needed_type
 
 /datum/slime_mutation/proc/on_latch_drained(mob/living/basic/slime/source, mob/living/meal, drained)
@@ -45,9 +46,11 @@
 		drain_left -= drained
 		if(drain_left > 0)
 			latch_needed[mob_type] = drain_left
+			EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "drained [drained] from [mob_type] ([drain_left + drained] -> [drain_left], for [type])")
 			continue
 		latch_needed -= mob_type
 		source.refresh_wanted_targets()
+		EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "drained enough [mob_type] (for [type])")
 
 /datum/slime_mutation/metal
 	mutates_into = /datum/slime_type/metal
