@@ -1,13 +1,14 @@
 /// Slime mutation datum singletons: [type] = instance
 GLOBAL_ALIST_INIT(slime_mutations, init_slime_mutations())
 
+// todo: un-singleton these
 /datum/slime_mutation
 	abstract_type = /datum/slime_mutation
 	/// The slime type we pass on if we succeed
 	var/datum/slime_type/mutates_into
 	/// Items to feed the slime in order to mutate
 	var/list/needed_items
-	/// The mobs needed to be latch fed in order to mutate - stored in type = amount
+	/// The mobs needed to be latch fed in order to mutate - stored as [mob type] = health drained
 	var/alist/latch_needed
 	/// If TRUE, then you can't get this color from a random mutator syringe
 	var/syringe_blocked = FALSE
