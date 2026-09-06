@@ -1,0 +1,4 @@
+author: "XeonMations"
+delete-after: True
+changes:
+  - balance: "Affluent quirk no longer spawns infinite money"
