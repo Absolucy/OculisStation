@@ -73,13 +73,15 @@
 		mutation_progress += new mutation_type(src)
 	refresh_wanted_targets()
 
+/// What this slime turns into when it reproduces. Returning our own type means an ordinary split.
+/// Never returns null - a null here nukes slime_type and takes the mob with it.
 /mob/living/basic/slime/get_random_mutation()
 	if(transformative_effect == SLIME_TYPE_PYRITE)
 		return pick(subtypesof(/datum/slime_type) - /datum/slime_type/rainbow - typesof(/datum/slime_type/unique))
-	else if(transformative_effect != SLIME_TYPE_CERULEAN && prob(mutation_chance))
-		return get_unlocked_mutation_type()
-	else
+	if(transformative_effect == SLIME_TYPE_CERULEAN || !prob(mutation_chance))
 		return slime_type.type
+	// no recipe finished, so it just splits into more of itself
+	return get_unlocked_mutation_type(weight_new_types = TRUE) || slime_type.type
 
 /// lets a slime eat a wanted item just by attacking it - covers both the AI's own melee attack leaf and a player clicking it themselves
 /mob/living/basic/slime/on_slime_pre_attack(mob/living/basic/slime/our_slime, atom/target, proximity, modifiers)

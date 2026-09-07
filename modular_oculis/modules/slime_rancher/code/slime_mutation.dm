@@ -10,9 +10,19 @@
 	/// If TRUE, then you can't get this color from a random mutator syringe
 	var/syringe_blocked = FALSE
 	var/mob/living/basic/slime/our_slime
+	/// The full item list from before the slime ate any of it - scanners need it to show what's already done
+	var/list/total_items
+	/// Same deal for the drain requirements: [mob type] = health that had to be drained
+	var/alist/latch_totals
 
 /datum/slime_mutation/New(mob/living/basic/slime/our_slime)
 	src.our_slime = our_slime
+	total_items = needed_items?.Copy()
+	// built by hand rather than Copy() because alist copy semantics aren't documented
+	if(length(latch_needed))
+		latch_totals = alist()
+		for(var/mob_type, drain_needed in latch_needed)
+			latch_totals[mob_type] = drain_needed
 	RegisterSignal(our_slime, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_item))
 	RegisterSignal(our_slime, COMSIG_SLIME_ATE_ITEM, PROC_REF(on_ate_item))
 	RegisterSignal(our_slime, COMSIG_SLIME_LATCH_DRAINED, PROC_REF(on_latch_drained))
@@ -72,8 +82,8 @@
 	mutates_into = /datum/slime_type/cerulean
 	latch_needed = alist(/mob/living/basic/cockroach/recursive = 40)
 
-/datum/slime_mutation/dark_blue
-	mutates_into = /datum/slime_type/dark_blue
+/datum/slime_mutation/darkblue
+	mutates_into = /datum/slime_type/darkblue
 	latch_needed = alist(/mob/living/basic/xenofauna/diyaab = 75)
 
 /datum/slime_mutation/red

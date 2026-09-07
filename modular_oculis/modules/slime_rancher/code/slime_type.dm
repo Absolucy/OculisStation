@@ -23,11 +23,11 @@ GLOBAL_LIST(obtained_slime_types)
 /datum/slime_type/blue
 	possible_mutations = list(
 		/datum/slime_mutation/silver,
-		/datum/slime_mutation/dark_blue,
+		/datum/slime_mutation/darkblue,
 		/datum/slime_mutation/pink,
 	)
 
-/datum/slime_type/dark_blue
+/datum/slime_type/darkblue
 	possible_mutations = list(
 		/datum/slime_mutation/blue,
 		/datum/slime_mutation/purple,
@@ -49,7 +49,7 @@ GLOBAL_LIST(obtained_slime_types)
 /datum/slime_type/purple
 	possible_mutations = list(
 		/datum/slime_mutation/green,
-		/datum/slime_mutation/dark_blue,
+		/datum/slime_mutation/darkblue,
 		/datum/slime_mutation/darkpurple,
 	)
 

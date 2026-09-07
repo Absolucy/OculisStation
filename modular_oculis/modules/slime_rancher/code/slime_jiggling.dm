@@ -43,7 +43,7 @@
 		owner.visible_message(span_notice("[owner] starts to flatten, [owner.p_they()] look[owner.p_s()] to be splitting."))
 		owner.balloon_alert_to_viewers("splitting...")
 	else
-		owner.visible_message(span_notice("[owner] starts to undulate, [owner.p_they()] look[owner.p_s()] looks to be mutating."))
+		owner.visible_message(span_notice("[owner] starts to undulate, [owner.p_they()] look[owner.p_s()] to be mutating."))
 		owner.balloon_alert_to_viewers("mutating...")
 
 	base_transform = matrix(owner.transform)
