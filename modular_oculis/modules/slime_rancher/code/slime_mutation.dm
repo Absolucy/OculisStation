@@ -18,11 +18,7 @@
 /datum/slime_mutation/New(mob/living/basic/slime/our_slime)
 	src.our_slime = our_slime
 	total_items = needed_items?.Copy()
-	// built by hand rather than Copy() because alist copy semantics aren't documented
-	if(length(latch_needed))
-		latch_totals = alist()
-		for(var/mob_type, drain_needed in latch_needed)
-			latch_totals[mob_type] = drain_needed
+	latch_totals = latch_needed?.Copy()
 	RegisterSignal(our_slime, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_item))
 	RegisterSignal(our_slime, COMSIG_SLIME_ATE_ITEM, PROC_REF(on_ate_item))
 	RegisterSignal(our_slime, COMSIG_SLIME_LATCH_DRAINED, PROC_REF(on_latch_drained))
