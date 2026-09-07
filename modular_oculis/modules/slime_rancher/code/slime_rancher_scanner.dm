@@ -21,6 +21,10 @@
 	. = ..()
 	register_item_context()
 
+/obj/item/slime_rancher_scanner/Destroy(force)
+	scanned_slime_ref = null
+	return ..()
+
 /obj/item/slime_rancher_scanner/add_item_context(obj/item/source, list/context, atom/target, mob/living/user)
 	if(!isslime(target))
 		return NONE
@@ -53,7 +57,8 @@
 
 /obj/item/slime_rancher_scanner/ui_data(mob/user)
 	var/mob/living/basic/slime/slime = scanned_slime_ref?.resolve()
-	if(QDELETED(slime))
+	if(isnull(slime))
+		scanned_slime_ref = null
 		return list("scanned" = FALSE)
 
 	var/sprite_icon = get_icon_dmi_path(slime)
