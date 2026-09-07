@@ -124,3 +124,15 @@
 		))
 
 	return entry
+
+// any old slime scanner that's mapped in gets replaced with the new one
+/obj/item/slime_scanner/Initialize(mapload)
+	. = ..()
+	if(mapload)
+		var/obj/item/slime_rancher_scanner/new_scanner = new(loc)
+		// also ensure it's positioned the same
+		new_scanner.pixel_x = pixel_x
+		new_scanner.pixel_y = pixel_y
+		new_scanner.pixel_w = pixel_w
+		new_scanner.pixel_z = pixel_z
+		return INITIALIZE_HINT_QDEL
