@@ -379,7 +379,7 @@ export const SlimeRancherScanner = () => {
   const { scanned } = data;
 
   return (
-    <Window width={780} height={480} theme="slime_rancher_scanner">
+    <Window width={780} height={540} theme="slime_rancher_scanner">
       <Window.Content scrollable className="SlimeRancherScanner">
         {!scanned ? (
           <Box className="SlimeRancherScanner__empty">
