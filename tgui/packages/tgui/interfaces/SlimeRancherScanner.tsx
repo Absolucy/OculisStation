@@ -384,8 +384,8 @@ export const SlimeRancherScanner = () => {
         {!scanned ? (
           <Box className="SlimeRancherScanner__empty">
             <Icon name="crosshairs" size={3} />
-            <h1>No slime locked on.</h1>
-            <p>Point the scanner at one, from anywhere you can see it.</p>
+            <h1>No slime currently scanned.</h1>
+            <p>Point the scanner at any slime you can see.</p>
           </Box>
         ) : (
           <>
