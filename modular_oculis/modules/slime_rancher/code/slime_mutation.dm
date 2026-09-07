@@ -53,6 +53,7 @@
 	for(var/mob_type, drain_left in latch_needed)
 		if(!istype(meal, mob_type))
 			continue
+		drained = ceil(drained)
 		drain_left -= drained
 		if(drain_left > 0)
 			latch_needed[mob_type] = drain_left
