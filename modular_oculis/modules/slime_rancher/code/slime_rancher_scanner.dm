@@ -98,8 +98,8 @@
 /obj/item/slime_rancher_scanner/proc/mutation_data(datum/slime_mutation/mutation) as /list
 	var/datum/slime_type/target = mutation.mutates_into
 	var/list/entry = list(
-		"color" = initial(target.colour),
-		"color_hex" = initial(target.rgb_code),
+		"color" = target::colour,
+		"color_hex" = target::rgb_code,
 		"ready" = mutation.is_satisfied(),
 		"items" = list(),
 		"drains" = list(),
@@ -107,18 +107,18 @@
 
 	for(var/obj/item/wanted as anything in mutation.total_items)
 		entry["items"] += list(list(
-			"name" = initial(wanted.name),
-			"icon" = initial(wanted.icon),
-			"icon_state" = initial(wanted.icon_state),
+			"name" = wanted::name,
+			"icon" = wanted::icon,
+			"icon_state" = wanted::icon_state,
 			"done" = !(wanted in mutation.needed_items),
 		))
 
 	for(var/prey_type, drain_total in mutation.latch_totals)
 		var/mob/living/prey = prey_type
 		entry["drains"] += list(list(
-			"name" = initial(prey.name),
-			"icon" = initial(prey.icon),
-			"icon_state" = initial(prey.icon_state),
+			"name" = prey::name,
+			"icon" = prey::icon,
+			"icon_state" = prey::icon_state,
 			"total" = drain_total,
 			"drained" = drain_total - (mutation.latch_needed[prey_type] || 0),
 		))
