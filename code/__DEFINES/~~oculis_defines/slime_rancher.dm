@@ -16,6 +16,14 @@
 /// From /datum/status_effect/slime_leech/tick(): (mob/living/meal, drained)
 #define COMSIG_SLIME_LATCH_DRAINED "slime_latch_drained"
 
+/// From /obj/item/vacuum_pack/proc/store(): (mob/living/stored_mob)
+#define COMSIG_VACUUM_STORED "vacuum_stored"
+/// From /obj/item/vacuum_pack/Exited(): (mob/living/released_mob)
+#define COMSIG_VACUUM_RELEASED "vacuum_released"
+
+#define VACUUM_CAN_PACIFY (1<<0)
+#define VACUUM_CAN_PRINT (1<<1)
+
 // these control how long slimes jiggle when splitting or mutating
 #define SLIME_SPLIT_WINDUP (5 SECONDS)
 #define SLIME_MUTATE_WINDUP (8 SECONDS)

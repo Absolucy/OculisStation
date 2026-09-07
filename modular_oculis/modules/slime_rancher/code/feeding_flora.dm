@@ -5,6 +5,7 @@
 	icon_state = "rockroach"
 	health = 15
 	maxHealth = 15
+	biomass_value = 1
 
 /mob/living/basic/cockroach/rockroach/Initialize(mapload)
 	. = ..()
@@ -26,6 +27,7 @@
 	icon_state = "rockroach"
 	health = 15
 	maxHealth = 15
+	biomass_value = 1
 
 /mob/living/basic/cockroach/recursive
 	name = "recursive roach"
@@ -34,6 +36,7 @@
 	icon_state = "rockroach"
 	health = 15
 	maxHealth = 15
+	biomass_value = 1
 
 /mob/living/basic/xenofauna
 	desc = "Feed these to the slimes!"
@@ -44,6 +47,8 @@
 	basic_mob_flags = DEL_ON_DEATH
 	mob_size = MOB_SIZE_SMALL
 	pass_flags = PASSMOB // otherwise these fuckers will be super annoying
+	abstract_type = /mob/living/basic/xenofauna
+	biomass_value = 2
 
 /mob/living/basic/xenofauna/diyaab
 	name = "diyaab"
