@@ -69,7 +69,7 @@
 		"life_stage" = slime.life_stage,
 		"health" = round(slime.health, 1),
 		"max_health" = slime.maxHealth,
-		"nutrition" = slime.nutrition,
+		"nutrition" = floor(slime.nutrition),
 		"powerlevel" = slime.powerlevel,
 		"cores" = slime.cores,
 		"growth" = slime.amount_grown,
