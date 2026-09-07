@@ -101,3 +101,6 @@ GLOBAL_LIST(obtained_slime_types)
 		/datum/slime_mutation/darkgrey,
 		/datum/slime_mutation/rainbow,
 	)
+
+/datum/slime_type/rainbow
+	possible_mutations = list()
