@@ -53,6 +53,8 @@
 /obj/item/vacuum_nozzle/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
 	if(!pack)
 		return NONE
+	if(istype(interacting_with, /obj/item/disk/vacuum_upgrade) && interacting_with.Adjacent(user))
+		return pack.item_interaction(user, interacting_with)
 	pack.primary_action(interacting_with, user)
 	return ITEM_INTERACT_SUCCESS
 

@@ -415,6 +415,8 @@
 		succeeded = recycle_monkey(target, user)
 	else if(isliving(target))
 		succeeded = capture(target, user)
+	else
+		succeeded = fire(target, user)
 	busy = FALSE
 	return succeeded
 
