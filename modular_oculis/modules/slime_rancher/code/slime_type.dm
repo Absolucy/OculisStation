@@ -1,5 +1,7 @@
 /// Lazylist of slime types that have been mutated so far
 GLOBAL_LIST(obtained_slime_types)
+/// Lazylist of xenofauna the ranch can print, filled in as slimes that want to eat them show up
+GLOBAL_LIST(unlocked_xenofauna)
 
 /datum/slime_type
 	/// List of `/datum/slime_mutation`s this slime type is eligible for.

@@ -22,6 +22,7 @@
 		/obj/item/food/monkeycube = 1,
 		/obj/item/stack/biomass = 1,
 	)
+	var/static/list/baseline_species = list(/mob/living/basic/cockroach/iceroach)
 
 /obj/machinery/biomass_recycler/Initialize(mapload)
 	. = ..()
@@ -47,6 +48,7 @@
 	. = ..()
 	if(in_range(user, src) || isobserver(user))
 		. += span_notice("The status display reads: <b>[biomass]</b> unit\s of biomass at <b>[recycling_efficiency * 100]%</b> recycling efficiency.")
+		. += span_notice("Its catalogue lists <b>[length(get_printable_species())]</b> printable creature\s. More unlock as slimes mutate.")
 
 /obj/machinery/biomass_recycler/wrench_act(mob/living/user, obj/item/tool)
 	. = ..()
@@ -133,17 +135,17 @@
 	to_chat(user, span_notice("You recycle [target_name] into [biomass_yield] unit[biomass_yield == 1 ? "" : "s"] of biomass."))
 	return TRUE
 
-/// Creature catalogue shared with linked vacuum packs.
 /obj/machinery/biomass_recycler/proc/get_printable_species()
-	var/static/list/printable_species
-	if(printable_species)
-		return printable_species
+	var/static/list/species_costs
+	if(isnull(species_costs))
+		species_costs = list()
+		for(var/mob/living/basic/mob_type as anything in valid_subtypesof(/mob/living/basic))
+			if(mob_type::biomass_value > 0)
+				species_costs[mob_type] = mob_type::biomass_value * BIOMASS_PRINT_COST_MULTIPLIER
 
-	printable_species = list(/mob/living/carbon/human/species/monkey = 1)
-	for(var/mob/living/basic/mob_type as anything in valid_subtypesof(/mob/living/basic))
-		if(mob_type::biomass_value > 0)
-			printable_species[mob_type] = mob_type::biomass_value * BIOMASS_PRINT_COST_MULTIPLIER
-	return printable_species
+	. = list(/mob/living/carbon/human/species/monkey = 1)
+	for(var/mob_type in baseline_species + GLOB.unlocked_xenofauna)
+		.[mob_type] = species_costs[mob_type]
 
 /// Reserves biomass before creation so linked packs cannot overspend it.
 /obj/machinery/biomass_recycler/proc/purchase_type(printable_type, turf/spawn_turf)

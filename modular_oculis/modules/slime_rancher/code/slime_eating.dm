@@ -67,10 +67,14 @@
 
 /mob/living/basic/slime/set_slime_type(new_type = SLIME_TYPE_RANDOM)
 	. = ..()
+	LAZYOR(GLOB.obtained_slime_types, slime_type.type)
 	QDEL_LIST(mutation_progress)
 	mutation_progress = list()
 	for(var/mutation_type in slime_type.possible_mutations)
-		mutation_progress += new mutation_type(src)
+		var/datum/slime_mutation/mutation = new mutation_type(src)
+		mutation_progress += mutation
+		for(var/mob_type in mutation.latch_totals)
+			LAZYOR(GLOB.unlocked_xenofauna, mob_type)
 	refresh_wanted_targets()
 
 /// What this slime turns into when it reproduces. Returning our own type means an ordinary split.

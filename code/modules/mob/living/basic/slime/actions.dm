@@ -155,7 +155,6 @@
 		return
 
 	if(mutation_target != slime_type.type)
-		LAZYOR(GLOB.obtained_slime_types, mutation_target)
 		set_slime_type(mutation_target)
 		set_life_stage(SLIME_LIFE_STAGE_BABY)
 		set_nutrition(SLIME_STARTING_NUTRITION)
