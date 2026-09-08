@@ -39,7 +39,7 @@
 	return ..()
 
 /// The barrier on the other side of our edge, if the neighboring pen has one.
-/obj/structure/slime_pen_barrier/proc/find_twin()
+/obj/structure/slime_pen_barrier/proc/find_twin() as /obj/structure/slime_pen_barrier
 	var/turf/across = get_step(loc, dir)
 	if(isnull(across))
 		return null
@@ -71,8 +71,7 @@
 
 /obj/structure/slime_pen_barrier/update_appearance(updates = ALL)
 	// two pens sharing an edge would draw the same fence twice, so the older one just hides lmao
-	var/obj/structure/slime_pen_barrier/twin = find_twin()
-	alpha = (twin && twin.alpha) ? 0 : 255
+	alpha = find_twin()?.alpha ? 0 : 255
 	return ..()
 
 /obj/structure/slime_pen_barrier/update_overlays()
