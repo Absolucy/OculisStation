@@ -1,11 +1,42 @@
+GLOBAL_LIST_EMPTY(slime_pens)
+
 /// handles a single slime pen and tracks the slimes in it
 /datum/slime_pen
-	/// List of all slimes in the pen.
 	var/list/slimes
-	/// List of all turfs in the pen.
 	var/list/turf/turfs = list()
+	var/list/obj/structure/slime_pen_post/posts = list()
+	var/list/obj/structure/slime_pen_barrier/barriers = list()
+	var/barrier_color = SLIME_PEN_DEFAULT_COLOR
+	/// Pen size in tiles (pen size... hahaha)
+	var/width = 0
+	var/height = 0
+
+/datum/slime_pen/New(list/turf/interior, list/obj/structure/slime_pen_post/new_posts)
+	GLOB.slime_pens += src
+	posts = new_posts.Copy()
+	for(var/obj/structure/slime_pen_post/post as anything in posts)
+		post.pen = src
+		if(post.barrier_color)
+			barrier_color = post.barrier_color
+		RegisterSignals(post, list(COMSIG_MOVABLE_MOVED, COMSIG_QDELETING), PROC_REF(on_piece_lost))
+	var/list/xs = list()
+	var/list/ys = list()
+	for(var/turf/spot as anything in interior)
+		add_turf(spot)
+		xs += spot.x
+		ys += spot.y
+	width = max(xs) - min(xs) + 1
+	height = max(ys) - min(ys) + 1
+	build_barriers()
 
 /datum/slime_pen/Destroy(force)
+	GLOB.slime_pens -= src
+	for(var/atom/movable/piece as anything in barriers + posts)
+		UnregisterSignal(piece, list(COMSIG_MOVABLE_MOVED, COMSIG_QDELETING))
+	QDEL_LIST(barriers)
+	for(var/obj/structure/slime_pen_post/post as anything in posts)
+		post.pen = null
+	posts = null
 	for(var/turf/turf as anything in turfs)
 		remove_turf(turf)
 	// cleaning up all turfs SHOULD remove all slimes, but this is BYOND, "should" doesn't mean jack shit, so better safe than sorry
@@ -61,6 +92,35 @@
 	if(isslime(arrived))
 		track_slime(arrived)
 
+/// actually sets up the fence piece and such
+/datum/slime_pen/proc/build_barriers()
+	for(var/turf/spot as anything in turfs)
+		for(var/direction in GLOB.cardinals)
+			if(get_step(spot, direction) in turfs)
+				continue
+			// side pieces on the top row need the little connector that closes the corner join
+			var/top_row = (direction & (EAST|WEST)) && !(get_step(spot, NORTH) in turfs)
+			var/obj/structure/slime_pen_barrier/barrier = new(spot, direction, top_row)
+			barriers += barrier
+			apply_color(barrier)
+			RegisterSignals(barrier, list(COMSIG_MOVABLE_MOVED, COMSIG_QDELETING), PROC_REF(on_piece_lost))
+
+/// if we somehow manage to lose a barrier piece - which we SHOULDN'T - pen goes kablooey
+/datum/slime_pen/proc/on_piece_lost(datum/source)
+	SIGNAL_HANDLER
+	qdel(src)
+
+/datum/slime_pen/proc/set_barrier_color(new_color)
+	barrier_color = new_color
+	for(var/obj/structure/slime_pen_barrier/barrier as anything in barriers)
+		apply_color(barrier)
+
+/datum/slime_pen/proc/apply_color(obj/structure/slime_pen_barrier/barrier)
+	if(barrier_color == SLIME_PEN_DEFAULT_COLOR)
+		barrier.remove_atom_colour(FIXED_COLOUR_PRIORITY)
+		return
+	barrier.add_atom_colour(color_transition_filter(barrier_color), FIXED_COLOUR_PRIORITY)
+
 /datum/slime_pen/ui_data(mob/user)
 	var/list/slime_data = list()
 	for(var/mob/living/basic/slime/slime as anything in slimes)
@@ -68,19 +128,36 @@
 		for(var/datum/slime_mutation/mutation_type as anything in slime.slime_type.possible_mutations)
 			possible_mutations += "[mutation_type]"
 		slime_data += list(list(
+			"ref" = REF(slime),
 			"name" = slime.name,
-			"health" = round(slime.health / slime.maxHealth, 1),
+			"health" = round(slime.health / slime.maxHealth * 100, 1),
+			"nutrition" = floor(slime.nutrition),
 			"life_stage" = slime.life_stage,
 			"amount_grown" = slime.amount_grown,
-			"color" = slime.slime_type.rgb_code,
+			"color" = slime.slime_type.colour,
+			"color_hex" = slime.slime_type.rgb_code,
 			"possible_mutations" = possible_mutations,
 		))
-	return list("slimes" = slime_data)
+	return list(
+		"slimes" = slime_data,
+		"barrier_color" = barrier_color,
+	)
 
 // keep all these in static data
 /datum/slime_pen/ui_static_data(mob/user)
 	var/list/mutation_types = list()
 	for(var/datum/slime_mutation/mutation_type as anything in valid_subtypesof(/datum/slime_mutation))
 		var/datum/slime_type/mutates_into = mutation_type::mutates_into
-		mutation_types["[mutation_type]"] = "[mutates_into::colour]"
-	return list("mutation_types" = mutation_types)
+		mutation_types["[mutation_type]"] = list(
+			"color" = "[mutates_into::colour]",
+			"color_hex" = "[mutates_into::rgb_code]",
+		)
+	return list(
+		"mutation_types" = mutation_types,
+		"width" = width,
+		"height" = height,
+		"soft_capacity" = ceil(length(turfs) * 2),
+		"max_nutrition" = SLIME_MAX_NUTRITION,
+		"growth_threshold" = SLIME_EVOLUTION_THRESHOLD,
+		"default_color" = SLIME_PEN_DEFAULT_COLOR,
+	)

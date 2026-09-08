@@ -28,4 +28,7 @@
 #define SLIME_SPLIT_WINDUP (5 SECONDS)
 #define SLIME_MUTATE_WINDUP (8 SECONDS)
 
+/// The fence sprite's own blue. A pen set to this color skips the recolor filter entirely, so the default look is the sprite as drawn.
+#define SLIME_PEN_DEFAULT_COLOR "#4dc8e8"
+
 #define EVLOG_CATEGORY_SLIMES "Slimes"

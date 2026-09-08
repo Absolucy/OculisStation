@@ -1,5 +1,4 @@
 // THIS IS A OCULIS UI FILE
-import type { CSSProperties } from 'react';
 import {
   Box,
   DmIcon,
@@ -13,6 +12,7 @@ import { capitalizeAll } from 'tgui-core/string';
 
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
+import { SlimeName } from './common/SlimeRancher';
 
 type Requirement = {
   name: string;
@@ -82,23 +82,6 @@ type Data = {
   SlimeInfoData &
   SlimeMutationData &
   BuiltInNumberData;
-
-function SlimeName(props: { color: string; hex: string; suffix?: string }) {
-  const { color, hex, suffix } = props;
-
-  return (
-    <Box className="SlimeRancherScanner__name">
-      <Box
-        className={`SlimeRancherScanner__swatch${color === 'rainbow' ? ' SlimeRancherScanner__swatch--rainbow' : ''}`}
-        style={{ '--slime-color': hex } as CSSProperties}
-      />
-      <span>
-        {capitalizeAll(color)}
-        {suffix && ` ${suffix}`}
-      </span>
-    </Box>
-  );
-}
 
 const SPRITE_SIZE = '64px';
 
@@ -234,7 +217,7 @@ function Vitals() {
   const hungry = nutrition < nutrition_hungry;
 
   return (
-    <Box className="SlimeRancherScanner__vitals">
+    <Box className="SlimeRancher__card SlimeRancherScanner__vitals">
       <Box className="SlimeRancherScanner__identity">
         <Box className="SlimeRancherScanner__portrait-well">
           <SlimePortrait
@@ -248,7 +231,7 @@ function Vitals() {
           <h1>
             <SlimeName color={color} hex={color_hex} suffix="slime" />
           </h1>
-          <span className="SlimeRancherScanner__life-stage">
+          <span className="SlimeRancher__chip SlimeRancherScanner__life-stage">
             {capitalizeAll(life_stage)}
           </span>
         </Box>
@@ -315,13 +298,13 @@ function Vitals() {
         </Tooltip>
       </Box>
       <Box className="SlimeRancherScanner__readings">
-        <Box>
+        <Box className="SlimeRancher__well">
           <span>Electric charge</span>
           <strong>
             {powerlevel} / {max_powerlevel}
           </strong>
         </Box>
-        <Box>
+        <Box className="SlimeRancher__well">
           <span>Cores</span>
           <strong>{cores}</strong>
         </Box>
@@ -349,16 +332,16 @@ function Mutations() {
 
   if (mutations.length === 0) {
     return (
-      <Box className="SlimeRancherScanner__mutations">
-        <h2>Mutations</h2>
+      <Box className="SlimeRancher__card SlimeRancherScanner__mutations">
+        <h2 className="SlimeRancher__heading">Mutations</h2>
         <p>This slime has nowhere left to mutate to.</p>
       </Box>
     );
   }
 
   return (
-    <Box className="SlimeRancherScanner__mutations">
-      <h2>Mutations</h2>
+    <Box className="SlimeRancher__card SlimeRancherScanner__mutations">
+      <h2 className="SlimeRancher__heading">Mutations</h2>
       {!anyReady && (
         <NoticeBox info>
           No recipe is finished yet, so this slime will just split into more of
@@ -379,10 +362,10 @@ export const SlimeRancherScanner = () => {
   const { scanned } = data;
 
   return (
-    <Window width={780} height={540} theme="slime_rancher_scanner">
+    <Window width={780} height={540} theme="slime_rancher">
       <Window.Content scrollable className="SlimeRancherScanner">
         {!scanned ? (
-          <Box className="SlimeRancherScanner__empty">
+          <Box className="SlimeRancher__empty">
             <Icon name="crosshairs" size={3} />
             <h1>No slime currently scanned.</h1>
             <p>Point the scanner at any slime you can see.</p>
