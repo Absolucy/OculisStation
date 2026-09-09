@@ -15,14 +15,14 @@
 	throw_range = 7
 	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 	/// The slime we're currently locked onto, so the panel keeps updating as it eats
-	var/datum/weakref/scanned_slime_ref
+	var/mob/living/basic/slime/slime
 
 /obj/item/slime_rancher_scanner/Initialize(mapload)
 	. = ..()
 	register_item_context()
 
 /obj/item/slime_rancher_scanner/Destroy(force)
-	scanned_slime_ref = null
+	unset_slime()
 	return ..()
 
 /obj/item/slime_rancher_scanner/add_item_context(obj/item/source, list/context, atom/target, mob/living/user)
@@ -40,10 +40,30 @@
 		to_chat(user, span_warning("This device can only scan slimes!"))
 		return ITEM_INTERACT_BLOCKING
 
-	scanned_slime_ref = WEAKREF(interacting_with)
-	playsound(src, SFX_INDUSTRIAL_SCAN, 20, TRUE, -2, TRUE, FALSE)
+	set_slime(interacting_with)
 	ui_interact(user)
 	return ITEM_INTERACT_SUCCESS
+
+/obj/item/slime_rancher_scanner/proc/set_slime(mob/living/user, mob/living/basic/slime/new_slime)
+	if(!isslime(new_slime))
+		return
+	if(new_slime == slime)
+		balloon_alert(user, "already tracking [slime]")
+		return
+	unset_slime()
+	slime = new_slime
+	RegisterSignal(slime, COMSIG_QDELETING, PROC_REF(unset_slime))
+	balloon_alert(user, "scanned [slime]")
+	playsound(src, SFX_INDUSTRIAL_SCAN, 20, TRUE, -2, TRUE, FALSE)
+
+/obj/item/slime_rancher_scanner/proc/unset_slime()
+	SIGNAL_HANDLER
+	if(isnull(slime))
+		return
+	UnregisterSignal(slime, COMSIG_QDELETING)
+	slime = null
+	if(!QDELETED(src))
+		SStgui.update_uis(src)
 
 /// the whole point of a ranching scanner is watching the pen from outside it, so let it reach
 /obj/item/slime_rancher_scanner/ranged_interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
@@ -56,9 +76,7 @@
 		ui.open()
 
 /obj/item/slime_rancher_scanner/ui_data(mob/user)
-	var/mob/living/basic/slime/slime = scanned_slime_ref?.resolve()
 	if(isnull(slime))
-		scanned_slime_ref = null
 		return list("scanned" = FALSE)
 
 	var/sprite_icon = get_icon_dmi_path(slime)
