@@ -338,6 +338,7 @@
 	if(QDELETED(creature) || !isturf(creature.loc) || !can_aim_at(target, user, feedback = TRUE))
 		return FALSE
 	new /obj/effect/temp_visual/small_smoke/halfsecond(creature.loc)
+	creature.apply_status_effect(/datum/status_effect/slime_food, user)
 	if(!creature.throw_at(get_turf(target), VACUUM_LAUNCH_RANGE, VACUUM_LAUNCH_SPEED, user, gentle = TRUE))
 		return FALSE
 	playsound(nozzle, 'sound/misc/moist_impact.ogg', vol = 50, vary = TRUE)
