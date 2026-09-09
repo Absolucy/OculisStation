@@ -564,7 +564,7 @@ trait_name = "Station"
 map_files = ["voidraptor_explorer_spawns_v2.dmm"]
 directory = "_maps/oculis/automapper/templates/VoidRaptor/"
 required_map = "VoidRaptor.dmm"
-coordinates = [164 , 104, 1]
+coordinates = [164, 104, 1]
 trait_name = "Station"
 
 # Iris - VoidRaptor Captain Phone
@@ -943,3 +943,10 @@ required_map = "KiloStation.dmm"
 coordinates = [174, 108, 1]
 trait_name = "Station"
 
+# Oculis - Metastation xenobiology
+[templates.metastation_slime_rancher]
+map_files = ["metastation_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/metastation/"
+required_map = "MetaStation.dmm"
+coordinates = [169, 77, 1]
+trait_name = "Station"
