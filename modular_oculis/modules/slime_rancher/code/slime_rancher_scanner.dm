@@ -19,11 +19,17 @@
 
 /obj/item/slime_rancher_scanner/Initialize(mapload)
 	. = ..()
+	register_context()
 	register_item_context()
 
 /obj/item/slime_rancher_scanner/Destroy(force)
 	unset_slime()
 	return ..()
+
+/obj/item/slime_rancher_scanner/add_context(atom/source, list/context, obj/item/held_item, mob/user)
+	if(held_item == src && !isnull(slime))
+		context[SCREENTIP_CONTEXT_RMB] = "Clear scanned slime"
+		return CONTEXTUAL_SCREENTIP_SET
 
 /obj/item/slime_rancher_scanner/add_item_context(obj/item/source, list/context, atom/target, mob/living/user)
 	if(!isslime(target))
@@ -40,7 +46,7 @@
 		to_chat(user, span_warning("This device can only scan slimes!"))
 		return ITEM_INTERACT_BLOCKING
 
-	set_slime(interacting_with)
+	set_slime(user, interacting_with)
 	ui_interact(user)
 	return ITEM_INTERACT_SUCCESS
 
@@ -74,6 +80,12 @@
 	if(!ui)
 		ui = new(user, src, "SlimeRancherScanner", name)
 		ui.open()
+
+/obj/item/slime_rancher_scanner/attack_self_secondary(mob/user, modifiers)
+	. = ..()
+	if(!. && !QDELETED(slime))
+		balloon_alert(user, "stopped tracking [slime]")
+		unset_slime()
 
 /obj/item/slime_rancher_scanner/ui_data(mob/user)
 	if(isnull(slime))
