@@ -1765,6 +1765,11 @@
 /obj/machinery/status_display/evac/directional/north,
 /turf/open/floor/iron,
 /area/station/hallway/primary/port)
+"ayp" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/dark/visible,
+/obj/machinery/airalarm/directional/north,
+/turf/open/floor/iron/dark/textured,
+/area/station/science/xenobiology)
 "ayA" = (
 /obj/effect/turf_decal/trimline/blue/filled/line{
 	dir = 1
@@ -2756,6 +2761,13 @@
 	dir = 1
 	},
 /area/station/hallway/primary/central)
+"aKh" = (
+/obj/machinery/atmospherics/components/binary/pump{
+	dir = 4
+	},
+/obj/machinery/firealarm/directional/north,
+/turf/open/floor/iron/dark/textured,
+/area/station/science/xenobiology)
 "aKj" = (
 /obj/machinery/atmospherics/pipe/smart/simple/dark/visible{
 	dir = 8
@@ -28410,6 +28422,7 @@
 /obj/effect/turf_decal/stripes/line,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/light_switch/directional/east,
+/obj/machinery/door/firedoor,
 /turf/open/floor/iron/dark/textured,
 /area/station/science/xenobiology)
 "hAt" = (
@@ -57846,6 +57859,13 @@
 	dir = 1
 	},
 /area/station/security/interrogation)
+"pqP" = (
+/obj/effect/turf_decal/siding/wood{
+	dir = 8
+	},
+/obj/machinery/airalarm/directional/south,
+/turf/open/floor/iron/dark/textured,
+/area/station/science/xenobiology)
 "prr" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -65544,7 +65564,7 @@
 /area/station/hallway/secondary/exit/departure_lounge)
 "rvn" = (
 /obj/effect/turf_decal/stripes/line,
-/obj/machinery/airalarm/directional/west,
+/obj/machinery/door/firedoor,
 /turf/open/floor/iron/dark/textured,
 /area/station/science/xenobiology)
 "rvo" = (
@@ -66657,6 +66677,15 @@
 /obj/structure/disposalpipe/segment,
 /turf/open/floor/iron/dark/smooth_large,
 /area/station/medical/pharmacy)
+"rMw" = (
+/obj/effect/turf_decal/tile/blue/fourcorners,
+/obj/structure/slime_pen_post/premade{
+	barrier_color = "#52B4E9";
+	dir = 10
+	},
+/obj/machinery/firealarm/directional/south,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
 "rMM" = (
 /obj/effect/turf_decal/siding/purple{
 	dir = 1
@@ -129262,7 +129291,7 @@ wde
 kTL
 iNd
 arT
-eEL
+aKh
 eEL
 lqK
 mJp
@@ -129506,7 +129535,7 @@ sDq
 sDq
 sDq
 sDq
-sDq
+pqP
 arT
 vSC
 hVz
@@ -129519,7 +129548,7 @@ sDq
 sDq
 sDq
 arT
-vKg
+ayp
 vKg
 xAs
 xAs
@@ -130545,7 +130574,7 @@ kTL
 jfQ
 dPP
 fcC
-vXE
+rMw
 arT
 jXj
 vKg

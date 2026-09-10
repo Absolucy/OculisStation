@@ -16902,6 +16902,11 @@
 	},
 /turf/open/floor/iron/dark,
 /area/station/engineering/atmos/mix)
+"eOF" = (
+/obj/structure/cable,
+/obj/machinery/firealarm/directional/north,
+/turf/open/floor/iron/white,
+/area/station/science/xenobiology)
 "eOJ" = (
 /obj/structure/railing{
 	dir = 4
@@ -30743,6 +30748,7 @@
 	dir = 1
 	},
 /obj/machinery/airalarm/directional/south,
+/obj/machinery/firealarm/directional/east,
 /turf/open/floor/iron,
 /area/station/science/xenobiology)
 "iQN" = (
@@ -194988,7 +194994,7 @@ niy
 gtF
 lqe
 qLY
-wPd
+eOF
 pMF
 pMF
 wPd
