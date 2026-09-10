@@ -87,6 +87,7 @@
 	else
 		context[SCREENTIP_CONTEXT_LMB] = "Launch stored creature"
 	context[SCREENTIP_CONTEXT_RMB] = "Print and launch creature"
+	context[SCREENTIP_CONTEXT_CTRL_RMB] = "Suck up extracts"
 	return CONTEXTUAL_SCREENTIP_SET
 
 /obj/item/vacuum_nozzle/proc/register_user(mob/living/user)
@@ -94,15 +95,26 @@
 	if(old_user == user)
 		return
 	if(old_user)
-		UnregisterSignal(old_user, COMSIG_MOB_ALTCLICKON)
+		UnregisterSignal(old_user, list(COMSIG_MOB_ALTCLICKON, COMSIG_MOB_CLICKON))
 	registered_user_ref = WEAKREF(user)
 	RegisterSignal(user, COMSIG_MOB_ALTCLICKON, PROC_REF(on_user_altclick))
+	RegisterSignal(user, COMSIG_MOB_CLICKON, PROC_REF(on_user_click))
 
 /obj/item/vacuum_nozzle/proc/unregister_user()
 	var/mob/living/user = registered_user_ref?.resolve()
 	if(user)
-		UnregisterSignal(user, COMSIG_MOB_ALTCLICKON)
+		UnregisterSignal(user, list(COMSIG_MOB_ALTCLICKON, COMSIG_MOB_CLICKON))
 	registered_user_ref = null
+
+/// Ctrl-right-click only, so plain ctrl-click still pulls things.
+/obj/item/vacuum_nozzle/proc/on_user_click(mob/living/source, atom/target, list/modifiers)
+	SIGNAL_HANDLER
+	if(!LAZYACCESS(modifiers, CTRL_CLICK) || !LAZYACCESS(modifiers, RIGHT_CLICK) || LAZYACCESS(modifiers, SHIFT_CLICK) || LAZYACCESS(modifiers, ALT_CLICK))
+		return
+	if(source.get_active_held_item() != src || !pack || pack.busy)
+		return
+	pack.suck_extracts(target, source)
+	return COMSIG_MOB_CANCEL_CLICKON
 
 /// Leaves ordinary Alt-click alone unless an eligible world-tile target exists.
 /obj/item/vacuum_nozzle/proc/on_user_altclick(mob/living/source, atom/target)

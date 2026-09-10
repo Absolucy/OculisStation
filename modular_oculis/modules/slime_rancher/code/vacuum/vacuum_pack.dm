@@ -35,6 +35,11 @@
 	var/busy = FALSE
 	var/retracting = FALSE // needed to avoid recursing dropped()
 	var/capabilities = NONE
+	/// Extracts currently flying toward the user, mapped to the move loop pulling them.
+	var/alist/pulled_extracts = alist()
+	var/extract_pitch_count = 0
+	var/datum/sound_token/succ_sound
+	COOLDOWN_DECLARE(extract_suction_cooldown)
 
 /obj/item/vacuum_pack/Initialize(mapload)
 	. = ..()
@@ -43,6 +48,8 @@
 	RegisterSignal(nozzle, COMSIG_MOVABLE_MOVED, PROC_REF(on_nozzle_moved))
 
 /obj/item/vacuum_pack/Destroy()
+	QDEL_NULL(succ_sound)
+
 	var/turf/drop_turf = drop_location()
 	for(var/mob/living/occupant as anything in occupants())
 		if(drop_turf)
@@ -50,6 +57,7 @@
 		else
 			qdel(occupant)
 
+	stop_extract_pulls()
 	QDEL_NULL(nozzle)
 	QDEL_LIST_ASSOC_VAL(upgrades)
 	owned_ai_shutdowns.Cut()
@@ -69,6 +77,7 @@
 	. += span_notice("It contains [length(stored)] of [capacity] creatures.")
 	. += span_notice("Its suction reaches [capture_range] tiles and takes [DisplayTimeText(capture_delay)].")
 	. += span_notice("It is set to [selective_mode ? "selective" : "random"] firing.")
+	. += span_notice("Ctrl-right-click with the nozzle to suck up slime extracts in that direction.")
 	if(length(upgrades))
 		var/list/upgrade_names = list()
 		for(var/upgrade_type, value in upgrades)
@@ -140,6 +149,7 @@
 	if(retracting || QDELETED(nozzle) || nozzle.loc == src)
 		return
 	retracting = TRUE
+	stop_extract_pulls()
 	if(ismob(nozzle.loc))
 		var/mob/holder = nozzle.loc
 		holder.temporarilyRemoveItemFromInventory(nozzle, force = TRUE)

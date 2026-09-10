@@ -33,8 +33,11 @@
 		return
 
 	ranch_progress -= SLIME_RANCH_EXTRACT_COST
+	squish_out_extract()
 	for(var/i in 1 to cores)
-		new slime_type.core_type(drop_location())
+		var/obj/item/slime_extract/extract = new slime_type.core_type(drop_location())
+		extract.pixel_x = extract.base_pixel_x + rand(-6, 6)
+		extract.pixel_y = extract.base_pixel_y + rand(-6, 6)
 	balloon_alert_to_viewers("produces an extract!")
 	playsound(src, 'sound/effects/splat.ogg', 50, TRUE)
 	EVLOG_TEXT(src, EVLOG_CATEGORY_SLIMES, "produced an extract via ranching ([ranch_progress] progress left over)")

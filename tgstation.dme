@@ -10506,6 +10506,7 @@
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen_post.dm"
 #include "modular_oculis\modules\slime_rancher\code\vacuum\vacuum_nozzle.dm"
 #include "modular_oculis\modules\slime_rancher\code\vacuum\vacuum_pack.dm"
+#include "modular_oculis\modules\slime_rancher\code\vacuum\vacuum_suction.dm"
 #include "modular_oculis\modules\slime_rancher\code\vacuum\vacuum_upgrades.dm"
 #include "modular_oculis\modules\species\ethereal\code\ethereal.dm"
 #include "modular_oculis\modules\species\ethereal\code\ethereal_bodyparts.dm"

@@ -11,6 +11,17 @@
 	animate(transform = base, time = 0.4 SECONDS, easing = EASE_IN)
 	animate(pixel_z = pixel_z, time = 0.4 SECONDS, easing = EASE_IN)
 
+/// hnnngh... *plop*
+/mob/living/basic/slime/proc/squish_out_extract()
+	var/matrix/base = matrix(transform)
+	var/matrix/squished = matrix(transform)
+	squished.Scale(1.15, 0.8)
+	var/matrix/stretched = matrix(transform)
+	stretched.Scale(0.9, 1.1)
+	animate(src, transform = squished, time = 0.15 SECONDS, easing = EASE_OUT, flags = ANIMATION_PARALLEL)
+	animate(transform = stretched, time = 0.1 SECONDS, easing = EASE_OUT)
+	animate(transform = base, time = 0.15 SECONDS, easing = EASE_IN)
+
 /mob/living/basic/slime/proc/stop_undulating(matrix/base)
 	animate(src)
 	if(base)
