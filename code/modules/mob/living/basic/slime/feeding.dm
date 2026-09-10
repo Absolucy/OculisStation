@@ -87,7 +87,7 @@
 
 ///The slime will stop feeding
 /mob/living/basic/slime/proc/stop_feeding(silent = FALSE)
-	if(!buckled)
+	if(!isliving(buckled)) // OCULIS EDIT CHANGE - SLIME_RANCHER - don't "let go of" a chair - ORIGINAL: if(!buckled)
 		return
 
 	if(!silent)

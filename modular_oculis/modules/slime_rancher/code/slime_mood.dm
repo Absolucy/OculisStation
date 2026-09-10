@@ -55,6 +55,8 @@
 	SIGNAL_HANDLER
 	if(isliving(buckled)) // you're not petting it, you're prying it off someone
 		return
+	if(current_mood == SLIME_MOOD_SAD && !COOLDOWN_FINISHED(src, reaction_mood_cooldown))
+		return
 	set_temporary_mood((petter in ai_controller?.blackboard[BB_FRIENDS_LIST]) ? SLIME_MOOD_CAT : SLIME_MOOD_SMILE)
 
 /mob/living/basic/slime/proc/on_slime_happy_yay(datum/source)

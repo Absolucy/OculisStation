@@ -22,3 +22,4 @@
 		if(ai_controller.blackboard[target_key] == spared)
 			ai_controller.clear_blackboard_key(target_key)
 	addtimer(CALLBACK(ai_controller, TYPE_PROC_REF(/datum/ai_controller, remove_from_blackboard_lazylist_key), BB_TEMPORARY_IGNORE_LIST, spared), 2 MINUTES)
+	return COMPONENT_CANCEL_ATTACK_CHAIN // otherwise we'll like... either pet or shove the slime right after.
