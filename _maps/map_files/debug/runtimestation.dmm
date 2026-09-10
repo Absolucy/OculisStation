@@ -2180,10 +2180,6 @@
 /obj/structure/cable,
 /turf/open/floor/iron,
 /area/station/commons/storage/primary)
-"Ht" = (
-/obj/machinery/light/directional/north,
-/turf/open/floor/iron,
-/area/station/engineering/main)
 "HW" = (
 /obj/machinery/airalarm/directional/east,
 /obj/effect/mapping_helpers/airalarm/unlocked,
@@ -7853,7 +7849,7 @@ aa
 aa
 aj
 IH
-Ht
+aA
 aH
 aA
 mk
