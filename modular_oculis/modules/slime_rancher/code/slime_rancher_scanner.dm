@@ -60,6 +60,7 @@
 	unset_slime()
 	slime = new_slime
 	RegisterSignal(slime, COMSIG_QDELETING, PROC_REF(unset_slime))
+	RegisterSignal(slime, COMSIG_SLIME_UPDATE_MOOD, PROC_REF(on_slime_mood_change)) // live slime reaction
 	balloon_alert(user, "scanned [slime]")
 	playsound(src, SFX_INDUSTRIAL_SCAN, 20, TRUE, -2, TRUE, FALSE)
 
@@ -67,10 +68,14 @@
 	SIGNAL_HANDLER
 	if(isnull(slime))
 		return
-	UnregisterSignal(slime, COMSIG_QDELETING)
+	UnregisterSignal(slime, list(COMSIG_QDELETING, COMSIG_SLIME_UPDATE_MOOD))
 	slime = null
 	if(!QDELETED(src))
 		SStgui.update_uis(src)
+
+/obj/item/slime_rancher_scanner/proc/on_slime_mood_change(datum/source)
+	SIGNAL_HANDLER
+	SStgui.update_uis(src)
 
 /// the whole point of a ranching scanner is watching the pen from outside it, so let it reach
 /obj/item/slime_rancher_scanner/ranged_interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)

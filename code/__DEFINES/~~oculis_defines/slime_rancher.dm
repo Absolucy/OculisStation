@@ -6,6 +6,11 @@
 #define BB_SLIME_WANTED_ITEMS "BB_slime_wanted_items"
 ///Typecache of mob types the slime still wants to latch onto and drain
 #define BB_SLIME_WANTED_MOBS "BB_slime_wanted_mobs"
+///Friend a slime is currently waddling over to go nuzzle
+#define BB_SLIME_NUZZLE_TARGET "BB_slime_nuzzle_target"
+
+/// The cat face. Core only defines the faces its own AI used, and this one's cuter.
+#define SLIME_MOOD_CAT ":33"
 
 /// From /mob/living/basic/slime/proc/eat_wanted_item(): (obj/item/meal)
 /// Return COMPONENT_SLIME_WANTS_ITEM if this meal is worth something to you.
@@ -13,6 +18,8 @@
 	#define COMPONENT_SLIME_WANTS_ITEM (1<<0)
 /// From /mob/living/basic/slime/proc/eat_wanted_item(), after the item is gone: (meal_type)
 #define COMSIG_SLIME_ATE_ITEM "slime_ate_item"
+/// From /mob/living/basic/slime/proc/set_mood(): (old_mood, new_mood)
+#define COMSIG_SLIME_UPDATE_MOOD "slime_update_mood"
 /// From /datum/status_effect/slime_leech/tick(): (mob/living/meal, drained)
 #define COMSIG_SLIME_LATCH_DRAINED "slime_latch_drained"
 

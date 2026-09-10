@@ -6,6 +6,7 @@
 
 /mob/living/basic/slime/proc/on_ranch_drain(datum/source, mob/living/meal, drained)
 	SIGNAL_HANDLER
+	set_temporary_mood(SLIME_MOOD_SMILE) // a mouthful of someone is still a mouthful, even for babies
 	if(life_stage != SLIME_LIFE_STAGE_ADULT)
 		return
 	ranch_progress += drained

@@ -23,7 +23,6 @@
 	var/mob/living/basic/slime/slimey = living_mob
 	return slimey.can_feed_on(target, silent = TRUE, check_adjacent = FALSE) && can_see(slimey, target, vision_range)
 
-/// gates the old grow-and-split-on-your-own behavior to slimes that aren't (and haven't recently been) ranched
 /datum/bt_node/decorator/slime_is_wild
 
 /datum/bt_node/decorator/slime_is_wild/check_condition(datum/ai_controller/controller)
@@ -69,9 +68,7 @@
 				span_notice("You snatch [held_name] right out of [neighbor]'s hands!")
 			)
 			slime_pawn.balloon_alert_to_viewers("snatches item out of hand!")
-			if(slime_pawn.current_mood != SLIME_MOOD_MISCHIEVOUS)
-				slime_pawn.current_mood = SLIME_MOOD_MISCHIEVOUS
-				slime_pawn.regenerate_icons()
+			slime_pawn.set_temporary_mood(SLIME_MOOD_MISCHIEVOUS)
 			return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_SUCCEEDED
 
 	return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_FAILED

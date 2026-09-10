@@ -205,6 +205,34 @@
 							}
 						},
 						{
+							"type": "decorator",
+							"decorator": "/datum/bt_node/decorator/slime_wants_to_nuzzle",
+							"child": {
+								"type": "decorator",
+								"decorator": "/datum/bt_node/decorator/bb_key_set",
+								"vars": {
+									"key": "BB_SLIME_NUZZLE_TARGET"
+								},
+								"child": {
+									"type": "sequence",
+									"children": [
+										{
+											"type": "leaf",
+											"behavior": "/datum/bt_node/ai_behavior/move_to_target",
+											"vars": {
+												"target_key": "BB_SLIME_NUZZLE_TARGET",
+												"required_dist": 1
+											}
+										},
+										{
+											"type": "leaf",
+											"behavior": "/datum/bt_node/ai_behavior/nuzzle_friend"
+										}
+									]
+								}
+							}
+						},
+						{
 							"type": "subtree",
 							"subtype": "/datum/bt_node/subtree/random_walk"
 						}
@@ -251,6 +279,21 @@
 					}
 				},
 				{
+					"type": "decorator",
+					"decorator": "/datum/bt_node/decorator/slime_wants_to_nuzzle",
+					"child": {
+						"type": "leaf",
+						"behavior": "/datum/bt_node/ai_behavior/acquire_target/update_interaction_target",
+						"vars": {
+							"target_key": "BB_SLIME_NUZZLE_TARGET",
+							"targeting_strategy": "/datum/targeting_strategy/ally_mob/awake",
+							"target_source": "/datum/target_source/from_bb_list/slime_friends",
+							"vision_range": 7,
+							"must_be_reachable": true
+						}
+					}
+				},
+				{
 					"type": "subtree",
 					"subtype": "/datum/bt_node/subtree/random_speech_loop"
 				},
@@ -262,7 +305,7 @@
 					"children": [
 						{
 							"type": "leaf",
-							"behavior": "/datum/bt_node/ai_behavior/change_slime_face"
+							"behavior": "/datum/bt_node/ai_behavior/update_slime_mood"
 						}
 					]
 				}
