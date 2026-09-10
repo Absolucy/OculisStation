@@ -10491,6 +10491,7 @@
 #include "modular_oculis\modules\slime_rancher\code\biomass_recycler.dm"
 #include "modular_oculis\modules\slime_rancher\code\feeding_flora.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_apology.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating_ai.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_jiggling.dm"
