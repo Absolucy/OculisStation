@@ -477,11 +477,11 @@
 	var/list/catalogue = recycler.get_printable_species()
 	var/list/choices = list()
 	var/list/species_by_label = list()
-	for(var/species_type in catalogue)
-		var/atom/species = species_type
-		var/label = "[species::name] - [catalogue[species_type]] biomass"
+	for(var/atom/species as anything in catalogue)
+		var/name = ispath(species, /mob/living/carbon/human/species/monkey) ? "monkey" : species::name
+		var/label = "[species::name] - [catalogue[species]] biomass"
 		choices[label] = image(icon = species::icon, icon_state = species::icon_state)
-		species_by_label[label] = species_type
+		species_by_label[label] = species
 	var/selection = show_radial_menu(user, nozzle, choices, custom_check = CALLBACK(src, PROC_REF(can_continue_menu), user), require_near = TRUE, tooltips = TRUE)
 	return species_by_label[selection]
 
