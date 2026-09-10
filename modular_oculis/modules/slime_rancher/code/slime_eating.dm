@@ -1,8 +1,10 @@
-/// returns a list of items this slime can eat for mutations (which it hasn't eaten already)
+/// returns a list of items this slime can eat for mutations (which it hasn't eaten already), plus a breeding pellet if it's not already primed to split
 /mob/living/basic/slime/proc/get_wanted_item_types() as /list
 	. = list()
 	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
 		. |= mutation.needed_items
+	if(!primed_split_cost)
+		. |= /obj/item/slime_breeding_pellet
 
 /// returns a list of mob types this slime still needs to drain for mutations
 /mob/living/basic/slime/proc/get_wanted_mob_types() as /list
@@ -42,6 +44,8 @@
 		qdel(meal)
 
 	SEND_SIGNAL(src, COMSIG_SLIME_ATE_ITEM, meal_type)
+	if(ispath(meal_type, /obj/item/slime_breeding_pellet))
+		set_primed_split_cost(SLIME_RANCH_PELLET_SPLIT_COST)
 
 	if(!silent)
 		visible_message(
@@ -78,14 +82,13 @@
 	refresh_wanted_targets()
 
 /// What this slime turns into when it reproduces. Returning our own type means an ordinary split.
+/// Mutating is ranching's job now (see try_ranch_outcome in slime_ranching.dm) - splitting never mutates,
+/// except pyrite slimes, who are cursed/blessed to always roll random regardless of how they split.
 /// Never returns null - a null here nukes slime_type and takes the mob with it.
 /mob/living/basic/slime/get_random_mutation()
 	if(transformative_effect == SLIME_TYPE_PYRITE)
 		return pick(subtypesof(/datum/slime_type) - /datum/slime_type/rainbow - typesof(/datum/slime_type/unique))
-	if(transformative_effect == SLIME_TYPE_CERULEAN || !prob(mutation_chance))
-		return slime_type.type
-	// no recipe finished, so it just splits into more of itself
-	return get_unlocked_mutation_type(weight_new_types = TRUE) || slime_type.type
+	return slime_type.type
 
 /// lets a slime eat a wanted item just by attacking it - covers both the AI's own melee attack leaf and a player clicking it themselves
 /mob/living/basic/slime/on_slime_pre_attack(mob/living/basic/slime/our_slime, atom/target, proximity, modifiers)

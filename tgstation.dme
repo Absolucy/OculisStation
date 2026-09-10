@@ -10496,6 +10496,7 @@
 #include "modular_oculis\modules\slime_rancher\code\slime_jiggling.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_mutation.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_rancher_scanner.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_ranching.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_type.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen_barrier.dm"

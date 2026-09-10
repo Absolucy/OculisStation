@@ -1,5 +1,13 @@
 GLOBAL_LIST_EMPTY(slime_pens)
 
+/mob/living/basic/slime
+	/// the pen currently tracking us, if any - null when we're not in one
+	var/datum/slime_pen/pen
+	COOLDOWN_DECLARE(pen_expiry_cooldown)
+
+/mob/living/basic/slime/proc/is_ranched()
+	return pen || !COOLDOWN_FINISHED(src, pen_expiry_cooldown)
+
 /// handles a single slime pen and tracks the slimes in it
 /datum/slime_pen
 	var/list/slimes
@@ -52,6 +60,7 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	if(QDELING(slime) || (slime in slimes) || !(slime.loc in turfs) || QDELETED(src))
 		return
 	LAZYADD(slimes, slime)
+	slime.pen = src
 	RegisterSignal(slime, COMSIG_QDELETING, PROC_REF(stop_tracking_slime))
 	RegisterSignal(slime, COMSIG_MOVABLE_MOVED, PROC_REF(slime_moved))
 
@@ -61,6 +70,8 @@ GLOBAL_LIST_EMPTY(slime_pens)
 		return
 	UnregisterSignal(slime, list(COMSIG_QDELETING, COMSIG_MOVABLE_MOVED))
 	LAZYREMOVE(slimes, slime)
+	slime.pen = null
+	COOLDOWN_START(slime, pen_expiry_cooldown, 10 MINUTES)
 
 /datum/slime_pen/proc/slime_moved(mob/living/basic/slime/slime, atom/old_loc, dir, forced, list/old_locs)
 	SIGNAL_HANDLER

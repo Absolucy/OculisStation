@@ -1,6 +1,7 @@
 /obj/item/slime_rancher_scanner
 	name = "slime scanner"
-	desc = "A device that analyzes a slime's internal composition and measures its stats. \
+	desc = "A device that analyzes a slime's internal composition and measures its stats, \
+		including whether it's primed to produce an extract or split next. \
 		Keeps a lock on the last slime you pointed it at."
 	icon = 'icons/obj/devices/scanner.dmi'
 	icon_state = "slime_scanner"
@@ -109,6 +110,8 @@
 		"powerlevel" = slime.powerlevel,
 		"cores" = slime.cores,
 		"growth" = slime.amount_grown,
+		"ranch_progress" = floor(slime.ranch_progress),
+		"split_cost" = slime.primed_split_cost,
 		"mutation_chance" = slime.mutation_chance,
 		"crossbreed_modification" = slime.crossbreed_modification,
 		"crossbreed_progress" = slime.applied_crossbreed_amount,
@@ -127,6 +130,7 @@
 		"max_crossbreed_progress" = SLIME_EXTRACT_CROSSING_REQUIRED,
 		"max_powerlevel" = SLIME_MAX_POWER,
 		"max_nutrition" = SLIME_MAX_NUTRITION,
+		"extract_cost" = SLIME_RANCH_EXTRACT_COST,
 		"nutrition_starving" = SLIME_STARVE_NUTRITION,
 		"nutrition_hungry" = SLIME_HUNGER_NUTRITION,
 	)

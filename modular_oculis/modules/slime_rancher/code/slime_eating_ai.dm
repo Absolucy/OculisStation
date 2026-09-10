@@ -23,6 +23,15 @@
 	var/mob/living/basic/slime/slimey = living_mob
 	return slimey.can_feed_on(target, silent = TRUE, check_adjacent = FALSE) && can_see(slimey, target, vision_range)
 
+/// gates the old grow-and-split-on-your-own behavior to slimes that aren't (and haven't recently been) ranched
+/datum/bt_node/decorator/slime_is_wild
+
+/datum/bt_node/decorator/slime_is_wild/check_condition(datum/ai_controller/controller)
+	var/mob/living/basic/slime/slime_pawn = controller.pawn
+	if(!istype(slime_pawn))
+		return FALSE
+	return !slime_pawn.is_ranched()
+
 /// check to see if we're free to go eat items laying around
 /datum/bt_node/decorator/bb_key_set/slime_can_forage
 

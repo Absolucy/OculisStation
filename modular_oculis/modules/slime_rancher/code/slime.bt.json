@@ -22,16 +22,20 @@
 		},
 		{
 			"type": "decorator",
-			"decorator": "/datum/bt_node/decorator/ability_available",
-			"vars": {
-				"observer_abort": "BT_ABORT_LOWER_PRIORITY",
-				"ability_key": "BB_SLIME_REPRODUCE"
-			},
+			"decorator": "/datum/bt_node/decorator/slime_is_wild",
 			"child": {
-				"type": "leaf",
-				"behavior": "/datum/bt_node/ai_behavior/use_mob_ability",
+				"type": "decorator",
+				"decorator": "/datum/bt_node/decorator/ability_available",
 				"vars": {
+					"observer_abort": "BT_ABORT_LOWER_PRIORITY",
 					"ability_key": "BB_SLIME_REPRODUCE"
+				},
+				"child": {
+					"type": "leaf",
+					"behavior": "/datum/bt_node/ai_behavior/use_mob_ability",
+					"vars": {
+						"ability_key": "BB_SLIME_REPRODUCE"
+					}
 				}
 			}
 		},

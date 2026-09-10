@@ -21,6 +21,7 @@
 	var/static/list/printable_items = list(
 		/obj/item/food/monkeycube = 1,
 		/obj/item/stack/biomass = 1,
+		/obj/item/slime_breeding_pellet = 2,
 	)
 	var/static/list/baseline_species = list(/mob/living/basic/cockroach/iceroach)
 

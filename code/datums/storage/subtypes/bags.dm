@@ -199,7 +199,10 @@
 		/obj/item/reagent_containers/syringe,
 		/obj/item/slime_extract,
 		/obj/item/swab,
-		/obj/item/stack/biomass, // OCULIS EDIT ADDITION - slime rancher stuff
+		// OCULIS EDIT ADDITION START - slime rancher stuff
+		/obj/item/stack/biomass,
+		/obj/item/slime_breeding_pellet,
+		// OCULIS EDIT ADDITION END
 	))
 
 ///Construction bag

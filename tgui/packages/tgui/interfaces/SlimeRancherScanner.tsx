@@ -45,6 +45,7 @@ type BuiltInNumberData = {
   max_nutrition: number;
   nutrition_starving: number;
   nutrition_hungry: number;
+  extract_cost: number;
 };
 
 type BaseSlimeData = {
@@ -66,6 +67,8 @@ type SlimeInfoData = {
   powerlevel: number;
   cores: number;
   growth: number;
+  ranch_progress: number;
+  split_cost: number;
 };
 
 type SlimeMutationData = {
@@ -205,6 +208,9 @@ function Vitals() {
     cores,
     growth,
     max_growth,
+    ranch_progress,
+    split_cost,
+    extract_cost,
     mutation_chance,
     crossbreed_modification,
     crossbreed_progress,
@@ -212,6 +218,8 @@ function Vitals() {
     mutations,
   } = data;
   const anyReady = mutations.some((mutation) => !!mutation.ready);
+  const primed = split_cost > 0;
+  const ranchTarget = primed ? split_cost : extract_cost;
 
   const starving = nutrition < nutrition_starving;
   const hungry = nutrition < nutrition_hungry;
@@ -274,11 +282,21 @@ function Vitals() {
             {growth} / {max_growth}
           </ProgressBar>
         </Box>
+        <Box className="SlimeRancherScanner__meter">
+          <span>{primed ? 'Next: split' : 'Next: extract'}</span>
+          <ProgressBar
+            value={ranch_progress}
+            maxValue={ranchTarget}
+            color={primed ? 'good' : undefined}
+          >
+            {ranch_progress} / {ranchTarget}
+          </ProgressBar>
+        </Box>
         <Tooltip
           content={
             anyReady
-              ? 'Chance this slime attempts a mutation when it splits.'
-              : 'No mutations are currently available. This slime will split into more of its own color.'
+              ? 'Chance this slime mutates instead of secreting an extract, once a recipe is ready.'
+              : 'No recipe is finished yet, so this slime will only secrete extracts.'
           }
         >
           <Box className="SlimeRancherScanner__meter">
@@ -344,8 +362,7 @@ function Mutations() {
       <h2 className="SlimeRancher__heading">Mutations</h2>
       {!anyReady && (
         <NoticeBox info>
-          No recipe is finished yet, so this slime will just split into more of
-          its own color.
+          No recipe is finished yet, so this slime will only secrete extracts.
         </NoticeBox>
       )}
       <Box className="SlimeRancherScanner__recipes">
