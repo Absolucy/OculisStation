@@ -19,6 +19,7 @@
 	move_resist = INFINITY
 	can_astar_pass = CANASTARPASS_ALWAYS_PROC
 	var/top_row = FALSE
+	var/barrier_color = SLIME_PEN_DEFAULT_COLOR
 
 /obj/structure/slime_pen_barrier/Initialize(mapload, new_dir, top_row = FALSE)
 	. = ..()
@@ -70,9 +71,42 @@
 			layer = BELOW_MOB_LAYER + 0.02
 
 /obj/structure/slime_pen_barrier/update_appearance(updates = ALL)
+	var/obj/structure/slime_pen_barrier/twin = find_twin()
 	// two pens sharing an edge would draw the same fence twice, so the older one just hides lmao
-	alpha = find_twin()?.alpha ? 0 : 255
+	alpha = twin?.alpha ? 0 : 255
+	apply_barrier_color(twin)
 	return ..()
+
+/// pokes the twin too, since only one of us is actually visible
+/obj/structure/slime_pen_barrier/proc/set_barrier_color(new_color)
+	if(barrier_color == new_color)
+		return
+	barrier_color = new_color
+	update_appearance()
+	find_twin()?.update_appearance()
+
+/// mixes with the twin's color if it's got a different one going on
+/obj/structure/slime_pen_barrier/proc/apply_barrier_color(obj/structure/slime_pen_barrier/twin)
+	var/final_color = barrier_color
+	if(twin && twin.barrier_color != barrier_color)
+		final_color = blend_hue_colors(barrier_color, twin.barrier_color)
+	if(final_color == SLIME_PEN_DEFAULT_COLOR)
+		remove_atom_colour(FIXED_COLOUR_PRIORITY)
+	else
+		add_atom_colour(color_transition_filter(final_color), FIXED_COLOUR_PRIORITY)
+
+/// fancy HSL color blend that actually looks kinda good
+/proc/blend_hue_colors(first_color, second_color)
+	var/list/first_hsl = rgb2num(first_color, COLORSPACE_HSL)
+	var/list/second_hsl = rgb2num(second_color, COLORSPACE_HSL)
+	var/x = cos(first_hsl[1]) + cos(second_hsl[1])
+	var/y = sin(first_hsl[1]) + sin(second_hsl[1])
+	var/hue = arctan(x, y)
+	if(hue < 0)
+		hue += 360
+	var/saturation = (first_hsl[2] + second_hsl[2]) * 0.5
+	var/lightness = (first_hsl[3] + second_hsl[3]) * 0.5
+	return rgb(hue, saturation, lightness, space = COLORSPACE_HSL)
 
 /obj/structure/slime_pen_barrier/update_overlays()
 	. = ..()

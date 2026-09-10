@@ -127,10 +127,7 @@ GLOBAL_LIST_EMPTY(slime_pens)
 		apply_color(barrier)
 
 /datum/slime_pen/proc/apply_color(obj/structure/slime_pen_barrier/barrier)
-	if(barrier_color == SLIME_PEN_DEFAULT_COLOR)
-		barrier.remove_atom_colour(FIXED_COLOUR_PRIORITY)
-		return
-	barrier.add_atom_colour(color_transition_filter(barrier_color), FIXED_COLOUR_PRIORITY)
+	barrier.set_barrier_color(barrier_color)
 
 /datum/slime_pen/ui_data(mob/user)
 	var/list/slime_data = list()
