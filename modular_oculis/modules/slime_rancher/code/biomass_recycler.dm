@@ -108,19 +108,19 @@
 /obj/machinery/biomass_recycler/proc/can_recycle(mob/living/target, mob/living/user, feedback = FALSE)
 	if(QDELETED(target) || !isturf(target.loc) || recycle_value(target) <= 0)
 		if(feedback)
-			balloon_alert(user, "cannot recycle")
+			user.balloon_alert(user, "cannot recycle")
 		return FALSE
 	if(!is_operational || !anchored || panel_open)
 		if(feedback)
-			balloon_alert(user, "recycler unavailable")
+			user.balloon_alert(user, "recycler unavailable")
 		return FALSE
 	if(ismonkey(target) && !IS_UNCONSCIOUS_OR_CRIT(target))
 		if(feedback)
-			balloon_alert(user, "monkey is too alert")
+			user.balloon_alert(user, "monkey is too alert")
 		return FALSE
 	if(target.client || target.mind || target.anchored || target.buckled || target.has_buckled_mobs())
 		if(feedback)
-			balloon_alert(user, "cannot recycle")
+			user.balloon_alert(user, "cannot recycle")
 		return FALSE
 	return TRUE
 
@@ -184,7 +184,7 @@
 		return
 	var/atom/movable/created = purchase_type(printable_type, drop_location())
 	if(!created)
-		balloon_alert(user, "not enough biomass")
+		user.balloon_alert(user, "not enough biomass")
 		return
 	playsound(src, 'sound/machines/hiss.ogg', vol = 50, vary = TRUE)
 	to_chat(user, span_notice("[src] hisses and dispenses [created]. It has [biomass] unit\s of biomass left."))
