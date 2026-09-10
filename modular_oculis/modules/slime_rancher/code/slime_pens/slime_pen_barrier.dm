@@ -30,13 +30,10 @@
 	)
 	AddElement(/datum/element/connect_loc, loc_connections)
 	update_offsets()
-	update_appearance()
+	sync_with_twin()
 
 /obj/structure/slime_pen_barrier/Destroy(force)
-	var/obj/structure/slime_pen_barrier/twin = find_twin()
-	if(twin)
-		alpha = 0
-		twin.update_appearance()
+	find_twin()?.sync_with_twin()
 	return ..()
 
 /// The barrier on the other side of our edge, if the neighboring pen has one.
@@ -70,23 +67,16 @@
 			pixel_z = 6
 			layer = BELOW_MOB_LAYER + 0.02
 
-/obj/structure/slime_pen_barrier/update_appearance(updates = ALL)
-	var/obj/structure/slime_pen_barrier/twin = find_twin()
-	// two pens sharing an edge would draw the same fence twice, so the older one just hides lmao
-	alpha = twin?.alpha ? 0 : 255
-	apply_barrier_color(twin)
-	return ..()
-
 /// pokes the twin too, since only one of us is actually visible
 /obj/structure/slime_pen_barrier/proc/set_barrier_color(new_color)
-	if(barrier_color == new_color)
-		return
 	barrier_color = new_color
-	update_appearance()
-	find_twin()?.update_appearance()
+	sync_with_twin()
+	find_twin()?.sync_with_twin()
 
-/// mixes with the twin's color if it's got a different one going on
-/obj/structure/slime_pen_barrier/proc/apply_barrier_color(obj/structure/slime_pen_barrier/twin)
+/obj/structure/slime_pen_barrier/proc/sync_with_twin()
+	var/obj/structure/slime_pen_barrier/twin = find_twin()
+	// two pens sharing an edge would draw the same fence twice, so whoever settles second hides lmao
+	alpha = twin?.alpha ? 0 : 255
 	var/final_color = barrier_color
 	if(twin && twin.barrier_color != barrier_color)
 		final_color = blend_hue_colors(barrier_color, twin.barrier_color)
@@ -94,6 +84,10 @@
 		remove_atom_colour(FIXED_COLOUR_PRIORITY)
 	else
 		add_atom_colour(color_transition_filter(final_color), FIXED_COLOUR_PRIORITY)
+	update_appearance()
+	if(twin)
+		twin.alpha = alpha ? 0 : 255
+		twin.update_appearance()
 
 /// fancy HSL color blend that actually looks kinda good
 /proc/blend_hue_colors(first_color, second_color)
@@ -127,10 +121,10 @@
 	. += connector_glow
 
 /obj/structure/slime_pen_barrier/CanAllowThrough(atom/movable/mover, border_dir)
-	. = ..()
 	// we're not dense, so the parent always says yes and we're the only one who can say no
 	if(border_dir == dir && should_block(mover))
 		return FALSE
+	return ..()
 
 /obj/structure/slime_pen_barrier/proc/on_exit(datum/source, atom/movable/leaving, direction)
 	SIGNAL_HANDLER
