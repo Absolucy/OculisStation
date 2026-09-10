@@ -36,9 +36,9 @@
 	var/retracting = FALSE // needed to avoid recursing dropped()
 	var/capabilities = NONE
 
-
 /obj/item/vacuum_pack/Initialize(mapload)
 	. = ..()
+	AddElement(/datum/element/drag_pickup)
 	nozzle = new(src)
 	RegisterSignal(nozzle, COMSIG_MOVABLE_MOVED, PROC_REF(on_nozzle_moved))
 
