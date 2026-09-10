@@ -393,7 +393,7 @@
 	return busy && can_use_nozzle(user)
 
 /obj/item/vacuum_pack/proc/can_recycle_monkey(mob/living/carbon/human/target, mob/living/user, obj/machinery/biomass_recycler/recycler, turf/starting_turf, feedback = FALSE)
-	if(!ismonkey(target) || !can_reach_for_intake(target, user, starting_turf, feedback))
+	if(!ismonkey(target) || !can_reach_for_intake(target, user, feedback))
 		return FALSE
 	if(!can_use_recycler(recycler, user, feedback))
 		return FALSE
