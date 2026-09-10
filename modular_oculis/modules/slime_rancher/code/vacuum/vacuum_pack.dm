@@ -48,8 +48,6 @@
 	RegisterSignal(nozzle, COMSIG_MOVABLE_MOVED, PROC_REF(on_nozzle_moved))
 
 /obj/item/vacuum_pack/Destroy()
-	QDEL_NULL(succ_sound)
-
 	var/turf/drop_turf = drop_location()
 	for(var/mob/living/occupant as anything in occupants())
 		if(drop_turf)
