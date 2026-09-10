@@ -49,22 +49,23 @@
 
 /// Puts the sprite on the tile border and picks whether mobs draw in front of us or behind us.
 /obj/structure/slime_pen_barrier/proc/update_offsets()
+	// the extra 2px keeps us level with the posts, which sit up off the tile line so they don't draw over the wall below
 	switch(dir)
 		if(NORTH)
 			pixel_w = 0
-			pixel_z = 13
+			pixel_z = 15
 			layer = BELOW_MOB_LAYER
 		if(SOUTH)
 			pixel_w = 0
-			pixel_z = 0
+			pixel_z = 2
 			layer = ABOVE_MOB_LAYER
 		if(EAST)
 			pixel_w = 6
-			pixel_z = 6
+			pixel_z = 8
 			layer = BELOW_MOB_LAYER + 0.02
 		if(WEST)
 			pixel_w = -6
-			pixel_z = 6
+			pixel_z = 8
 			layer = BELOW_MOB_LAYER + 0.02
 
 /// pokes the twin too, since only one of us is actually visible

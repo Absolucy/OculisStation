@@ -111,8 +111,7 @@
 		balloon_alert(user, "upgrade already installed")
 		return ITEM_INTERACT_BLOCKING
 
-	var/datum/vacuum_upgrade/upgrade = new disk.upgrade_type(src)
-	upgrades[disk.upgrade_type] = upgrade
+	upgrades[disk.upgrade_type] = new disk.upgrade_type(src)
 	recalculate_stats()
 	playsound(src, 'sound/machines/click.ogg', vol = 30, vary = TRUE)
 	balloon_alert(user, "upgrade installed")
@@ -126,7 +125,8 @@
 	if(user.incapacitated || busy)
 		return FALSE
 	if(QDELETED(nozzle))
-		nozzle = new(src, src)
+		nozzle = new(src)
+		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 		RegisterSignal(nozzle, COMSIG_MOVABLE_MOVED, PROC_REF(on_nozzle_moved))
 	if(nozzle.loc == src)
 		if(!user.put_in_hands(nozzle))
@@ -143,7 +143,7 @@
 	if(ismob(nozzle.loc))
 		var/mob/holder = nozzle.loc
 		holder.temporarilyRemoveItemFromInventory(nozzle, force = TRUE)
-		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', vol = 75, vary = TRUE)
+	playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', vol = 75, vary = TRUE)
 	nozzle.forceMove(src)
 	retracting = FALSE
 
@@ -524,6 +524,15 @@
 	selective_mode = !selective_mode
 	balloon_alert(user, "[selective_mode ? "selective" : "random"] firing")
 	return TRUE
+
+// subtype that comes with all upgrades installed
+/obj/item/vacuum_pack/upgraded
+
+/obj/item/vacuum_pack/upgraded/Initialize(mapload)
+	. = ..()
+	for(var/datum/vacuum_upgrade/upgrade_type as anything in valid_subtypesof(/datum/vacuum_upgrade))
+		upgrades[upgrade_type] = new upgrade_type(src)
+	recalculate_stats()
 
 #undef VACUUM_BASE_CAPACITY
 #undef VACUUM_BASE_CAPTURE_RANGE

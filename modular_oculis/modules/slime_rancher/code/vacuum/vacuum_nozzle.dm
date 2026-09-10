@@ -55,6 +55,9 @@
 		return NONE
 	if(istype(interacting_with, /obj/item/disk/vacuum_upgrade) && interacting_with.Adjacent(user))
 		return pack.item_interaction(user, interacting_with)
+	if(interacting_with == pack)
+		pack.retract_nozzle()
+		return ITEM_INTERACT_SUCCESS
 	pack.primary_action(interacting_with, user)
 	return ITEM_INTERACT_SUCCESS
 

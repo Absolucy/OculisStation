@@ -1,5 +1,6 @@
 /// Installed behavior and stat changes owned by one vacuum pack.
 /datum/vacuum_upgrade
+	abstract_type = /datum/vacuum_upgrade
 	/// Pack that owns this upgrade.
 	var/obj/item/vacuum_pack/pack
 	/// Display name used by pack examination.

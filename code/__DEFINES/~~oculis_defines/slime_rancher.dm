@@ -29,11 +29,11 @@
 #define SLIME_MUTATE_WINDUP (8 SECONDS)
 
 /// Health an adult slime has to drain to secrete one extract (or roll a mutation)
-#define SLIME_RANCH_EXTRACT_COST 100
+#define SLIME_RANCH_EXTRACT_COST 50
 /// Health a slime told to split by a friend has to drain first
-#define SLIME_RANCH_COMMAND_SPLIT_COST 100
+#define SLIME_RANCH_COMMAND_SPLIT_COST 50
 /// Health a slime that ate a breeding pellet has to drain first
-#define SLIME_RANCH_PELLET_SPLIT_COST 200
+#define SLIME_RANCH_PELLET_SPLIT_COST 100
 
 /// The fence sprite's own blue. A pen set to this color skips the recolor filter entirely, so the default look is the sprite as drawn.
 #define SLIME_PEN_DEFAULT_COLOR "#4dc8e8"

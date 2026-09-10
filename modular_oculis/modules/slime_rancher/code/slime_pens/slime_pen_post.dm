@@ -58,11 +58,12 @@
 /obj/structure/slime_pen_post/proc/update_offsets()
 	// the post stands on the corner point of its tile, not in the middle of it
 	pixel_w = (dir & EAST) ? 16 : -16
+	// the whole pen sits 2px up off the tile line - dipping below it would draw the post's base over a wall to the south
 	if(dir & NORTH)
-		pixel_z = 30
+		pixel_z = 32
 		layer = BELOW_MOB_LAYER + 0.01
 	else
-		pixel_z = -2
+		pixel_z = 0
 		layer = ABOVE_MOB_LAYER + 0.01
 
 /obj/structure/slime_pen_post/update_overlays()

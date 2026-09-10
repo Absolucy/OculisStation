@@ -98,7 +98,10 @@
 	.ProgressBar__fill {
 		border-radius: inherit;
 		box-shadow: inset 0 1px 0 var(--slime-highlight);
-		transition: background-color 120ms ease-out;
+		// probably good enough
+		transition:
+			width 700ms ease-out,
+			background-color 120ms ease-out;
 	}
 
 	.NoticeBox {
