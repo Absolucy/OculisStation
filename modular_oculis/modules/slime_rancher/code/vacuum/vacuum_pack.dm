@@ -350,7 +350,10 @@
 		return FALSE
 	new /obj/effect/temp_visual/small_smoke/halfsecond(creature.loc)
 	creature.apply_status_effect(/datum/status_effect/slime_food, user)
-	if(!creature.throw_at(get_turf(target), VACUUM_LAUNCH_RANGE, VACUUM_LAUNCH_SPEED, user, gentle = TRUE))
+	var/datum/callback/restore = (creature.pass_flags & PASSMOB) ? null : CALLBACK(src, PROC_REF(un_passmob), creature)
+	creature.pass_flags |= PASSMOB
+	if(!creature.throw_at(get_turf(target), VACUUM_LAUNCH_RANGE, VACUUM_LAUNCH_SPEED, user, gentle = TRUE, callback = restore))
+		restore?.Invoke()
 		return FALSE
 	playsound(nozzle, 'sound/misc/moist_impact.ogg', vol = 50, vary = TRUE)
 	user.visible_message(
@@ -358,6 +361,9 @@
 		span_notice("You launch [creature] from [nozzle].")
 	)
 	return TRUE
+
+/obj/item/vacuum_pack/proc/un_passmob(mob/living/creature)
+	creature.pass_flags &= ~PASSMOB
 
 /obj/item/vacuum_pack/proc/fire(atom/target, mob/living/user)
 	if(!can_aim_at(target, user, feedback = TRUE))
