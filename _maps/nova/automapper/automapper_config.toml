@@ -26,6 +26,22 @@
 # coordinates = [206, 85, 1]
 # trait_name = "CentCom"
 
+# Oculis - Metastation xenobiology
+[templates.metastation_slime_rancher]
+map_files = ["metastation_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/metastation/"
+required_map = "MetaStation.dmm"
+coordinates = [169, 77, 1]
+trait_name = "Station"
+
+# Oculis - Pubby xenobiology
+[templates.oceanpubby_slime_rancher]
+map_files = ["oceanpubby_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/oceanpubby/"
+required_map = "oceanpubby.dmm"
+coordinates = [172, 111, 1]
+trait_name = "Station"
+
 # METASTATION MAP TEMPLATES
 # Metastation Arrivals
 [templates.metastaton_arrivals]
@@ -564,7 +580,7 @@ trait_name = "Station"
 map_files = ["voidraptor_explorer_spawns_v2.dmm"]
 directory = "_maps/oculis/automapper/templates/VoidRaptor/"
 required_map = "VoidRaptor.dmm"
-coordinates = [164, 104, 1]
+coordinates = [164 , 104, 1]
 trait_name = "Station"
 
 # Iris - VoidRaptor Captain Phone
@@ -935,22 +951,6 @@ required_map = "wawastation.dmm"
 coordinates = [133, 106, 1]
 trait_name = "Station"
 
-# Oculis - Metastation xenobiology
-[templates.metastation_slime_rancher]
-map_files = ["metastation_slime_rancher.dmm"]
-directory = "_maps/oculis/automapper/templates/metastation/"
-required_map = "MetaStation.dmm"
-coordinates = [169, 77, 1]
-trait_name = "Station"
-
-# Oculis - Pubby xenobiology
-[templates.oceanpubby_slime_rancher]
-map_files = ["oceanpubby_slime_rancher.dmm"]
-directory = "_maps/oculis/automapper/templates/oceanpubby/"
-required_map = "oceanpubby.dmm"
-coordinates = [172, 111, 1]
-trait_name = "Station"
-
 # Oculis - Kilostation Explorer Spawns
 [templates.kilostation_explorer_spawns]
 map_files = ["kilostation_explorer_spawns.dmm"]
@@ -958,3 +958,4 @@ directory = "_maps/oculis/automapper/templates/kilostation/"
 required_map = "KiloStation.dmm"
 coordinates = [174, 108, 1]
 trait_name = "Station"
+
