@@ -86,7 +86,7 @@
 
 /obj/item/vacuum_pack/proc/start_suction(atom/target, mob/living/user)
 	QDEL_NULL(succ_sound)
-	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40)
+	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40, falloff_exponent = 4)
 	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
 	var/turf/user_turf = get_turf(user)
 	var/aim_angle = get_turf(target) == user_turf ? dir2angle(user.dir) : get_angle(user, target)
@@ -94,7 +94,7 @@
 	return aim_angle
 
 /obj/item/vacuum_pack/proc/play_ploop(atom/source, pitch = 1)
-	playsound(source, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 50, frequency = pitch)
+	playsound(source, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 40, frequency = pitch)
 
 /obj/item/vacuum_pack/proc/start_mob_suction(mob/living/target, mob/living/user)
 	start_suction(target, user)
