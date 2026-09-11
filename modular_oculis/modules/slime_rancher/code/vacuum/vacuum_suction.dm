@@ -174,6 +174,8 @@
 			if(istype(item_in_slot, /obj/item/storage/bag/xeno))
 				bag = item_in_slot
 				break
+		if(isnull(bag) && istype(user.pulling, /obj/item/storage/bag/xeno))
+			bag = user.pulling
 	if(bag?.atom_storage?.attempt_insert(extract, user))
 		return
 	extract.pixel_x = extract.base_pixel_x + rand(-6, 6)
