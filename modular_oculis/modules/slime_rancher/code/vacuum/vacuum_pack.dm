@@ -284,7 +284,10 @@
 	var/turf/starting_turf = required_turf || target.loc
 	if(!can_suck(target, user, feedback = TRUE))
 		return FALSE
-	if(!do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_suck), target, user, FALSE)))
+	start_mob_suction(target, user)
+	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_suck), target, user, FALSE))
+	stop_mob_suction(target)
+	if(!finished)
 		return FALSE
 	if(!can_suck(target, user, feedback = TRUE))
 		return FALSE
@@ -306,7 +309,7 @@
 		target.ai_controller?.clear_blackboard_key(BB_SLIME_RABID)
 	SEND_SIGNAL(src, COMSIG_VACUUM_STORED, target)
 	new /obj/effect/temp_visual/vacuum_intake(original_turf, target.appearance, get_turf(nozzle))
-	playsound(nozzle, 'sound/effects/refill.ogg', vol = 50, vary = TRUE)
+	play_ploop(nozzle)
 	user.visible_message(span_notice("[user] sucks [target] into [nozzle]."), span_notice("You suck [target] into [nozzle]."))
 	return TRUE
 
@@ -405,11 +408,15 @@
 	var/turf/starting_turf = required_turf || target.loc
 	if(!can_recycle_monkey(target, user, recycler, starting_turf, feedback = TRUE))
 		return FALSE
-	if(!do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_monkey), target, user, recycler, starting_turf, FALSE)))
+	start_mob_suction(target, user)
+	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_monkey), target, user, recycler, starting_turf, FALSE))
+	stop_mob_suction(target)
+	if(!finished)
 		return FALSE
 	if(!can_recycle_monkey(target, user, recycler, starting_turf, feedback = TRUE))
 		return FALSE
 	new /obj/effect/temp_visual/vacuum_intake(starting_turf, target.appearance, get_turf(nozzle))
+	play_ploop(nozzle)
 	return recycler.recycle(target, user, feedback = TRUE)
 
 /obj/item/vacuum_pack/proc/primary_action(atom/target, mob/living/user)

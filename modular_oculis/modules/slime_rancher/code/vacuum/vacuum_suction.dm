@@ -52,12 +52,20 @@
 		return
 	COOLDOWN_START(src, extract_suction_cooldown, 1 SECONDS)
 	var/turf/user_turf = get_turf(user)
-	var/aim_angle = get_turf(target) == user_turf ? dir2angle(user.dir) : get_angle(user, target)
 	extract_pitch_count = 0
-	QDEL_NULL(succ_sound)
-	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40)
-	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
-	new /obj/effect/temp_visual/vacuum_suction_stream(user_turf, aim_angle)
+	var/aim_angle = start_suction(target, user)
+
+	// yoink extracts from monkeys
+	for(var/mob/living/carbon/monkey in range(capture_range, user))
+		if(monkey == user || !ismonkey(monkey))
+			continue
+		if(monkey.loc != user_turf)
+			if(abs(closer_angle_difference(aim_angle, get_angle(user, monkey))) > 45)
+				continue
+			if(!CheckToolReach(nozzle, monkey, capture_range))
+				continue
+		for(var/obj/item/slime_extract/extract in monkey.held_items)
+			monkey.dropItemToGround(extract)
 
 	var/found = FALSE
 	for(var/obj/item/slime_extract/extract in range(capture_range, user))
@@ -76,23 +84,45 @@
 	if(!found)
 		balloon_alert(user, "no extracts!")
 
+/obj/item/vacuum_pack/proc/start_suction(atom/target, mob/living/user)
+	QDEL_NULL(succ_sound)
+	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40)
+	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
+	var/turf/user_turf = get_turf(user)
+	var/aim_angle = get_turf(target) == user_turf ? dir2angle(user.dir) : get_angle(user, target)
+	new /obj/effect/temp_visual/vacuum_suction_stream(user_turf, aim_angle)
+	return aim_angle
+
+/obj/item/vacuum_pack/proc/play_ploop(atom/source, pitch = 1)
+	playsound(source, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 50, frequency = pitch)
+
+/obj/item/vacuum_pack/proc/start_mob_suction(mob/living/target, mob/living/user)
+	start_suction(target, user)
+	target.add_shared_particles(/particles/vacuum_sparkles)
+
+/obj/item/vacuum_pack/proc/stop_mob_suction(mob/living/target)
+	QDEL_NULL(succ_sound)
+	target.remove_shared_particles(/particles/vacuum_sparkles)
+
 /obj/item/vacuum_pack/proc/start_extract_pull(obj/item/slime_extract/extract, mob/living/user)
 	var/datum/move_loop/loop = GLOB.move_manager.home_onto(extract, user, delay = 0.1 SECONDS, timeout = 2 SECONDS, priority = MOVEMENT_ABOVE_SPACE_PRIORITY)
 	if(!loop)
 		return
 	pulled_extracts[extract] = loop
-	RegisterSignal(loop, COMSIG_MOVELOOP_POSTPROCESS, PROC_REF(on_extract_pull_step))
+	RegisterSignal(loop, COMSIG_MOVELOOP_PREPROCESS_CHECK, PROC_REF(on_extract_pull_step))
 	RegisterSignals(loop, list(COMSIG_MOVELOOP_STOP, COMSIG_QDELETING), PROC_REF(on_extract_pull_stopped))
 	RegisterSignal(extract, COMSIG_MOVABLE_MOVED, PROC_REF(on_pulled_extract_moved))
 	RegisterSignal(extract, COMSIG_QDELETING, PROC_REF(on_pulled_extract_deleted))
 	extract.add_shared_particles(/particles/vacuum_sparkles)
 	extract.SpinAnimation(0.4 SECONDS, loops = 2)
 
-/obj/item/vacuum_pack/proc/on_extract_pull_step(datum/move_loop/has_target/source, result)
+/obj/item/vacuum_pack/proc/on_extract_pull_step(datum/move_loop/has_target/source)
 	SIGNAL_HANDLER
 	var/mob/living/user = source.target
-	if(get_turf(source.moving) == get_turf(user))
-		extract_arrived(source.moving, user)
+	if(get_turf(source.moving) != get_turf(user))
+		return
+	extract_arrived(source.moving, user)
+	return MOVELOOP_SKIP_STEP
 
 /obj/item/vacuum_pack/proc/on_extract_pull_stopped(datum/move_loop/source)
 	SIGNAL_HANDLER
@@ -112,7 +142,7 @@
 	if(!loop)
 		return
 	pulled_extracts -= extract
-	UnregisterSignal(loop, list(COMSIG_MOVELOOP_POSTPROCESS, COMSIG_MOVELOOP_STOP, COMSIG_QDELETING))
+	UnregisterSignal(loop, list(COMSIG_MOVELOOP_PREPROCESS_CHECK, COMSIG_MOVELOOP_STOP, COMSIG_QDELETING))
 	UnregisterSignal(extract, list(COMSIG_MOVABLE_MOVED, COMSIG_QDELETING))
 	extract.remove_shared_particles(/particles/vacuum_sparkles)
 	if(!QDELETED(loop))
@@ -135,7 +165,7 @@
 	// bloop~ bloop~~ bloop~~~ bloop~~~!
 	var/pitch = min(1 + 0.1 * extract_pitch_count, 2)
 	extract_pitch_count++
-	playsound(user, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 50, frequency = pitch)
+	play_ploop(user, pitch)
 	var/obj/item/storage/bag/xeno/bag = astype(user.get_inactive_held_item())
 	if(bag?.atom_storage?.attempt_insert(extract, user))
 		return

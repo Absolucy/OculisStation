@@ -31,6 +31,14 @@
 /datum/slime_mutation/proc/is_satisfied()
 	return !length(needed_items) && !length(latch_needed)
 
+/datum/slime_mutation/proc/has_progress()
+	if(length(needed_items) < length(total_items) || length(latch_needed) < length(latch_totals))
+		return TRUE
+	for(var/mob_type, drain_left in latch_needed)
+		if(drain_left < latch_totals[mob_type])
+			return TRUE
+	return FALSE
+
 /datum/slime_mutation/proc/on_check_wanted_item(mob/living/basic/slime/source, obj/item/meal)
 	SIGNAL_HANDLER
 	for(var/needed_type in needed_items)

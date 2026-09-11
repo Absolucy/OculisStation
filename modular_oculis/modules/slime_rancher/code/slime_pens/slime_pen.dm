@@ -133,8 +133,16 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	var/list/slime_data = list()
 	for(var/mob/living/basic/slime/slime as anything in slimes)
 		var/list/possible_mutations = list()
-		for(var/datum/slime_mutation/mutation_type as anything in slime.slime_type.possible_mutations)
-			possible_mutations += "[mutation_type]"
+		for(var/datum/slime_mutation/mutation as anything in slime.mutation_progress)
+			var/progress = "unfed"
+			if(mutation.is_satisfied())
+				progress = "ready"
+			else if(mutation.has_progress())
+				progress = "partial"
+			possible_mutations += list(list(
+				"type" = "[mutation.type]",
+				"progress" = progress,
+			))
 		slime_data += list(list(
 			"ref" = REF(slime),
 			"name" = slime.name,
@@ -145,6 +153,10 @@ GLOBAL_LIST_EMPTY(slime_pens)
 			"color" = slime.slime_type.colour,
 			"color_hex" = slime.slime_type.rgb_code,
 			"possible_mutations" = possible_mutations,
+			"sprite_icon" = get_icon_dmi_path(slime),
+			"sprite_state" = slime.icon_state,
+			"mood_state" = (!slime.stat && slime.current_mood && slime.current_mood != SLIME_MOOD_NONE) ? "aslime-[slime.current_mood]" : null,
+			"transparent" = slime.slime_type.transparent,
 		))
 	return list(
 		"slimes" = slime_data,
@@ -166,6 +178,8 @@ GLOBAL_LIST_EMPTY(slime_pens)
 		"height" = height,
 		"soft_capacity" = ceil(length(turfs) * 2),
 		"max_nutrition" = SLIME_MAX_NUTRITION,
+		"nutrition_hungry" = SLIME_HUNGER_NUTRITION,
+		"nutrition_starving" = SLIME_STARVE_NUTRITION,
 		"growth_threshold" = SLIME_EVOLUTION_THRESHOLD,
 		"default_color" = SLIME_PEN_DEFAULT_COLOR,
 	)

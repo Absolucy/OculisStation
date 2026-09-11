@@ -1,10 +1,38 @@
 // THIS IS A OCULIS UI FILE
 .SlimeRancherScanner {
+	.Window__contentPadding {
+		display: grid;
+		grid-template-columns: repeat(2, minmax(0, 1fr));
+		align-items: start;
+		gap: 1rem;
+	}
+
+	@media (max-width: 620px) {
+		.Window__contentPadding {
+			grid-template-columns: minmax(0, 1fr);
+		}
+	}
+
 	&__vitals,
 	&__mutations,
 	&__recipes {
 		display: grid;
 		gap: 1rem;
+	}
+
+	// room for the badge hanging off the top
+	&__mutations {
+		margin-top: 1rem;
+	}
+
+	&__badge {
+		margin-top: -2.1rem;
+		padding: 0.4rem 1.25rem;
+		letter-spacing: 0.06em;
+		text-transform: uppercase;
+		box-shadow:
+			inset 0 2px 0 oklch(1 0 0 / 0.25),
+			0 3px 0 var(--slime-shadow);
 	}
 
 	&__identity {
@@ -29,30 +57,12 @@
 		box-shadow: 0 2px 0 var(--slime-shadow);
 	}
 
-	&__portrait {
-		position: relative;
-		width: 64px;
-		height: 64px;
-
-		&--transparent {
-			opacity: 0.7;
-		}
-	}
-
-	&__sprite {
-		position: absolute;
-		top: 0;
-		left: 0;
-		image-rendering: pixelated;
-	}
-
 	&__life-stage {
 		margin-top: 0.667rem;
 	}
 
 	&__meters,
-	&__meter,
-	&__drain {
+	&__meter {
 		display: grid;
 		gap: 0.333rem;
 		min-width: 0;
@@ -101,37 +111,53 @@
 
 	&__requirements {
 		display: grid;
-		grid-template-columns: repeat(2, minmax(0, 1fr));
-		gap: 0.667rem;
+		grid-template-columns: repeat(auto-fill, minmax(5.5rem, 1fr));
+		gap: 0.5rem;
 	}
 
 	&__requirement {
-		display: flex;
-		align-items: center;
-		gap: 0.667rem;
+		position: relative;
+		display: grid;
+		justify-items: center;
+		align-content: start;
+		gap: 0.25rem;
 		min-width: 0;
-		max-width: 100%;
+		padding: 0.5rem 0.5rem 0.667rem;
+		border-radius: 1.25rem;
+		background: var(--slime-track);
+		font-size: 0.917rem;
+		font-weight: bold;
+		text-align: center;
 		overflow-wrap: anywhere;
+		box-shadow: inset 0 2px 3px var(--slime-shadow);
 
 		> img {
-			flex-shrink: 0;
 			image-rendering: pixelated;
 		}
 
-		&--done .SlimeRancherScanner__requirement-name {
-			text-decoration: line-through;
+		.ProgressBar {
+			justify-self: stretch;
+			min-height: 1.25rem;
+			font-size: 0.833rem;
+		}
+
+		&--done {
+			background: var(--slime-cyan);
+			box-shadow:
+				inset 0 2px 0 var(--slime-highlight),
+				0 2px 0 var(--slime-shadow);
 		}
 	}
 
 	&__completed {
-		flex-shrink: 0;
+		position: absolute;
+		top: -0.4rem;
+		right: -0.4rem;
 		padding: 0.25rem;
+		border: 2px solid var(--slime-cream);
 		border-radius: 50%;
 		background: var(--slime-good);
-	}
-
-	&__drain {
-		flex: 1;
+		box-shadow: 0 2px 0 var(--slime-shadow);
 	}
 }
 

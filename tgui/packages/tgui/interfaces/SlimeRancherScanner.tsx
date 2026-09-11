@@ -1,4 +1,5 @@
 // THIS IS A OCULIS UI FILE
+import type { ReactNode } from 'react';
 import {
   Box,
   DmIcon,
@@ -12,7 +13,7 @@ import { capitalizeAll } from 'tgui-core/string';
 
 import { useBackend } from '../backend';
 import { Window } from '../layouts';
-import { SlimeName } from './common/SlimeRancher';
+import { SlimeName, SlimePips, SlimePortrait } from './common/SlimeRancher';
 
 type Requirement = {
   name: string;
@@ -86,43 +87,7 @@ type Data = {
   SlimeMutationData &
   BuiltInNumberData;
 
-const SPRITE_SIZE = '64px';
-
-/** The face is its own overlay in-game, so it gets its own layer sat on top of the body. */
-function SlimePortrait(props: {
-  icon: string;
-  state: string;
-  mood: string | null;
-  transparent: BooleanLike;
-}) {
-  const { icon, state, mood, transparent } = props;
-  return (
-    <Box
-      className={`SlimeRancherScanner__portrait${transparent ? ' SlimeRancherScanner__portrait--transparent' : ''}`}
-    >
-      <DmIcon
-        icon={icon}
-        icon_state={state}
-        fallback={<Icon name="circle" size={3} />}
-        width={SPRITE_SIZE}
-        height={SPRITE_SIZE}
-        className="SlimeRancherScanner__sprite"
-      />
-      {!!mood && (
-        <DmIcon
-          icon={icon}
-          icon_state={mood}
-          fallback={null}
-          width={SPRITE_SIZE}
-          height={SPRITE_SIZE}
-          className="SlimeRancherScanner__sprite"
-        />
-      )}
-    </Box>
-  );
-}
-
-const REQUIREMENT_ICON_SIZE = '32px';
+const REQUIREMENT_ICON_SIZE = '48px';
 
 /** Fixed size so an odd-sized source icon can't shove one row out of line with its neighbors. */
 function RequirementIcon(props: { requirement: Requirement }) {
@@ -136,6 +101,24 @@ function RequirementIcon(props: { requirement: Requirement }) {
       width={REQUIREMENT_ICON_SIZE}
       height={REQUIREMENT_ICON_SIZE}
     />
+  );
+}
+
+function RequirementCell(props: {
+  requirement: Requirement;
+  done: BooleanLike;
+  children?: ReactNode;
+}) {
+  const { requirement, done, children } = props;
+
+  return (
+    <Box
+      className={`SlimeRancherScanner__requirement${done ? ' SlimeRancherScanner__requirement--done' : ''}`}
+    >
+      <RequirementIcon requirement={requirement} />
+      <span>{requirement.name}</span>
+      {children}
+    </Box>
   );
 }
 
@@ -154,34 +137,26 @@ function MutationRow(props: { mutation: Mutation }) {
       </Box>
       <Box className="SlimeRancherScanner__requirements">
         {mutation.items.map((item) => (
-          <Box
-            key={item.name}
-            className={`SlimeRancherScanner__requirement${item.done ? ' SlimeRancherScanner__requirement--done' : ''}`}
-          >
-            <RequirementIcon requirement={item} />
-            <span className="SlimeRancherScanner__requirement-name">
-              {item.name}
-            </span>
+          <RequirementCell key={item.name} requirement={item} done={item.done}>
             {!!item.done && (
               <Icon name="check" className="SlimeRancherScanner__completed" />
             )}
-          </Box>
+          </RequirementCell>
         ))}
-        {mutation.drains.map((drain) => (
-          <Box key={drain.name} className="SlimeRancherScanner__requirement">
-            <RequirementIcon requirement={drain} />
-            <Box className="SlimeRancherScanner__drain">
-              <span>{drain.name}</span>
+        {mutation.drains.map((drain) => {
+          const done = drain.drained >= drain.total;
+          return (
+            <RequirementCell key={drain.name} requirement={drain} done={done}>
               <ProgressBar
                 value={drain.drained}
                 maxValue={drain.total}
-                color={drain.drained >= drain.total ? 'good' : 'average'}
+                color={done ? 'good' : 'average'}
               >
                 {drain.drained} / {drain.total}
               </ProgressBar>
-            </Box>
-          </Box>
-        ))}
+            </RequirementCell>
+          );
+        })}
       </Box>
     </Box>
   );
@@ -250,6 +225,7 @@ function Vitals() {
         </NoticeBox>
       )}
       {!starving && !!hungry && <NoticeBox>This slime is hungry.</NoticeBox>}
+      <hr className="SlimeRancher__rule" />
       <Box className="SlimeRancherScanner__meters">
         <Box className="SlimeRancherScanner__meter">
           <span>Health</span>
@@ -274,12 +250,6 @@ function Vitals() {
             color={starving ? 'bad' : hungry ? 'average' : 'good'}
           >
             {nutrition} / {max_nutrition}
-          </ProgressBar>
-        </Box>
-        <Box className="SlimeRancherScanner__meter">
-          <span>Growth</span>
-          <ProgressBar value={growth} maxValue={max_growth}>
-            {growth} / {max_growth}
           </ProgressBar>
         </Box>
         <Box className="SlimeRancherScanner__meter">
@@ -315,30 +285,26 @@ function Vitals() {
           </Box>
         </Tooltip>
       </Box>
+      <hr className="SlimeRancher__rule" />
+      <SlimePips label="Growth" value={growth} maxValue={max_growth} />
+      <SlimePips
+        label="Electric charge"
+        value={powerlevel}
+        maxValue={max_powerlevel}
+      />
+      {!!crossbreed_modification && (
+        <SlimePips
+          label={`Core mutation: ${crossbreed_modification}`}
+          value={crossbreed_progress}
+          maxValue={max_crossbreed_progress}
+        />
+      )}
       <Box className="SlimeRancherScanner__readings">
-        <Box className="SlimeRancher__well">
-          <span>Electric charge</span>
-          <strong>
-            {powerlevel} / {max_powerlevel}
-          </strong>
-        </Box>
         <Box className="SlimeRancher__well">
           <span>Cores</span>
           <strong>{cores}</strong>
         </Box>
       </Box>
-      {!!crossbreed_modification && (
-        <Box className="SlimeRancherScanner__meter">
-          <h2>Core mutation</h2>
-          <span>{crossbreed_modification}</span>
-          <ProgressBar
-            value={crossbreed_progress}
-            maxValue={max_crossbreed_progress}
-          >
-            {crossbreed_progress} / {max_crossbreed_progress}
-          </ProgressBar>
-        </Box>
-      )}
     </Box>
   );
 }
@@ -351,7 +317,9 @@ function Mutations() {
   if (mutations.length === 0) {
     return (
       <Box className="SlimeRancher__card SlimeRancherScanner__mutations">
-        <h2 className="SlimeRancher__heading">Mutations</h2>
+        <h2 className="SlimeRancher__heading SlimeRancherScanner__badge">
+          Mutations
+        </h2>
         <p>This slime has nowhere left to mutate to.</p>
       </Box>
     );
@@ -379,7 +347,7 @@ export const SlimeRancherScanner = () => {
   const { scanned } = data;
 
   return (
-    <Window width={780} height={540} theme="slime_rancher">
+    <Window width={780} height={600} theme="slime_rancher">
       <Window.Content scrollable className="SlimeRancherScanner">
         {!scanned ? (
           <Box className="SlimeRancher__empty">
