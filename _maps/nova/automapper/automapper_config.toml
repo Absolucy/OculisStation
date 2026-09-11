@@ -950,3 +950,11 @@ directory = "_maps/oculis/automapper/templates/metastation/"
 required_map = "MetaStation.dmm"
 coordinates = [169, 77, 1]
 trait_name = "Station"
+
+# oceanpubby_slime_rancher
+[templates.oceanpubby_slime_rancher]
+map_files = ["oceanpubby_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/oceanpubby/"
+required_map = "oceanpubby.dmm"
+coordinates = [172, 111, 1]
+trait_name = "Station"
