@@ -102,6 +102,12 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	SIGNAL_HANDLER
 	if(isslime(arrived))
 		track_slime(arrived)
+		return
+	// slime food doesn't need to screech in your ear for the whole shift
+	if(ismonkey(arrived))
+		var/static/list/quiet_emotes = list("scratch", "jump", "roll", "tail")
+		var/mob/living/penned_monkey = arrived
+		penned_monkey.ai_controller?.override_blackboard_key(BB_MONKEY_IDLE_COMMON_EMOTES, quiet_emotes)
 
 /// actually sets up the fence piece and such
 /datum/slime_pen/proc/build_barriers()

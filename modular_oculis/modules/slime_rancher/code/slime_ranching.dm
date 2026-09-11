@@ -36,6 +36,7 @@
 	squish_out_extract()
 	for(var/i in 1 to cores)
 		var/obj/item/slime_extract/extract = new slime_type.core_type(drop_location())
+		extract.fresh_from_slime = TRUE
 		extract.pixel_x = extract.base_pixel_x + rand(-6, 6)
 		extract.pixel_y = extract.base_pixel_y + rand(-6, 6)
 	balloon_alert_to_viewers("produces an extract!")

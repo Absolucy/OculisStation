@@ -24,14 +24,16 @@
 /datum/mood_event/slime_nuzzle/add_effects(mob/living/basic/slime/nuzzler)
 	description = "[nuzzler] squished up against me, how adorable!"
 
-/datum/targeting_strategy/ally_mob/awake
+/// players only. slimes befriend each other constantly, and a whole pen of them nuzzling in a circle
+/// is just noise nobody's around to see
+/datum/targeting_strategy/ally_mob/awake_player
 
-/datum/targeting_strategy/ally_mob/awake/is_valid_target(mob/living/living_mob, atom/target, vision_range, datum/ai_controller/controller = null)
+/datum/targeting_strategy/ally_mob/awake_player/is_valid_target(mob/living/living_mob, atom/target, vision_range, datum/ai_controller/controller = null)
 	. = ..()
 	if(!.)
 		return FALSE
 	var/mob/living/candidate = target
-	return isliving(candidate) && !candidate.incapacitated
+	return isliving(candidate) && candidate.client && !candidate.incapacitated
 
 /datum/target_source/from_bb_list/slime_friends
 	list_key = BB_FRIENDS_LIST

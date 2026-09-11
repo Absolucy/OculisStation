@@ -27,6 +27,9 @@
 	if(ai_controller?.blackboard[BB_SLIME_ITEM_TARGET] == meal)
 		ai_controller.clear_blackboard_key(BB_SLIME_ITEM_TARGET)
 
+	if(astype(meal, /obj/item/slime_extract)?.fresh_from_slime)
+		return FALSE
+
 	if(!(SEND_SIGNAL(src, COMSIG_SLIME_CHECK_WANTED_ITEM, meal) & COMPONENT_SLIME_WANTS_ITEM))
 		return FALSE
 

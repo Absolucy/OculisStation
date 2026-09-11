@@ -8,7 +8,11 @@
 	var/list/wanted_types = controller.blackboard[BB_SLIME_WANTED_ITEMS]
 	if(!length(wanted_types))
 		return list()
-	return typecache_filter_list(oview(range, pawn), wanted_types)
+	var/list/candidates = typecache_filter_list(oview(range, pawn), wanted_types)
+	for(var/obj/item/slime_extract/extract in candidates)
+		if(extract.fresh_from_slime)
+			candidates -= extract
+	return candidates
 
 /// slimes will also chase down critters they still owe a mutation, hungry or not
 /datum/targeting_strategy/slime_food/is_valid_target(mob/living/living_mob, atom/target, vision_range, datum/ai_controller/controller = null)
@@ -31,10 +35,27 @@
 		return FALSE
 	return !slime_pawn.is_ranched()
 
-/// check to see if we're free to go eat items laying around
-/datum/bt_node/decorator/bb_key_set/slime_can_forage
+/// these branches only butt in when their key gets freshly set. if one bails partway (pathing gave up,
+/// say) the key is still sitting there perfectly valid, so nothing ever re-sets it and the slime
+/// wanders right past its target forever. dropping the target on the way out puts that edge back.
+/datum/bt_node/decorator/bb_key_set/slime_target
 
-/datum/bt_node/decorator/bb_key_set/slime_can_forage/check_condition(datum/ai_controller/controller)
+/datum/bt_node/decorator/bb_key_set/slime_target/on_child_complete(datum/ai_controller/controller, result)
+	controller.clear_blackboard_key(key)
+
+/// check to see if we're free to go eat items laying around
+/datum/bt_node/decorator/bb_key_set/slime_target/forage
+	polling_rate = 1 SECONDS
+
+/// buckled/unconscious have no blackboard signal to hang off of, so poll the whole thing instead of
+/// trusting the parent's key signals. otherwise we miss the moment the slime gets back up
+/datum/bt_node/decorator/bb_key_set/slime_target/forage/register_observe_signals(atom/pawn)
+	return FALSE
+
+/datum/bt_node/decorator/bb_key_set/slime_target/forage/unregister_observe_signals(atom/pawn)
+	return
+
+/datum/bt_node/decorator/bb_key_set/slime_target/forage/check_condition(datum/ai_controller/controller)
 	. = ..()
 	if(!.)
 		return FALSE

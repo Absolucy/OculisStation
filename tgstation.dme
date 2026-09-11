@@ -10495,6 +10495,7 @@
 #include "modular_oculis\modules\slime_rancher\code\slime_apology.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating_ai.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_extract.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_jiggling.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_mood.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_mutation.dm"

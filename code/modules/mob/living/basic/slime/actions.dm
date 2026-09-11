@@ -222,6 +222,8 @@
 	// IRIS EDIT NEW START
 	if(transformative_effect != SLIME_TYPE_CERULEAN)
 		set_life_stage(SLIME_LIFE_STAGE_BABY)
+		update_name()
+		regenerate_icons()
 	// IRIS EDIT NEW END
 //	set_slime_type(get_random_mutation()) // OCULUS EDIT OLD -- Unique slimes and slime rancher
 	amount_grown = 0
