@@ -9,7 +9,7 @@
 
 /obj/item/vacuum_pack
 	name = "slime vacuum pack"
-	desc = "A backpack vacuum for carrying and launching slimes and feeding critters."
+	desc = "A backpack (or belt) vacuum for carrying and launching slimes and feeding critters."
 	icon = 'modular_oculis/modules/slime_rancher/icons/vacuum.dmi'
 	icon_state = "vacuum_pack"
 	inhand_icon_state = "vacuum_pack"
@@ -18,7 +18,7 @@
 	worn_icon = 'icons/mob/clothing/back.dmi'
 	worn_icon_state = "waterbackpackjani"
 	w_class = WEIGHT_CLASS_BULKY
-	slot_flags = ITEM_SLOT_BACK
+	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_BELT
 	item_flags = NOBLUDGEON
 	actions_types = list(/datum/action/item_action/toggle_vacuum_nozzle)
 	max_integrity = 200
