@@ -44,5 +44,7 @@
 
 /// The fence sprite's own blue. A pen set to this color skips the recolor filter entirely, so the default look is the sprite as drawn.
 #define SLIME_PEN_DEFAULT_COLOR "#4dc8e8"
+/// Chance a monkey fights back when a ranched slime hits it. Base monkeys use MONKEY_RETALIATE_PROB (85).
+#define PENNED_MONKEY_RETALIATE_PROB 40
 
 #define EVLOG_CATEGORY_SLIMES "Slimes"
