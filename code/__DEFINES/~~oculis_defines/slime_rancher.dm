@@ -46,5 +46,7 @@
 #define SLIME_PEN_DEFAULT_COLOR "#4dc8e8"
 /// Chance a monkey fights back when a ranched slime hits it. Base monkeys use MONKEY_RETALIATE_PROB (85).
 #define PENNED_MONKEY_RETALIATE_PROB 40
+/// How far away other slimes notice a monkey attacking a slime and join in.
+#define SLIME_MONKEY_RALLY_RANGE 5
 
 #define EVLOG_CATEGORY_SLIMES "Slimes"

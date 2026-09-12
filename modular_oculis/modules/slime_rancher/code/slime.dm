@@ -10,6 +10,17 @@
 	RegisterSignal(src, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_pellet))
 	RegisterSignal(src, COMSIG_ANIMAL_PET, PROC_REF(on_petted))
 	RegisterSignals(src, list(COMSIG_SLIME_ATE_ITEM, COMSIG_LIVING_BEFRIENDED), PROC_REF(on_slime_happy_yay))
+	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(rally_against_monkey))
+
+// a monkey swinging at one slime gets the whole pen mad at it
+/mob/living/basic/slime/proc/rally_against_monkey(datum/source, atom/attacker, attack_flags)
+	SIGNAL_HANDLER
+	if(!ismonkey(attacker))
+		return
+	for(var/mob/living/basic/slime/buddy in oview(SLIME_MONKEY_RALLY_RANGE, src))
+		if(buddy.stat)
+			continue
+		buddy.ai_controller?.set_blackboard_key_assoc_lazylist(BB_BASIC_MOB_RETALIATE_LIST, attacker, world.time)
 
 /mob/living/basic/slime/Destroy()
 	QDEL_LIST(mutation_progress)

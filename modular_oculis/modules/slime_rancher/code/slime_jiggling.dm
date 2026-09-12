@@ -47,7 +47,8 @@
 	owner.add_traits(list(TRAIT_INCAPACITATED, TRAIT_IMMOBILIZED), TRAIT_STATUS_EFFECT(id))
 	owner.ai_controller?.force_ai_off()
 
-	RegisterSignals(owner, list(COMSIG_LIVING_DEATH, COMSIG_LIVING_DISARM_HIT), PROC_REF(interrupt))
+	RegisterSignal(owner, COMSIG_LIVING_DEATH, PROC_REF(interrupt))
+	RegisterSignal(owner, COMSIG_LIVING_DISARM_HIT, PROC_REF(on_disarm_hit))
 	RegisterSignal(owner, COMSIG_MOB_APPLY_DAMAGE, PROC_REF(on_damaged))
 
 	if(splitting)
@@ -61,6 +62,11 @@
 	slime_owner.start_undulating(splitting) // hehe jiggle
 	owner.do_jitter_animation()
 	return TRUE
+
+/datum/status_effect/slime_reproducing/proc/on_disarm_hit(datum/source, mob/living/attacker, zone_targeted, obj/item/weapon)
+	SIGNAL_HANDLER
+	if(!ismonkey(attacker)) // fuck off
+		interrupt()
 
 /datum/status_effect/slime_reproducing/proc/interrupt()
 	SIGNAL_HANDLER
