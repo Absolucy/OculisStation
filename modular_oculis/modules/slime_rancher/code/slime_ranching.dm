@@ -90,10 +90,6 @@
 	name = "slime breeding pellet"
 	desc = "A biomass pellet slimes go nuts for. Feed it to a slime, and it'll split the next time it's fed enough!"
 	icon = 'modular_oculis/modules/slime_rancher/icons/biomass.dmi'
-	icon_state = "biomass"
+	icon_state = "pellet"
 	w_class = WEIGHT_CLASS_TINY
 	item_flags = NOBLUDGEON
-
-/obj/item/slime_breeding_pellet/Initialize(mapload)
-	. = ..()
-	add_atom_colour(color_transition_filter("#ff9fd6"), FIXED_COLOUR_PRIORITY) // too lazy to recolor the actual biomass, this should look good enough
