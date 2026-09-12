@@ -58,6 +58,8 @@
 	if(interacting_with == pack)
 		pack.retract_nozzle()
 		return ITEM_INTERACT_SUCCESS
+	if(!is_world_target(interacting_with))
+		return ITEM_INTERACT_BLOCKING
 	pack.primary_action(interacting_with, user)
 	return ITEM_INTERACT_SUCCESS
 
@@ -67,6 +69,8 @@
 /obj/item/vacuum_nozzle/interact_with_atom_secondary(atom/interacting_with, mob/living/user, list/modifiers)
 	if(!pack)
 		return NONE
+	if(!is_world_target(interacting_with))
+		return ITEM_INTERACT_BLOCKING
 	pack.print_species(interacting_with, user)
 	return ITEM_INTERACT_SUCCESS
 
@@ -80,15 +84,19 @@
 		return CONTEXTUAL_SCREENTIP_SET
 	if(istype(target, /obj/machinery/biomass_recycler))
 		context[SCREENTIP_CONTEXT_LMB] = "Link recycler"
-	else if(ismonkey(target))
-		context[SCREENTIP_CONTEXT_LMB] = "Recycle monkey"
+	else if(pack?.is_recyclable(target))
+		context[SCREENTIP_CONTEXT_LMB] = "Recycle creature"
 	else if(isliving(target))
-		context[SCREENTIP_CONTEXT_LMB] = "Capture creature"
+		context[SCREENTIP_CONTEXT_LMB] = "Suck up slime"
 	else
-		context[SCREENTIP_CONTEXT_LMB] = "Launch stored creature"
+		context[SCREENTIP_CONTEXT_LMB] = "Launch stored slime"
 	context[SCREENTIP_CONTEXT_RMB] = "Print and launch creature"
 	context[SCREENTIP_CONTEXT_CTRL_RMB] = "Suck up extracts"
 	return CONTEXTUAL_SCREENTIP_SET
+
+// don't shit out a monkey if we click on our hud
+/obj/item/vacuum_nozzle/proc/is_world_target(atom/target)
+	return isturf(target) || isturf(target?.loc)
 
 /obj/item/vacuum_nozzle/proc/register_user(mob/living/user)
 	var/mob/living/old_user = registered_user_ref?.resolve()
@@ -111,12 +119,11 @@
 	SIGNAL_HANDLER
 	if(!LAZYACCESS(modifiers, CTRL_CLICK) || !LAZYACCESS(modifiers, RIGHT_CLICK) || LAZYACCESS(modifiers, SHIFT_CLICK) || LAZYACCESS(modifiers, ALT_CLICK))
 		return
-	if(source.get_active_held_item() != src || !pack || pack.busy)
+	if(source.get_active_held_item() != src || !pack || pack.busy || !is_world_target(target))
 		return
 	pack.suck_extracts(target, source)
 	return COMSIG_MOB_CANCEL_CLICKON
 
-/// Leaves ordinary Alt-click alone unless an eligible world-tile target exists.
 /obj/item/vacuum_nozzle/proc/on_user_altclick(mob/living/source, atom/target)
 	SIGNAL_HANDLER
 	if(source.get_active_held_item() != src || !pack || pack.busy)

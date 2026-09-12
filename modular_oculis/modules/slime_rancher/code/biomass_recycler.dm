@@ -1,4 +1,5 @@
 #define BIOMASS_MONKEY_YIELD 0.4
+#define BIOMASS_MINIMUM_CONDITION 0.25
 #define BIOMASS_PART_EFFICIENCY_STEP 0.25
 #define BIOMASS_PRINT_COST_MULTIPLIER 2
 
@@ -95,14 +96,15 @@
 		return
 	recycle(target, user, feedback = TRUE)
 
-/// Returns the base biomass supplied by an eligible creature.
+/// Returns the base biomass supplied by an eligible creature, scaled by how much it's been nomed on or whacked already
 /obj/machinery/biomass_recycler/proc/recycle_value(mob/living/target)
 	if(ismonkey(target))
 		return BIOMASS_MONKEY_YIELD
 	var/mob/living/basic/basic_target = target
 	if(!istype(basic_target))
 		return 0
-	return basic_target.biomass_value
+	var/condition = basic_target.maxHealth > 0 ? basic_target.health / basic_target.maxHealth : 1
+	return basic_target.biomass_value * clamp(condition, BIOMASS_MINIMUM_CONDITION, 1)
 
 /// Checks machine and creature state without imposing a range on remote vacuum use.
 /obj/machinery/biomass_recycler/proc/can_recycle(mob/living/target, mob/living/user, feedback = FALSE)
@@ -232,6 +234,7 @@
 	)
 	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
 
+#undef BIOMASS_MINIMUM_CONDITION
 #undef BIOMASS_MONKEY_YIELD
 #undef BIOMASS_PART_EFFICIENCY_STEP
 #undef BIOMASS_PRINT_COST_MULTIPLIER

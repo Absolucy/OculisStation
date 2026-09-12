@@ -9,7 +9,7 @@
 
 /obj/item/vacuum_pack
 	name = "slime vacuum pack"
-	desc = "A backpack (or belt) vacuum for carrying and launching slimes and feeding critters."
+	desc = "A backpack (or belt) vacuum for carrying and launching slimes. Anything else it sucks up goes straight to the linked recycler."
 	icon = 'modular_oculis/modules/slime_rancher/icons/vacuum.dmi'
 	icon_state = "vacuum_pack"
 	inhand_icon_state = "vacuum_pack"
@@ -74,7 +74,7 @@
 /obj/item/vacuum_pack/examine(mob/user)
 	. = ..()
 	var/list/stored = occupants()
-	. += span_notice("It contains [length(stored)] of [capacity] creatures.")
+	. += span_notice("It contains [length(stored)] of [capacity] slimes.")
 	. += span_notice("Its suction reaches [capture_range] tiles and takes [DisplayTimeText(capture_delay)].")
 	. += span_notice("It is set to [selective_mode ? "selective" : "random"] firing.")
 	. += span_notice("Ctrl-right-click with the nozzle to suck up slime extracts in that direction.")
@@ -258,11 +258,7 @@
 		return FALSE
 
 	var/mob/living/basic/basic_target = target
-	if(!istype(basic_target))
-		if(feedback)
-			balloon_alert(user, "cannot be sucked up!")
-		return FALSE
-	if(!isslime(basic_target) && basic_target.biomass_value <= 0)
+	if(!isslime(basic_target))
 		if(feedback)
 			balloon_alert(user, "cannot be sucked up!")
 		return FALSE
@@ -271,16 +267,15 @@
 			balloon_alert(user, "already restrained!")
 		return FALSE
 
-	if(isslime(basic_target))
-		var/mob/living/basic/slime/slime = basic_target
-		if(slime.has_status_effect(/datum/status_effect/slime_reproducing))
-			if(feedback)
-				balloon_alert(user, "slime is reproducing!")
-			return FALSE
-		if(slime.ai_controller?.blackboard[BB_SLIME_RABID] && !(capabilities & VACUUM_CAN_PACIFY))
-			if(feedback)
-				balloon_alert(user, "slime is rabid!")
-			return FALSE
+	var/mob/living/basic/slime/slime = basic_target
+	if(slime.has_status_effect(/datum/status_effect/slime_reproducing))
+		if(feedback)
+			balloon_alert(user, "slime is reproducing!")
+		return FALSE
+	if(slime.ai_controller?.blackboard[BB_SLIME_RABID] && !(capabilities & VACUUM_CAN_PACIFY))
+		if(feedback)
+			balloon_alert(user, "slime is rabid!")
+		return FALSE
 	return TRUE
 
 /obj/item/vacuum_pack/proc/capture(mob/living/target, mob/living/user, turf/required_turf)
@@ -404,25 +399,32 @@
 /obj/item/vacuum_pack/proc/can_continue_menu(mob/living/user)
 	return busy && can_use_nozzle(user)
 
-/obj/item/vacuum_pack/proc/can_recycle_monkey(mob/living/carbon/human/target, mob/living/user, obj/machinery/biomass_recycler/recycler, turf/starting_turf, feedback = FALSE)
-	if(!ismonkey(target) || !can_reach_for_intake(target, user, feedback))
+/// Anything sucked up that isn't a slime gets ground down instead of stored.
+/obj/item/vacuum_pack/proc/is_recyclable(mob/living/target)
+	if(ismonkey(target))
+		return TRUE
+	var/mob/living/basic/basic_target = target
+	return istype(basic_target) && !isslime(basic_target) && basic_target.biomass_value > 0
+
+/obj/item/vacuum_pack/proc/can_recycle_creature(mob/living/target, mob/living/user, obj/machinery/biomass_recycler/recycler, turf/starting_turf, feedback = FALSE)
+	if(!is_recyclable(target) || !can_reach_for_intake(target, user, feedback))
 		return FALSE
 	if(!can_use_recycler(recycler, user, feedback))
 		return FALSE
 	return recycler.can_recycle(target, user, feedback)
 
 /// Commits through the machine so part efficiency and credit stay in one place.
-/obj/item/vacuum_pack/proc/recycle_monkey(mob/living/carbon/human/target, mob/living/user, turf/required_turf)
+/obj/item/vacuum_pack/proc/recycle_creature(mob/living/target, mob/living/user, turf/required_turf)
 	var/obj/machinery/biomass_recycler/recycler = resolve_recycler()
 	var/turf/starting_turf = required_turf || target.loc
-	if(!can_recycle_monkey(target, user, recycler, starting_turf, feedback = TRUE))
+	if(!can_recycle_creature(target, user, recycler, starting_turf, feedback = TRUE))
 		return FALSE
 	start_mob_suction(target, user)
-	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_monkey), target, user, recycler, starting_turf, FALSE))
+	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_creature), target, user, recycler, starting_turf, FALSE))
 	stop_mob_suction(target)
 	if(!finished)
 		return FALSE
-	if(!can_recycle_monkey(target, user, recycler, starting_turf, feedback = TRUE))
+	if(!can_recycle_creature(target, user, recycler, starting_turf, feedback = TRUE))
 		return FALSE
 	new /obj/effect/temp_visual/vacuum_intake(starting_turf, target.appearance, get_turf(nozzle))
 	play_ploop(nozzle)
@@ -436,8 +438,8 @@
 	var/succeeded = FALSE
 	if(istype(target, /obj/machinery/biomass_recycler))
 		succeeded = link_recycler(target, user)
-	else if(ismonkey(target))
-		succeeded = recycle_monkey(target, user)
+	else if(is_recyclable(target))
+		succeeded = recycle_creature(target, user)
 	else if(isliving(target))
 		succeeded = capture(target, user)
 	else
@@ -463,8 +465,8 @@
 	var/mob/living/selected = target_refs[selection]?.resolve()
 	var/succeeded = FALSE
 	if(selected?.loc == target_turf)
-		if(ismonkey(selected))
-			succeeded = recycle_monkey(selected, user, target_turf)
+		if(is_recyclable(selected))
+			succeeded = recycle_creature(selected, user, target_turf)
 		else
 			succeeded = capture(selected, user, target_turf)
 	busy = FALSE
@@ -479,8 +481,8 @@
 	return FALSE
 
 /obj/item/vacuum_pack/proc/is_selectable_target(mob/living/candidate, mob/living/user, turf/target_turf)
-	if(ismonkey(candidate))
-		return can_recycle_monkey(candidate, user, resolve_recycler(), target_turf)
+	if(is_recyclable(candidate))
+		return can_recycle_creature(candidate, user, resolve_recycler(), target_turf)
 	return can_suck(candidate, user)
 
 /obj/item/vacuum_pack/proc/choose_species(mob/living/user)
