@@ -112,27 +112,101 @@
 /obj/item/disk/vacuum_upgrade/capacity
 	name = "vacuum capacity upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/capacity
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
 
 /obj/item/disk/vacuum_upgrade/range
 	name = "vacuum range upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/range
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 2)
 
 /obj/item/disk/vacuum_upgrade/speed
 	name = "vacuum speed upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/speed
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 3)
 
 /obj/item/disk/vacuum_upgrade/stasis
 	name = "vacuum stasis upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/stasis
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 3, /datum/material/bluespace = SMALL_MATERIAL_AMOUNT * 2)
 
 /obj/item/disk/vacuum_upgrade/healing
 	name = "vacuum healing upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/healing
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3, /datum/material/plasma = SMALL_MATERIAL_AMOUNT * 3)
 
 /obj/item/disk/vacuum_upgrade/pacify
 	name = "vacuum pacify upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/pacify
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3)
 
 /obj/item/disk/vacuum_upgrade/printer
 	name = "vacuum printer upgrade disk"
 	upgrade_type = /datum/vacuum_upgrade/printer
+	custom_materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 4, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3, /datum/material/diamond = SMALL_MATERIAL_AMOUNT * 2)
+
+/datum/design/vacuum_pack_upgrade
+	abstract_type = /datum/design/vacuum_pack_upgrade
+	name = "Vacuum Upgrade Disk"
+	desc = "A one-use upgrade disk for a slime vacuum pack."
+	build_type = PROTOLATHE | AWAY_LATHE
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_XENOBIOLOGY,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
+/datum/design/vacuum_pack_upgrade/capacity
+	name = "Vacuum Capacity Upgrade Disk"
+	desc = "Adds five storage slots to a slime vacuum pack."
+	build_path = /obj/item/disk/vacuum_upgrade/capacity
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2)
+
+/datum/design/vacuum_pack_upgrade/range
+	name = "Vacuum Range Upgrade Disk"
+	desc = "Adds two tiles of suction range to a slime vacuum pack."
+	build_path = /obj/item/disk/vacuum_upgrade/range
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 2)
+
+/datum/design/vacuum_pack_upgrade/speed
+	name = "Vacuum Speed Upgrade Disk"
+	desc = "Cuts down the suction wind-up on a slime vacuum pack."
+	build_path = /obj/item/disk/vacuum_upgrade/speed
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 3, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 2, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 3)
+
+/datum/design/vacuum_pack_upgrade/pacify
+	name = "Vacuum Pacify Upgrade Disk"
+	desc = "Lets a slime vacuum pack capture rabid slimes safely."
+	build_path = /obj/item/disk/vacuum_upgrade/pacify
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3)
+
+/datum/design/vacuum_pack_upgrade/stasis
+	name = "Vacuum Stasis Upgrade Disk"
+	desc = "Keeps creatures stored in a slime vacuum pack in stasis."
+	build_path = /obj/item/disk/vacuum_upgrade/stasis
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/silver = SMALL_MATERIAL_AMOUNT * 3, /datum/material/bluespace = SMALL_MATERIAL_AMOUNT * 2)
+
+/datum/design/vacuum_pack_upgrade/healing
+	name = "Vacuum Healing Upgrade Disk"
+	desc = "Slowly heals creatures stored in a slime vacuum pack."
+	build_path = /obj/item/disk/vacuum_upgrade/healing
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 4, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 3, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3, /datum/material/plasma = SMALL_MATERIAL_AMOUNT * 3)
+
+/datum/design/vacuum_pack_upgrade/printer
+	name = "Vacuum Printer Upgrade Disk"
+	desc = "Lets a slime vacuum pack print and launch stored creature species from a linked biomass recycler."
+	build_path = /obj/item/disk/vacuum_upgrade/printer
+	materials = list(/datum/material/iron = SMALL_MATERIAL_AMOUNT * 5, /datum/material/glass = SMALL_MATERIAL_AMOUNT * 4, /datum/material/gold = SMALL_MATERIAL_AMOUNT * 3, /datum/material/diamond = SMALL_MATERIAL_AMOUNT * 2)
+
+/datum/techweb_node/slime_vacuum_upgrades
+	display_name = "Slime Vacuum Modules"
+	description = "Upgrade modules for the slime vacuum pack: more capacity, more range, faster capture, pacifying, stasis, and passive healing for stored creatures."
+	prerequisite_nodes = list(/datum/techweb_node/xenobiology)
+	unlocked_designs = list(
+		/datum/design/vacuum_pack_upgrade/capacity,
+		/datum/design/vacuum_pack_upgrade/range,
+		/datum/design/vacuum_pack_upgrade/speed,
+		/datum/design/vacuum_pack_upgrade/pacify,
+		/datum/design/vacuum_pack_upgrade/stasis,
+		/datum/design/vacuum_pack_upgrade/healing,
+	)
+	research_costs = list(TECHWEB_POINT_TYPE_GENERIC = TECHWEB_TIER_4_POINTS)
+	announce_channels = list(RADIO_CHANNEL_SCIENCE)

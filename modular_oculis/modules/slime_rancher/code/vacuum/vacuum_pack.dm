@@ -555,6 +555,21 @@
 		upgrades[upgrade_type] = new upgrade_type(src)
 	recalculate_stats()
 
+/datum/design/vacuum_pack
+	name = "Slime Vacuum Pack"
+	desc = "A backpack vacuum for carrying and launching slimes and feeding critters."
+	build_type = PROTOLATHE | AWAY_LATHE
+	materials = list(
+		/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5,
+		/datum/material/glass = SHEET_MATERIAL_AMOUNT * 2,
+		/datum/material/plastic = SHEET_MATERIAL_AMOUNT * 2,
+	)
+	build_path = /obj/item/vacuum_pack
+	category = list(
+		RND_CATEGORY_EQUIPMENT + RND_SUBCATEGORY_EQUIPMENT_XENOBIOLOGY,
+	)
+	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
+
 #undef VACUUM_BASE_CAPACITY
 #undef VACUUM_BASE_CAPTURE_RANGE
 #undef VACUUM_BASE_CAPTURE_DELAY
