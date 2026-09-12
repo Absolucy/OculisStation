@@ -3,6 +3,8 @@
 	. = list()
 	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
 		. |= mutation.needed_items
+	if(/obj/item/stack/ore/bluespace_crystal in .)
+		. |= /obj/item/stack/sheet/bluespace_crystal
 	if(!primed_split_cost)
 		. |= /obj/item/slime_breeding_pellet
 
