@@ -1,3 +1,5 @@
+#define VACUUM_STREAM_BASE_TILES 3
+
 /particles/vacuum_suction
 	icon = 'icons/effects/particles/generic.dmi'
 	icon_state = list("curl" = 2, "dot" = 3)
@@ -15,6 +17,17 @@
 	spin = generator(GEN_NUM, -20, 20, UNIFORM_RAND)
 	gradient = list(0, "#ffb3e6", 1, "#b3f0ff", 2, "#fff3b3", "loop")
 	color = generator(GEN_NUM, 0, 3, UNIFORM_RAND)
+
+/particles/vacuum_suction/proc/scale_to_range(tiles)
+	var/scale = tiles / VACUUM_STREAM_BASE_TILES
+	if(scale == 1)
+		return
+	width = round(256 * scale, 1)
+	height = round(256 * scale, 1)
+	count = round(60 * scale, 1)
+	spawning = 8 * scale
+	position = generator(GEN_BOX, list(-16, 32, 0), list(16, tiles * ICON_SIZE_Y, 0), UNIFORM_RAND)
+	velocity = list(0, -12 * scale)
 
 /particles/vacuum_sparkles
 	icon = 'icons/effects/particles/generic.dmi'
@@ -34,9 +47,11 @@
 	randomdir = FALSE
 	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
 
-/obj/effect/temp_visual/vacuum_suction_stream/Initialize(mapload, aim_angle)
+/obj/effect/temp_visual/vacuum_suction_stream/Initialize(mapload, aim_angle, reach_tiles = VACUUM_STREAM_BASE_TILES)
 	. = ..()
-	particles = new /particles/vacuum_suction
+	var/particles/vacuum_suction/stream = new
+	stream.scale_to_range(reach_tiles)
+	particles = stream
 	var/matrix/aim = matrix()
 	aim.Turn(aim_angle)
 	particles.transform = aim
@@ -91,7 +106,7 @@
 	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
 	var/turf/user_turf = get_turf(user)
 	var/aim_angle = get_turf(target) == user_turf ? dir2angle(user.dir) : get_angle(user, target)
-	new /obj/effect/temp_visual/vacuum_suction_stream(user_turf, aim_angle)
+	new /obj/effect/temp_visual/vacuum_suction_stream(user_turf, aim_angle, capture_range)
 	return aim_angle
 
 /obj/item/vacuum_pack/proc/play_ploop(atom/source, pitch = 1)
@@ -181,3 +196,5 @@
 		return
 	extract.pixel_x = extract.base_pixel_x + rand(-6, 6)
 	extract.pixel_y = extract.base_pixel_y + rand(-6, 6)
+
+#undef VACUUM_STREAM_BASE_TILES
