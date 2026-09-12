@@ -163,6 +163,7 @@
 	if(ismob(loc))
 		balloon_alert(loc, "nozzle snaps back")
 	source.forceMove(src)
+	playsound(source, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 
 /obj/item/vacuum_pack/proc/occupants()
 	. = list()
