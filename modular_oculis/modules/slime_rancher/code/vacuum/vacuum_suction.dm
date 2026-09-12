@@ -85,6 +85,7 @@
 		balloon_alert(user, "no extracts!")
 
 /obj/item/vacuum_pack/proc/start_suction(atom/target, mob/living/user)
+	user.face_atom(target)
 	QDEL_NULL(succ_sound)
 	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40, falloff_exponent = 4)
 	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
