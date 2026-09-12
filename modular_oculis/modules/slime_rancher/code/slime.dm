@@ -10,10 +10,10 @@
 	RegisterSignal(src, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_pellet))
 	RegisterSignal(src, COMSIG_ANIMAL_PET, PROC_REF(on_petted))
 	RegisterSignals(src, list(COMSIG_SLIME_ATE_ITEM, COMSIG_LIVING_BEFRIENDED), PROC_REF(on_slime_happy_yay))
-	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(rally_against_monkey))
+	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(crush_the_monkey_rebels))
 
 // a monkey swinging at one slime gets the whole pen mad at it
-/mob/living/basic/slime/proc/rally_against_monkey(datum/source, atom/attacker, attack_flags)
+/mob/living/basic/slime/proc/crush_the_monkey_rebels(datum/source, atom/attacker, attack_flags)
 	SIGNAL_HANDLER
 	if(!ismonkey(attacker))
 		return
