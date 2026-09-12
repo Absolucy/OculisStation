@@ -17,6 +17,7 @@
 	righthand_file = 'modular_oculis/modules/slime_rancher/icons/vacuum_pack_righthand.dmi'
 	worn_icon = 'icons/mob/clothing/back.dmi'
 	worn_icon_state = "waterbackpackjani"
+	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/glass = SHEET_MATERIAL_AMOUNT * 2, /datum/material/plastic = SHEET_MATERIAL_AMOUNT * 2)
 	w_class = WEIGHT_CLASS_BULKY
 	slot_flags = ITEM_SLOT_BACK | ITEM_SLOT_BELT
 	item_flags = NOBLUDGEON
