@@ -134,12 +134,12 @@
 		return FALSE
 	if(QDELETED(nozzle))
 		nozzle = new(src)
-		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 		RegisterSignal(nozzle, COMSIG_MOVABLE_MOVED, PROC_REF(on_nozzle_moved))
 	if(nozzle.loc == src)
 		if(!user.put_in_hands(nozzle))
 			balloon_alert(user, "need a free hand!")
 			return FALSE
+		playsound(src, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
 		return TRUE
 	retract_nozzle()
 	return TRUE
