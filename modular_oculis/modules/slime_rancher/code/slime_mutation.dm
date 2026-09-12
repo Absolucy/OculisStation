@@ -143,6 +143,16 @@
 	mutates_into = /datum/slime_type/bluespace
 	needed_items = list(/obj/item/stack/ore/bluespace_crystal)
 
+/datum/slime_mutation/bluespace/on_check_wanted_item(mob/living/basic/slime/source, obj/item/meal)
+	if(istype(meal, /obj/item/stack/sheet/bluespace_crystal) && (/obj/item/stack/ore/bluespace_crystal in needed_items))
+		return COMPONENT_SLIME_WANTS_ITEM
+	return ..()
+
+/datum/slime_mutation/bluespace/on_ate_item(mob/living/basic/slime/source, meal_type)
+	if(ispath(meal_type, /obj/item/stack/sheet/bluespace_crystal))
+		meal_type = /obj/item/stack/ore/bluespace_crystal
+	return ..()
+
 /datum/slime_mutation/lightpink
 	mutates_into = /datum/slime_type/lightpink
 	latch_needed = alist(/mob/living/basic/xenofauna/voxslug = 80)
