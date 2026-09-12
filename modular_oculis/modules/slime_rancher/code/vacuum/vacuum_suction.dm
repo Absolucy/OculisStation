@@ -168,7 +168,7 @@
 	play_ploop(user, pitch)
 	var/obj/item/storage/bag/xeno/bag = astype(user.get_inactive_held_item())
 	if(isnull(bag))
-		var/static/list/slots_to_check = list(ITEM_SLOT_SUITSTORE, ITEM_SLOT_BELT)
+		var/static/list/slots_to_check = list(ITEM_SLOT_SUITSTORE, ITEM_SLOT_BELT, ITEM_SLOT_LPOCKET, ITEM_SLOT_RPOCKET)
 		for(var/slot in slots_to_check)
 			var/obj/item/item_in_slot = user.get_item_by_slot(slot)
 			if(istype(item_in_slot, /obj/item/storage/bag/xeno))
