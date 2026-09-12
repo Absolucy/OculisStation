@@ -101,9 +101,9 @@
 
 /obj/item/vacuum_pack/proc/start_suction(atom/target, mob/living/user)
 	user.face_atom(target)
-	QDEL_NULL(succ_sound)
-	succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40, falloff_exponent = 4)
-	RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
+	if(isnull(succ_sound))
+		succ_sound = playsoundtoken(nozzle, 'sound/items/vacuum/vacuum_use.ogg', volume = 40, falloff_exponent = 4)
+		RegisterSignal(succ_sound, COMSIG_QDELETING, PROC_REF(on_succ_sound_deleted))
 	var/turf/user_turf = get_turf(user)
 	var/aim_angle = get_turf(target) == user_turf ? dir2angle(user.dir) : get_angle(user, target)
 	new /obj/effect/temp_visual/vacuum_suction_stream(user_turf, aim_angle, capture_range)
@@ -117,7 +117,6 @@
 	target.add_shared_particles(/particles/vacuum_sparkles)
 
 /obj/item/vacuum_pack/proc/stop_mob_suction(mob/living/target)
-	QDEL_NULL(succ_sound)
 	target.remove_shared_particles(/particles/vacuum_sparkles)
 
 /obj/item/vacuum_pack/proc/start_extract_pull(obj/item/slime_extract/extract, mob/living/user)
@@ -163,8 +162,6 @@
 	extract.remove_shared_particles(/particles/vacuum_sparkles)
 	if(!QDELETED(loop))
 		qdel(loop)
-	if(!length(pulled_extracts))
-		QDEL_NULL(succ_sound)
 
 /obj/item/vacuum_pack/proc/on_succ_sound_deleted(datum/source)
 	SIGNAL_HANDLER
@@ -172,7 +169,6 @@
 	succ_sound = null
 
 /obj/item/vacuum_pack/proc/stop_extract_pulls()
-	QDEL_NULL(succ_sound)
 	for(var/extract in pulled_extracts)
 		end_extract_pull(extract)
 

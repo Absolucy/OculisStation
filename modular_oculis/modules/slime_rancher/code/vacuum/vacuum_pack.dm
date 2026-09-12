@@ -57,6 +57,7 @@
 			qdel(occupant)
 
 	stop_extract_pulls()
+	QDEL_NULL(succ_sound)
 	QDEL_NULL(nozzle)
 	QDEL_LIST_ASSOC_VAL(upgrades)
 	owned_ai_shutdowns.Cut()
