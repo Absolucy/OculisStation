@@ -24636,16 +24636,12 @@
 	name = "Medbay Security Post"
 	},
 /obj/machinery/door/firedoor,
-/obj/structure/cable,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/effect/mapping_helpers/airlock/access/all/security/entrance,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4{
 	dir = 4
 	},
-/obj/effect/mapping_helpers/airlock/access/all/security/entrance,
-/obj/effect/turf_decal/trimline/blue/line{
-	dir = 8
-	},
 /obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron,
 /area/station/security/checkpoint/medical)
 "huW" = (
@@ -28212,11 +28208,6 @@
 	dir = 8
 	},
 /area/station/hallway/primary/aft)
-"jkm" = (
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/turf/open/floor/iron/white,
-/area/station/medical/chemistry)
 "jkn" = (
 /obj/effect/spawner/structure/window,
 /turf/open/floor/plating,
@@ -47843,12 +47834,6 @@
 /obj/structure/cable,
 /turf/open/floor/iron/white,
 /area/station/science/genetics)
-"tvI" = (
-/obj/effect/turf_decal/trimline/blue/line{
-	dir = 8
-	},
-/turf/closed/wall,
-/area/station/security/checkpoint/medical)
 "tvY" = (
 /obj/effect/mapping_helpers/airlock/access/any/supply/general,
 /obj/machinery/door/airlock/external/glass{
@@ -52005,15 +51990,6 @@
 	luminosity = 2
 	},
 /area/station/maintenance/department/science/xenobiology)
-"vAW" = (
-/obj/effect/turf_decal/trimline/blue/line{
-	dir = 8
-	},
-/obj/structure/disposalpipe/segment{
-	dir = 4
-	},
-/turf/closed/wall,
-/area/station/security/checkpoint/medical)
 "vAX" = (
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2{
 	dir = 8
@@ -86673,8 +86649,8 @@ vRB
 bja
 bja
 huy
-tvI
-vAW
+bja
+bja
 nWH
 rBI
 dMR
@@ -88478,7 +88454,7 @@ jfg
 egX
 bsK
 bsK
-jkm
+tcX
 kuY
 qwJ
 bAh
