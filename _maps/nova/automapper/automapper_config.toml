@@ -732,7 +732,7 @@ trait_name = "Station"
 map_files = ["oceanpubby_explorer_spawns.dmm"]
 directory = "_maps/oculis/automapper/templates/oceanpubby/"
 required_map = "oceanpubby.dmm"
-coordinates = [139, 172, 1]
+coordinates = [142, 173, 1]
 trait_name = "Station"
 
 # Oculis - Oceanpubby Robotics Medical Records
@@ -740,7 +740,7 @@ trait_name = "Station"
 map_files = ["oceanpubby_robotics_medical_records.dmm"]
 directory = "_maps/oculis/automapper/templates/oceanpubby/"
 required_map = "oceanpubby.dmm"
-coordinates = [141, 127, 1]
+coordinates = [146, 130, 1]
 trait_name = "Station"
 
 # Oculis - Catwalkstation Arrivals
