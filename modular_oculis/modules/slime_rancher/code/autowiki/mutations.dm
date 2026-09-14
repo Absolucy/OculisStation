@@ -24,7 +24,7 @@
 /datum/autowiki/slime_mutations/proc/build_sources()
 	var/list/sources_by_mutation = list()
 
-	for(var/slime_path as anything in sort_list(valid_subtypesof(/datum/slime_type), GLOBAL_PROC_REF(cmp_typepaths_asc)))
+	for(var/slime_path in sort_list(valid_subtypesof(/datum/slime_type), GLOBAL_PROC_REF(cmp_typepaths_asc)))
 		// possible_mutations defaults to rainbow in New() when null, so we need a real instance
 		var/datum/slime_type/slime_type = new slime_path
 		if(slime_type.colour)
