@@ -360,10 +360,6 @@
 	dir = 8
 	},
 /obj/structure/table/wood,
-/obj/item/bdsm_candle{
-	pixel_x = 7;
-	pixel_y = 11
-	},
 /obj/item/food/grown/flower/poppy/geranium{
 	pixel_x = -2
 	},

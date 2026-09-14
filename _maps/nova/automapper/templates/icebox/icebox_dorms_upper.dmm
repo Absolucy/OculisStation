@@ -525,10 +525,6 @@
 	pixel_x = 1;
 	pixel_y = 7
 	},
-/obj/item/bdsm_candle{
-	pixel_y = 1;
-	pixel_x = -7
-	},
 /obj/item/reagent_containers/cup/glass/mug/coco{
 	pixel_y = 1;
 	pixel_x = 8
@@ -924,7 +920,6 @@
 /area/station/service/cafeteria)
 "qH" = (
 /obj/structure/sign/departments/restroom/directional/north,
-/obj/machinery/vending/dorms,
 /turf/open/floor/wood/large,
 /area/station/commons/dorms)
 "qN" = (
