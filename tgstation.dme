@@ -10513,6 +10513,7 @@
 #include "modular_oculis\modules\slime_rancher\code\slime_type.dm"
 #include "modular_oculis\modules\slime_rancher\code\autowiki\crossbreeds.dm"
 #include "modular_oculis\modules\slime_rancher\code\autowiki\mutations.dm"
+#include "modular_oculis\modules\slime_rancher\code\slime_pens\penned_monkey_screech.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen_barrier.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_pens\slime_pen_post.dm"

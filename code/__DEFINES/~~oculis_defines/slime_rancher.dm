@@ -8,6 +8,8 @@
 #define BB_SLIME_WANTED_MOBS "BB_slime_wanted_mobs"
 ///Friend a slime is currently waddling over to go nuzzle
 #define BB_SLIME_NUZZLE_TARGET "BB_slime_nuzzle_target"
+///Emotes a monkey uses for its battle screech instead of the hardcoded roar/screech, if set
+#define BB_MONKEY_BATTLE_SCREECHES "BB_monkey_battle_screeches"
 
 /// The cat face. Core only defines the faces its own AI used, and this one's cuter.
 #define SLIME_MOOD_CAT ":33"
