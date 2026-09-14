@@ -76,6 +76,12 @@
       order to the revolution. It is, however, ultimately a *guideline*. You're note
       forced to follow it but are expected to abide by it .
   - bugfix: Fruit punch healing updates correctly
+  - bugfix: Biting now actually works again.
+  - rscadd: Fangs, which now handle the functionality of pseudo-fang tongues. Felinids,
+      lizardpeople, vampires, carp-infused and stout-infused people now have their
+      own fangs.
+  - code_imp: Vampire fangs now handle all vampire blood-draining effects.
+  - rscadd: Cybernetic fangs, unlocked via the Cybernetics tech node.
   PapaMichael:
   - bugfix: Firefighting foam no longer immediately burns away in heat without getting
       a chance to do its firefighting foam effects
@@ -101,13 +107,6 @@
   - bugfix: Fixed more TGUI window resize/white flashing
   lelandkemble:
   - bugfix: The greed of miners no longer clogs the runtime logs
-  necromanceranne:
-  - bugfix: Biting now actually works again.
-  - rscadd: Fangs, which now handle the functionality of pseudo-fang tongues. Felinids,
-      lizardpeople, vampires, carp-infused and stout-infused people now have their
-      own fangs.
-  - code_imp: Vampire fangs now handle all vampire blood-draining effects.
-  - rscadd: Cybernetic fangs, unlocked via the Cybernetics tech node.
   sqnztb:
   - balance: Spears no longer break from overuse without repair.
   projectkepler-ru:
