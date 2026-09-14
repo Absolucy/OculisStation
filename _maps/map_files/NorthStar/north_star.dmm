@@ -1626,7 +1626,6 @@
 "atX" = (
 /obj/effect/spawner/structure/window/reinforced,
 /obj/machinery/door/poddoor/shutters/preopen{
-	dir = 2;
 	name = "Cargo Lobby Lockdown Shutters";
 	id = "cargolobbylockdown"
 	},
@@ -13468,7 +13467,6 @@
 "dro" = (
 /obj/effect/decal/cleanable/dirt,
 /obj/machinery/light/small/dim/directional/east,
-/obj/machinery/vending/dorms,
 /turf/open/floor/iron,
 /area/station/hallway/floor3/aft)
 "drp" = (
@@ -14728,10 +14726,6 @@
 /obj/effect/turf_decal/trimline/green/filled/line,
 /turf/open/floor/iron/dark,
 /area/station/hallway/floor2/fore)
-"dIY" = (
-/obj/machinery/vending/dorms,
-/turf/open/floor/iron,
-/area/station/commons/locker)
 "dJf" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
@@ -29223,9 +29217,7 @@
 /obj/effect/mapping_helpers/airlock/cyclelink_helper{
 	dir = 1
 	},
-/obj/effect/mapping_helpers/airlock/unres/delayed{
-	dir = 2
-	},
+/obj/effect/mapping_helpers/airlock/unres/delayed,
 /obj/effect/decal/cleanable/dirt,
 /turf/open/floor/carpet/blue,
 /area/station/maintenance/floor3/port/aft)
@@ -39127,7 +39119,6 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /obj/machinery/door/poddoor/shutters/preopen{
-	dir = 2;
 	name = "Cargo Lobby Lockdown Shutters";
 	id = "cargolobbylockdown"
 	},
@@ -52424,9 +52415,7 @@
 /obj/machinery/door/airlock/hatch{
 	name = "Maintenance Access"
 	},
-/obj/effect/mapping_helpers/airlock/unres/delayed{
-	dir = 2
-	},
+/obj/effect/mapping_helpers/airlock/unres/delayed,
 /obj/effect/mapping_helpers/airlock/access/any/engineering/maintenance,
 /turf/open/floor/catwalk_floor,
 /area/station/maintenance/floor2/port/fore)
@@ -80681,9 +80670,7 @@
 	name = "Maintenance Hatch"
 	},
 /obj/effect/mapping_helpers/airlock/access/any/engineering/maintenance,
-/obj/effect/mapping_helpers/airlock/unres/delayed{
-	dir = 2
-	},
+/obj/effect/mapping_helpers/airlock/unres/delayed,
 /turf/open/floor/mineral/plastitanium/pod/light,
 /area/station/maintenance/floor1/port)
 "ulu" = (
@@ -82452,7 +82439,6 @@
 /obj/machinery/door/firedoor,
 /obj/effect/turf_decal/delivery,
 /obj/machinery/door/poddoor/shutters/preopen{
-	dir = 2;
 	name = "Cargo Lobby Lockdown Shutters";
 	id = "cargolobbylockdown"
 	},
@@ -96016,7 +96002,6 @@
 	dir = 1
 	},
 /obj/effect/mapping_helpers/broken_floor,
-/obj/machinery/vending/dorms,
 /turf/open/floor/iron/dark/side{
 	dir = 6
 	},
@@ -187487,7 +187472,7 @@ gKN
 ebE
 mtA
 rrR
-dIY
+rrR
 hcO
 hLg
 ift
