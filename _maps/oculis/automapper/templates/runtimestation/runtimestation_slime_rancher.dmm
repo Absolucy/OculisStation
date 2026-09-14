@@ -1,0 +1,711 @@
+//MAP CONVERTED BY dmm2tgm.py THIS HEADER COMMENT PREVENTS RECONVERSION, DO NOT REMOVE
+"aV" = (
+/turf/closed/wall/r_wall,
+/area/station/medical/medbay)
+"bz" = (
+/obj/structure/slime_pen_post/premade,
+/obj/effect/turf_decal/tile/green/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"bS" = (
+/obj/structure/cable,
+/obj/effect/turf_decal/tile/blue{
+	dir = 8
+	},
+/obj/structure/table,
+/obj/item/debug/omnitool{
+	pixel_x = -4;
+	pixel_y = 6
+	},
+/obj/item/debug/omnitool/item_spawner{
+	pixel_x = 4;
+	pixel_y = -6
+	},
+/turf/open/floor/iron/white/corner{
+	dir = 1
+	},
+/area/station/medical/medbay)
+"ce" = (
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/mob/living/basic/slime,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"cz" = (
+/obj/item/slime_rancher_scanner{
+	pixel_x = 6
+	},
+/obj/item/slime_rancher_scanner{
+	pixel_x = -6
+	},
+/obj/machinery/smartfridge/extract/preloaded,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"dm" = (
+/turf/template_noop,
+/area/template_noop)
+"dw" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/turf/open/floor/catwalk_floor,
+/area/station/medical/medbay)
+"eG" = (
+/obj/structure/slime_pen_post/premade,
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/obj/machinery/camera/autoname/directional/east,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"iX" = (
+/obj/structure/cable,
+/turf/open/floor/iron,
+/area/station/medical/medbay)
+"kS" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/effect/turf_decal/tile/blue{
+	dir = 4
+	},
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/turf/open/floor/iron/white/corner,
+/area/station/medical/medbay)
+"kW" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/turf/open/floor/catwalk_floor,
+/area/station/medical/medbay)
+"lp" = (
+/obj/machinery/atmospherics/components/unary/vent_pump/on/layer4{
+	dir = 8
+	},
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"mW" = (
+/obj/effect/turf_decal/stripes/full,
+/obj/machinery/door/airlock/external/glass/ruin{
+	name = "Medbay Airlock"
+	},
+/obj/structure/cable,
+/turf/open/floor/iron,
+/area/station/medical/medbay)
+"qL" = (
+/obj/effect/turf_decal/tile/blue{
+	dir = 4
+	},
+/obj/structure/cable,
+/turf/open/floor/iron/white/corner,
+/area/station/medical/medbay)
+"rn" = (
+/obj/structure/table/glass/plasmaglass,
+/obj/machinery/reagentgrinder,
+/obj/item/stack/sheet/mineral/plasma/fifty,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"ry" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 10
+	},
+/obj/effect/turf_decal/tile/green/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"rD" = (
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"tI" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 9;
+	barrier_color = "#D381C9"
+	},
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"wN" = (
+/turf/open/floor/iron,
+/area/station/medical/medbay)
+"wS" = (
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"xE" = (
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/science/xenobiology)
+"xY" = (
+/obj/machinery/atmospherics/components/unary/airlock_pump{
+	dir = 8
+	},
+/obj/machinery/light/small/red/dim/directional/east,
+/obj/structure/sign/departments/xenobio/directional/east,
+/turf/open/floor/iron/dark,
+/area/station/medical/medbay)
+"ya" = (
+/obj/structure/table/glass/plasmaglass,
+/obj/item/toy/plush/slimeplushie{
+	desc = "An adorable stuffed toy that resembles a slime. A faded purple flower is embroidered beneath one of its many patches, alongside several tiny slips of paper that look suspiciously like overdue notices.";
+	name = "Tara"
+	},
+/obj/item/slimecross/stabilized/grey{
+	pixel_y = 11
+	},
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"yL" = (
+/obj/structure/table/glass/plasmaglass,
+/obj/item/vacuum_pack/upgraded,
+/obj/item/vacuum_pack/upgraded,
+/obj/machinery/airalarm/directional/north,
+/obj/effect/mapping_helpers/airalarm/unlocked,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"zn" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/structure/cable,
+/obj/machinery/door/airlock/research/glass,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"zy" = (
+/turf/open/floor/iron/dark,
+/area/station/medical/medbay)
+"Aw" = (
+/obj/effect/turf_decal/tile/green/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Bh" = (
+/obj/effect/turf_decal/tile/green/fourcorners,
+/mob/living/basic/slime,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Ci" = (
+/turf/closed/wall/r_wall,
+/area/station/engineering/gravity_generator)
+"CJ" = (
+/obj/machinery/power/apc/auto_name/directional/east,
+/obj/effect/mapping_helpers/apc/cell_10k,
+/obj/effect/mapping_helpers/apc/full_charge,
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"DJ" = (
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/medical/medbay)
+"DM" = (
+/obj/machinery/light/directional/north,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"DS" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 6
+	},
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Ev" = (
+/obj/effect/turf_decal/stripes/full,
+/obj/machinery/door/airlock/external/glass/ruin{
+	name = "Medbay Airlock"
+	},
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/turf/open/floor/iron,
+/area/station/medical/medbay)
+"ES" = (
+/obj/structure/cable,
+/obj/effect/turf_decal/tile/blue{
+	dir = 8
+	},
+/turf/open/floor/iron/white/corner{
+	dir = 1
+	},
+/area/station/medical/medbay)
+"Gs" = (
+/obj/machinery/light/floor,
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Gw" = (
+/obj/machinery/door/airlock/external/glass/ruin{
+	name = "Medbay Airlock"
+	},
+/obj/effect/turf_decal/stripes/full,
+/turf/open/floor/iron/dark,
+/area/station/medical/medbay)
+"Hi" = (
+/obj/machinery/camera/autoname/directional/north,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Hs" = (
+/obj/machinery/biomass_recycler,
+/obj/item/stack/biomass/fifty,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Hu" = (
+/obj/effect/turf_decal/tile/green/fourcorners,
+/obj/machinery/light/directional/south,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"JW" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 6
+	},
+/obj/effect/turf_decal/tile/green/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Mh" = (
+/turf/open/space/basic,
+/area/space)
+"MR" = (
+/obj/machinery/light/directional/south,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"MW" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 9;
+	barrier_color = "#9FED58"
+	},
+/obj/effect/turf_decal/tile/green/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Od" = (
+/obj/structure/extinguisher_cabinet/directional/east,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Ox" = (
+/obj/machinery/light_switch/directional/east,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Ps" = (
+/obj/effect/turf_decal/tile/blue{
+	dir = 4
+	},
+/turf/open/floor/iron/white/corner,
+/area/station/medical/medbay)
+"RO" = (
+/obj/structure/table/glass/plasmaglass,
+/obj/item/storage/box/beakers/bluespace{
+	pixel_x = -2;
+	pixel_y = 6
+	},
+/obj/item/storage/box/syringes{
+	pixel_y = 3
+	},
+/obj/item/storage/box/monkeycubes{
+	pixel_x = 3
+	},
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Se" = (
+/obj/effect/spawner/structure/window/reinforced,
+/turf/open/floor/plating,
+/area/station/engineering/gravity_generator)
+"SS" = (
+/turf/closed/wall/r_wall,
+/area/station/science/xenobiology)
+"Tg" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Uj" = (
+/obj/effect/landmark/start/scientist,
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"UE" = (
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/obj/machinery/light/directional/south,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"UV" = (
+/obj/structure/slime_pen_post/premade{
+	dir = 10
+	},
+/obj/effect/turf_decal/tile/purple/fourcorners,
+/turf/open/floor/iron,
+/area/station/science/xenobiology)
+"Vm" = (
+/turf/open/floor/iron/dark,
+/area/station/science/xenobiology)
+"Xo" = (
+/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
+/obj/structure/cable,
+/turf/open/floor/iron/dark,
+/area/station/medical/medbay)
+
+(1,1,1) = {"
+dm
+dm
+dm
+ES
+bS
+ES
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(2,1,1) = {"
+dm
+dm
+dm
+wN
+iX
+wN
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(3,1,1) = {"
+dm
+dm
+dm
+wN
+iX
+wN
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(4,1,1) = {"
+dm
+dm
+dm
+wN
+iX
+wN
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(5,1,1) = {"
+dm
+dm
+dm
+wN
+iX
+wN
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(6,1,1) = {"
+dm
+dm
+dm
+Ps
+qL
+kS
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(7,1,1) = {"
+dm
+dm
+dm
+aV
+mW
+Ev
+dm
+dm
+dm
+dm
+dm
+dm
+"}
+(8,1,1) = {"
+dm
+dm
+dm
+DJ
+Xo
+kW
+dw
+zy
+dm
+dm
+dm
+dm
+"}
+(9,1,1) = {"
+dm
+Mh
+Mh
+DJ
+Xo
+zy
+xY
+zy
+dm
+dm
+dm
+dm
+"}
+(10,1,1) = {"
+dm
+Mh
+SS
+SS
+zn
+xE
+SS
+Gw
+dm
+dm
+dm
+dm
+"}
+(11,1,1) = {"
+dm
+Mh
+SS
+Vm
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(12,1,1) = {"
+dm
+Mh
+SS
+DM
+Tg
+MR
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(13,1,1) = {"
+dm
+Mh
+SS
+Vm
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(14,1,1) = {"
+dm
+Mh
+SS
+Hi
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(15,1,1) = {"
+dm
+Mh
+SS
+Vm
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(16,1,1) = {"
+dm
+Mh
+SS
+Vm
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(17,1,1) = {"
+dm
+Mh
+SS
+Vm
+Tg
+Vm
+SS
+Mh
+dm
+dm
+dm
+dm
+"}
+(18,1,1) = {"
+Se
+Mh
+SS
+DM
+Tg
+MR
+SS
+Mh
+Mh
+Mh
+Mh
+Mh
+"}
+(19,1,1) = {"
+Ci
+SS
+SS
+Vm
+lp
+Vm
+SS
+SS
+SS
+SS
+SS
+Mh
+"}
+(20,1,1) = {"
+Ci
+Ci
+Hs
+Vm
+wS
+Vm
+MW
+Aw
+Aw
+ry
+SS
+Mh
+"}
+(21,1,1) = {"
+dm
+Ci
+yL
+Vm
+Gs
+Vm
+Aw
+Aw
+Bh
+Hu
+SS
+Mh
+"}
+(22,1,1) = {"
+dm
+Ci
+cz
+Vm
+Uj
+Vm
+bz
+Aw
+Aw
+JW
+SS
+Mh
+"}
+(23,1,1) = {"
+dm
+Ci
+rn
+Vm
+wS
+Vm
+tI
+rD
+rD
+UV
+SS
+Mh
+"}
+(24,1,1) = {"
+dm
+Ci
+RO
+Vm
+Gs
+Vm
+rD
+rD
+ce
+UE
+SS
+Mh
+"}
+(25,1,1) = {"
+dm
+Ci
+ya
+Od
+CJ
+Ox
+eG
+rD
+rD
+DS
+SS
+Mh
+"}
+(26,1,1) = {"
+dm
+Ci
+SS
+SS
+SS
+SS
+SS
+SS
+SS
+SS
+SS
+Mh
+"}
+(27,1,1) = {"
+dm
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+Mh
+"}
