@@ -171,8 +171,8 @@
 
 	var/list/created_slimes = list(src)
 	var/list/slime_friends = list()
-	for(var/ally_ref in allies) // OCULIS EDIT CHANGE - slime rancher, ORIGINAL: for(var/faction_member in get_faction())
-		var/mob/living/possible_friend = locate(ally_ref) in GLOB.mob_living_list // OCULIS EDIT CHANGE - slime rancher, ORIGINAL: var/mob/living/possible_friend = locate(faction_member) in GLOB.mob_living_list
+	for(var/faction_member in get_faction())
+		var/mob/living/possible_friend = locate(faction_member) in GLOB.mob_living_list
 		if(QDELETED(possible_friend))
 			continue
 		slime_friends += possible_friend
