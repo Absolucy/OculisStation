@@ -59,6 +59,8 @@
 	recommended_species = list(SPECIES_ETHEREAL = 1)
 
 /datum/sprite_accessory/ethereal_horns/is_hidden(mob/living/carbon/human/wearer)
+	var/obj/item/clothing/head/worn_head = wearer.head
+	var/obj/item/clothing/mask/worn_mask = wearer.wear_mask
 	if((worn_head?.flags_inv & HIDEHAIR || worn_mask?.flags_inv & HIDEHAIR))
 		return TRUE
 	return ..()
