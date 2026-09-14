@@ -114,6 +114,46 @@ required_map = "tramstation.dmm"
 coordinates = [167, 66, 1]
 trait_name = "Station"
 
+# serenitystation_slime_rancher
+[templates.serenitystation_slime_rancher]
+map_files = ["serenitystation_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/serenitystation/"
+required_map = "SerenityStation.dmm"
+coordinates = [96, 193, 2]
+trait_name = "Station"
+
+# snowglobe_slime_rancher
+[templates.snowglobe_slime_rancher]
+map_files = ["snowglobe_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/snowglobe/"
+required_map = "snowglobe.dmm"
+coordinates = [181, 100, 2]
+trait_name = "Station"
+
+# voidraptor_slime_rancher
+[templates.voidraptor_slime_rancher]
+map_files = ["voidraptor_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/VoidRaptor/"
+required_map = "VoidRaptor.dmm"
+coordinates = [71, 171, 1]
+trait_name = "Station"
+
+# wawastation_slime_rancher
+[templates.wawastation_slime_rancher]
+map_files = ["wawastation_slime_rancher.dmm"]
+directory = "_maps/oculis/automapper/templates/wawastation/"
+required_map = "wawastation.dmm"
+coordinates = [192, 90, 1]
+trait_name = "Station"
+
+# wawastation_slime_rancher_2
+[templates.wawastation_slime_rancher_2]
+map_files = ["wawastation_slime_rancher_2.dmm"]
+directory = "_maps/oculis/automapper/templates/wawastation/"
+required_map = "wawastation.dmm"
+coordinates = [199, 94, 2]
+trait_name = "Station"
+
 # METASTATION MAP TEMPLATES
 # Metastation Arrivals
 [templates.metastaton_arrivals]
