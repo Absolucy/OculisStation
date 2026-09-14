@@ -28236,7 +28236,6 @@
 /obj/item/stack/cable_coil,
 /obj/item/storage/box/beakers,
 /obj/structure/table/glass,
-/obj/machinery/light/directional/east,
 /turf/open/floor/iron/white/textured_large,
 /area/station/medical/chemistry)
 "jkH" = (
@@ -32696,7 +32695,6 @@
 /obj/structure/table/glass,
 /obj/item/folder/white,
 /obj/item/clothing/glasses/hud/health,
-/obj/machinery/power/apc/auto_name/directional/west,
 /obj/structure/cable,
 /turf/open/floor/carpet/royalblue,
 /area/station/command/heads_quarters/cmo)
@@ -52451,9 +52449,6 @@
 "vLv" = (
 /obj/effect/turf_decal/tile/blue{
 	dir = 4
-	},
-/obj/effect/turf_decal/tile/blue{
-	dir = 8
 	},
 /obj/effect/turf_decal/tile/blue{
 	dir = 8
