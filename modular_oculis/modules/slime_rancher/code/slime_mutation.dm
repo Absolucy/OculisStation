@@ -125,7 +125,7 @@
 
 /datum/slime_mutation/adamantine
 	mutates_into = /datum/slime_type/adamantine
-	needed_items = list(/obj/item/sheet/mineral/diamond)
+	needed_items = list(/obj/item/stack/sheet/mineral/diamond)
 
 /datum/slime_mutation/darkpurple
 	mutates_into = /datum/slime_type/darkpurple
