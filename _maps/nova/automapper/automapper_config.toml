@@ -188,14 +188,6 @@ required_map = "CatwalkStation_2023.dmm"
 coordinates = [146, 96, 2]
 trait_name = "Station"
 
-# runtimestation_slime_rancher
-[templates.runtimestation_slime_rancher]
-map_files = ["runtimestation_slime_rancher.dmm"]
-directory = "_maps/oculis/automapper/templates/runtimestation/"
-required_map = "runtimestation.dmm"
-coordinates = [59, 60, 1]
-trait_name = "Station"
-
 # deltastation2_slime_rancher
 [templates.deltastation2_slime_rancher]
 map_files = ["deltastation2_slime_rancher.dmm"]
