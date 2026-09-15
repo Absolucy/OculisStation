@@ -10500,6 +10500,7 @@
 #include "modular_oculis\modules\slime_rancher\code\biomass_recycler.dm"
 #include "modular_oculis\modules\slime_rancher\code\extract_compressor.dm"
 #include "modular_oculis\modules\slime_rancher\code\feeding_flora.dm"
+#include "modular_oculis\modules\slime_rancher\code\rainbow_effect.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_apology.dm"
 #include "modular_oculis\modules\slime_rancher\code\slime_eating.dm"
