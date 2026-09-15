@@ -6,12 +6,16 @@
 #define COMPRESSOR_CYCLE_TIME_PER_SERVO_TIER (20 SECONDS)
 #define COMPRESSOR_LINK_RANGE 5
 #define COMPRESSOR_FRIDGE_RANGE 1
-#define COMPRESSOR_PLOP_PITCH_MIN 1
-#define COMPRESSOR_PLOP_PITCH_MAX 1.8
 
 /particles/slime/extract_compressor
 	count = 20
 	spawning = 0.15
+
+/datum/looping_sound/cryo_cell/extract_compressor
+	volume = 35
+	falloff_exponent = 6
+	extra_range = -6
+	falloff_distance = 0
 
 /obj/machinery/extract_compressor
 	name = "extract compressor"
@@ -22,6 +26,7 @@
 	layer = BELOW_OBJ_LAYER
 	density = TRUE
 	circuit = /obj/item/circuitboard/machine/extract_compressor
+	processing_flags = START_PROCESSING_MANUALLY
 
 	/// Extracts feeding the crossbreed's effect half.
 	var/list/obj/item/slime_extract/effect_extracts = list()
@@ -36,6 +41,8 @@
 	var/datum/weakref/linked_recycler_ref
 	/// Key used with add_shared_particles/remove_shared_particles for the current cycle, null when idle.
 	var/running_particle_key
+	/// Quiet whir while a cycle is running.
+	var/datum/looping_sound/cryo_cell/extract_compressor/whir_loop
 
 	var/last_process
 
@@ -49,6 +56,7 @@
 	build_lookups()
 	last_process = world.time
 	register_context()
+	whir_loop = new(src)
 
 /obj/machinery/extract_compressor/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
@@ -74,6 +82,7 @@
 	QDEL_LIST(effect_extracts)
 	QDEL_LIST(color_extracts)
 	linked_recycler_ref = null
+	QDEL_NULL(whir_loop)
 	return ..()
 
 /obj/machinery/extract_compressor/proc/build_lookups()
@@ -180,7 +189,7 @@
 	var/state_suffix = rainbow ? "_rainbow" : ""
 	var/mutable_appearance/fill = mutable_appearance(icon, "[base_icon_state]_[side]_[fill_state][state_suffix]")
 	if(extract_color && !rainbow)
-		fill.color = vibrant_tint(extract_color[2])
+		fill.color = vibrant_tint_matrix(extract_color[2])
 	return fill
 
 /obj/machinery/extract_compressor/proc/vibrant_tint(rgb)
@@ -188,6 +197,20 @@
 	hsv[2] = min(hsv[2] * 1.3, 100)
 	hsv[3] = min(hsv[3] * 1.15, 100)
 	return hsv2rgb(hsv)
+
+/obj/machinery/extract_compressor/proc/vibrant_tint_matrix(rgb)
+	var/list/boosted = rgb2num(vibrant_tint(rgb))
+	var/boost = 1.6 // how far past the fill sprite's own brightness ceiling to push it
+	var/r_mult = (boosted[1] / 255) * boost
+	var/g_mult = (boosted[2] / 255) * boost
+	var/b_mult = (boosted[3] / 255) * boost
+	return list(
+		r_mult, 0, 0, 0,
+		0, g_mult, 0, 0,
+		0, 0, b_mult, 0,
+		0, 0, 0, 1,
+		0, 0, 0, 0,
+	)
 
 /obj/machinery/extract_compressor/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
 	. = try_insert(user, tool, effect_extracts, COMPRESSOR_EFFECT_EXTRACTS)
@@ -227,7 +250,9 @@
 
 /obj/machinery/extract_compressor/proc/play_fill_plop(list/obj/item/slime_extract/tank, required)
 	var/fraction = length(tank) / required
-	var/pitch = COMPRESSOR_PLOP_PITCH_MIN + (fraction * (COMPRESSOR_PLOP_PITCH_MAX - COMPRESSOR_PLOP_PITCH_MIN))
+	var/pitch_min = 1
+	var/pitch_max = 1.8
+	var/pitch = pitch_min + (fraction * (pitch_max - pitch_min))
 	playsound(src, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 35, frequency = pitch)
 
 /// " - will make X" / " - no known crossbreed" once both tanks hold something, else "".
@@ -319,7 +344,18 @@
 		var/obj/effect/abstract/shared_particle_holder/holder = add_shared_particles(/particles/slime/extract_compressor, running_particle_key)
 		holder.particles.color = particle_color
 	playsound(src, 'sound/machines/hiss.ogg', vol = 30, vary = TRUE)
+	whir_loop.start()
+	start_shake()
+	begin_processing()
 	update_appearance()
+
+/obj/machinery/extract_compressor/proc/start_shake()
+	animate(src, pixel_x = base_pixel_x - 1, time = 0.2 SECONDS, loop = -1, flags = ANIMATION_PARALLEL)
+	animate(pixel_x = base_pixel_x + 1, time = 0.2 SECONDS)
+	animate(pixel_x = base_pixel_x, time = 0.2 SECONDS)
+
+/obj/machinery/extract_compressor/proc/stop_shake()
+	animate(src, pixel_x = base_pixel_x, time = 0.2 SECONDS)
 
 /obj/machinery/extract_compressor/proc/get_resulting_crossbreed()
 	if(!length(effect_extracts) || !length(color_extracts))
@@ -332,7 +368,7 @@
 
 /obj/machinery/extract_compressor/process()
 	if(!is_cycling())
-		return
+		return PROCESS_KILL
 	if(!is_operational)
 		last_process = world.time
 		return
@@ -342,6 +378,7 @@
 	if(cycle_progress < cycle_length)
 		return
 	finish_cycle()
+	return PROCESS_KILL
 
 /obj/machinery/extract_compressor/proc/finish_cycle()
 	var/result_path = get_resulting_crossbreed()
@@ -349,6 +386,8 @@
 	cycle_progress = 0
 	remove_shared_particles(running_particle_key)
 	running_particle_key = null
+	whir_loop.stop()
+	stop_shake()
 
 	if(!result_path || !recycler || recycler.biomass < cycle_biomass_cost)
 		update_appearance() // recipe or recycler went bad mid-cycle, leave the extracts for the player to sort out
@@ -389,5 +428,3 @@
 #undef COMPRESSOR_EFFECT_EXTRACTS
 #undef COMPRESSOR_FRIDGE_RANGE
 #undef COMPRESSOR_LINK_RANGE
-#undef COMPRESSOR_PLOP_PITCH_MAX
-#undef COMPRESSOR_PLOP_PITCH_MIN
