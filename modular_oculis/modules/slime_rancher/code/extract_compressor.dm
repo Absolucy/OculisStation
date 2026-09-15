@@ -12,10 +12,9 @@
 	spawning = 0.15
 
 /datum/looping_sound/cryo_cell/extract_compressor
-	volume = 35
+	volume = 45
 	falloff_exponent = 6
 	extra_range = -6
-	falloff_distance = 0
 
 /obj/machinery/extract_compressor
 	name = "extract compressor"
@@ -200,14 +199,18 @@
 
 /obj/machinery/extract_compressor/proc/vibrant_tint_matrix(rgb)
 	var/list/boosted = rgb2num(vibrant_tint(rgb))
-	var/boost = 1.6 // how far past the fill sprite's own brightness ceiling to push it
-	var/r_mult = (boosted[1] / 255) * boost
-	var/g_mult = (boosted[2] / 255) * boost
-	var/b_mult = (boosted[3] / 255) * boost
+	var/boost = 1.5 // how far past the fill sprite's own average brightness to push the highlight
+	// per-channel multipliers used to skew hue toward whichever channel clipped first (orange
+	// reading as yellow, etc), because the fill sprite's shading isn't perfectly neutral gray.
+	// driving every output channel off the base pixel's average brightness instead keeps hue
+	// locked to the boosted color no matter what the base sprite's own r/g/b balance is.
+	var/red_share = (boosted[1] / 255) * boost / 3
+	var/green_share = (boosted[2] / 255) * boost / 3
+	var/blue_share = (boosted[3] / 255) * boost / 3
 	return list(
-		r_mult, 0, 0, 0,
-		0, g_mult, 0, 0,
-		0, 0, b_mult, 0,
+		red_share, green_share, blue_share, 0,
+		red_share, green_share, blue_share, 0,
+		red_share, green_share, blue_share, 0,
 		0, 0, 0, 1,
 		0, 0, 0, 0,
 	)
