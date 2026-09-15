@@ -38,10 +38,12 @@
 	var/interrupted = FALSE
 	var/matrix/base_transform
 
-/datum/status_effect/slime_reproducing/on_apply()
+/datum/status_effect/slime_reproducing/on_apply(new_duration)
 	var/mob/living/basic/slime/slime_owner = owner
 	if(!isslime(slime_owner))
 		return FALSE
+	if(new_duration)
+		duration = new_duration
 	var/splitting = (slime_owner.queued_mutation == slime_owner.slime_type.type)
 
 	owner.add_traits(list(TRAIT_INCAPACITATED, TRAIT_IMMOBILIZED), TRAIT_STATUS_EFFECT(id))

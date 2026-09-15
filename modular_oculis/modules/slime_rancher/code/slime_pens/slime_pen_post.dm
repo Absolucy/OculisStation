@@ -84,7 +84,7 @@
 	if(anchored)
 		balloon_alert(user, "unwrench it first!")
 		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
-	dir = turn(dir, 90)
+	setDir(turn(dir, 90))
 	update_offsets()
 	balloon_alert(user, "[dir2text(dir)] corner")
 	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN

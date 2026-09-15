@@ -68,8 +68,11 @@
 	. = ..()
 	icon_state = panel_open ? "[base_icon_state]_open" : base_icon_state
 
+/obj/machinery/biomass_recycler/proc/is_available()
+	return is_operational && anchored && !panel_open
+
 /obj/machinery/biomass_recycler/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	if(!is_operational || !anchored || panel_open)
+	if(!is_available())
 		return NONE
 	if(istype(tool, /obj/item/storage/bag/xeno))
 		var/inserted_biomass = 0
@@ -112,7 +115,7 @@
 		if(feedback)
 			user.balloon_alert(user, "cannot recycle")
 		return FALSE
-	if(!is_operational || !anchored || panel_open)
+	if(!is_available())
 		if(feedback)
 			user.balloon_alert(user, "recycler unavailable")
 		return FALSE
@@ -155,7 +158,7 @@
 	var/cost = printable_items[printable_type]
 	if(isnull(cost))
 		cost = get_printable_species()[printable_type]
-	if(isnull(cost) || biomass < cost || !isturf(spawn_turf) || !is_operational || !anchored || panel_open)
+	if(isnull(cost) || biomass < cost || !isturf(spawn_turf) || !is_available())
 		return
 
 	biomass -= cost
@@ -192,7 +195,7 @@
 	to_chat(user, span_notice("[src] hisses and dispenses [created]. It has [biomass] unit\s of biomass left."))
 
 /obj/machinery/biomass_recycler/proc/can_continue_print_menu(mob/user)
-	return user.Adjacent(src) && user.can_perform_action(src) && is_operational && anchored && !panel_open
+	return user.Adjacent(src) && user.can_perform_action(src) && is_available()
 
 /obj/item/stack/biomass
 	name = "biomass cubes"

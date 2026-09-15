@@ -83,8 +83,8 @@
 	if(radial_command)
 		var/manual_emote_text = generate_emote_command()
 		commander.manual_emote(manual_emote_text)
-	return TRUE
 	// deliberately skips set_command_active - toggling the split prime shouldn't cancel an active Follow/Stay
+	return TRUE
 
 /obj/item/slime_breeding_pellet
 	name = "slime breeding pellet"

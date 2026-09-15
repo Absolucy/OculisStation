@@ -284,12 +284,12 @@
 	if(is_cycling())
 		balloon_alert(user, "busy")
 		return CLICK_ACTION_BLOCKING
-	eject_tank(effect_extracts, user)
-	eject_tank(color_extracts, user)
+	eject_tank(effect_extracts)
+	eject_tank(color_extracts)
 	update_appearance()
 	return CLICK_ACTION_SUCCESS
 
-/obj/machinery/extract_compressor/proc/eject_tank(list/obj/item/slime_extract/tank, mob/user)
+/obj/machinery/extract_compressor/proc/eject_tank(list/obj/item/slime_extract/tank)
 	for(var/obj/item/slime_extract/extract as anything in tank)
 		extract.forceMove(drop_location())
 	tank.Cut()

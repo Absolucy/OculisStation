@@ -1,6 +1,6 @@
 /mob/living/basic/cockroach/rockroach
 	name = "rockroach"
-	desc = "This cockroach has decided to cosplay as a turtle and is carrying a rock shell on it's back."
+	desc = "This cockroach has decided to cosplay as a turtle and is carrying a rock shell on its back."
 	icon = 'modular_oculis/modules/slime_rancher/icons/xenofauna.dmi'
 	icon_state = "rockroach"
 	health = 15
@@ -22,18 +22,18 @@
 
 /mob/living/basic/cockroach/iceroach
 	name = "iceroach"
-	desc = "This cockroach has decided to cosplay as a turtle and is carrying some ice shards on it's back."
+	desc = "This cockroach has decided to cosplay as a turtle and is carrying some ice shards on its back."
 	icon = 'modular_oculis/modules/slime_rancher/icons/xenofauna.dmi'
-	icon_state = "rockroach"
+	icon_state = "iceroach"
 	health = 15
 	maxHealth = 15
 	biomass_value = 1
 
-/mob/living/basic/cockroach/recursive
-	name = "recursive roach"
+/mob/living/basic/cockroach/gemroach
+	name = "gemroach"
 	desc = "I swear I've seen this one before but I can't remember where."
 	icon = 'modular_oculis/modules/slime_rancher/icons/xenofauna.dmi'
-	icon_state = "rockroach"
+	icon_state = "gemroach"
 	health = 15
 	maxHealth = 15
 	biomass_value = 1

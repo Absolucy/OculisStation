@@ -198,7 +198,7 @@
 		if(feedback)
 			balloon_alert(user, "no recycler linked!")
 		return FALSE
-	if(!recycler.is_operational || !recycler.anchored || recycler.panel_open)
+	if(!recycler.is_available())
 		if(feedback)
 			balloon_alert(user, "recycler unavailable!")
 		return FALSE
@@ -214,7 +214,7 @@
 	if(!user.Adjacent(recycler))
 		balloon_alert(user, "move next to the recycler")
 		return FALSE
-	if(QDELETED(recycler) || !recycler.is_operational || !recycler.anchored || recycler.panel_open)
+	if(QDELETED(recycler) || !recycler.is_available())
 		balloon_alert(user, "recycler offline!")
 		return FALSE
 	linked_recycler_ref = WEAKREF(recycler)
@@ -380,9 +380,7 @@
 	var/turf/drop_turf = get_turf(nozzle)
 	if(!release(selected, drop_turf))
 		return FALSE
-	if(!launch(selected, target, user))
-		return FALSE
-	return TRUE
+	return launch(selected, target, user)
 
 /// Numbered labels keep same-named occupants individually selectable.
 /obj/item/vacuum_pack/proc/choose_occupant(mob/living/user)
@@ -409,7 +407,7 @@
 	var/mob/living/basic/basic_target = target
 	return istype(basic_target) && !isslime(basic_target) && basic_target.biomass_value > 0
 
-/obj/item/vacuum_pack/proc/can_recycle_creature(mob/living/target, mob/living/user, obj/machinery/biomass_recycler/recycler, turf/starting_turf, feedback = FALSE)
+/obj/item/vacuum_pack/proc/can_recycle_creature(mob/living/target, mob/living/user, obj/machinery/biomass_recycler/recycler, feedback = FALSE)
 	if(!is_recyclable(target) || !can_reach_for_intake(target, user, feedback))
 		return FALSE
 	if(!can_use_recycler(recycler, user, feedback))
@@ -420,14 +418,14 @@
 /obj/item/vacuum_pack/proc/recycle_creature(mob/living/target, mob/living/user, turf/required_turf)
 	var/obj/machinery/biomass_recycler/recycler = resolve_recycler()
 	var/turf/starting_turf = required_turf || target.loc
-	if(!can_recycle_creature(target, user, recycler, starting_turf, feedback = TRUE))
+	if(!can_recycle_creature(target, user, recycler, feedback = TRUE))
 		return FALSE
 	start_mob_suction(target, user)
-	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_creature), target, user, recycler, starting_turf, FALSE))
+	var/finished = do_after(user, capture_delay, target = target, extra_checks = CALLBACK(src, PROC_REF(can_recycle_creature), target, user, recycler, FALSE))
 	stop_mob_suction(target)
 	if(!finished)
 		return FALSE
-	if(!can_recycle_creature(target, user, recycler, starting_turf, feedback = TRUE))
+	if(!can_recycle_creature(target, user, recycler, feedback = TRUE))
 		return FALSE
 	new /obj/effect/temp_visual/vacuum_intake(starting_turf, target.appearance, get_turf(nozzle))
 	play_ploop(nozzle)
@@ -485,7 +483,7 @@
 
 /obj/item/vacuum_pack/proc/is_selectable_target(mob/living/candidate, mob/living/user, turf/target_turf)
 	if(is_recyclable(candidate))
-		return can_recycle_creature(candidate, user, resolve_recycler(), target_turf)
+		return can_recycle_creature(candidate, user, resolve_recycler())
 	return can_suck(candidate, user)
 
 /obj/item/vacuum_pack/proc/choose_species(mob/living/user)
@@ -524,28 +522,30 @@
 		balloon_alert(user, "busy!")
 		return FALSE
 	busy = TRUE
+	. = try_print_species(target, user)
+	busy = FALSE
+
+/obj/item/vacuum_pack/proc/try_print_species(atom/target, mob/living/user)
+	if(!selected_species)
+		selected_species = choose_species(user)
 	var/species_type = selected_species
 	if(!species_type)
-		species_type = choose_species(user)
-		if(species_type)
-			selected_species = species_type
+		return FALSE
 
 	var/obj/machinery/biomass_recycler/recycler = resolve_recycler()
-	var/succeeded = FALSE
-	if(species_type && can_aim_at(target, user, feedback = TRUE) && can_use_recycler(recycler, user, feedback = TRUE))
-		var/list/catalogue = recycler.get_printable_species()
-		if(catalogue[species_type])
-			if(recycler.biomass < catalogue[species_type])
-				balloon_alert(user, "not enough biomass!")
-			else
-				var/turf/drop_turf = get_turf(nozzle)
-				var/mob/living/created = recycler.purchase_type(species_type, drop_turf)
-				if(created)
-					succeeded = launch(created, target, user)
-				else
-					balloon_alert(user, "printing failed!")
-	busy = FALSE
-	return succeeded
+	if(!can_aim_at(target, user, feedback = TRUE) || !can_use_recycler(recycler, user, feedback = TRUE))
+		return FALSE
+	var/cost = recycler.get_printable_species()[species_type]
+	if(!cost)
+		return FALSE
+	if(recycler.biomass < cost)
+		balloon_alert(user, "not enough biomass!")
+		return FALSE
+	var/mob/living/created = recycler.purchase_type(species_type, get_turf(nozzle))
+	if(!created)
+		balloon_alert(user, "printing failed!")
+		return FALSE
+	return launch(created, target, user)
 
 /obj/item/vacuum_pack/proc/toggle_firing_mode(mob/living/user)
 	if(busy || !can_use_nozzle(user, feedback = TRUE))

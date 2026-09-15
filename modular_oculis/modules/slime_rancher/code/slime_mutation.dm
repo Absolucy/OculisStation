@@ -51,13 +51,14 @@
 		if(ispath(meal_type, needed_type))
 			EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "ate [meal_type] (for [type])")
 			needed_items -= needed_type
+			return
 
 /datum/slime_mutation/proc/on_latch_drained(mob/living/basic/slime/source, mob/living/meal, drained)
 	SIGNAL_HANDLER
+	drained = ceil(drained * 1.5)
 	for(var/mob_type, drain_left in latch_needed)
 		if(!istype(meal, mob_type))
 			continue
-		drained = ceil(drained * 1.5)
 		drain_left -= drained
 		if(drain_left > 0)
 			latch_needed[mob_type] = drain_left
@@ -85,7 +86,7 @@
 
 /datum/slime_mutation/cerulean
 	mutates_into = /datum/slime_type/cerulean
-	latch_needed = alist(/mob/living/basic/cockroach/recursive = 40)
+	latch_needed = alist(/mob/living/basic/cockroach/gemroach = 40)
 
 /datum/slime_mutation/darkblue
 	mutates_into = /datum/slime_type/darkblue
