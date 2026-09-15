@@ -100,7 +100,7 @@
 
 /obj/item/vacuum_pack/equipped(mob/user, slot, initial)
 	. = ..()
-	if(!(slot & ITEM_SLOT_BACK))
+	if(!(slot & slot_flags))
 		retract_nozzle()
 
 /obj/item/vacuum_pack/dropped(mob/user, silent)
@@ -108,7 +108,7 @@
 	retract_nozzle()
 
 /obj/item/vacuum_pack/attack_hand(mob/user, list/modifiers)
-	if(user.get_item_by_slot(user.getBackSlot()) != src)
+	if(!is_worn_by(user))
 		return ..()
 	toggle_nozzle(user)
 	return TRUE
@@ -128,7 +128,7 @@
 	return ITEM_INTERACT_SUCCESS
 
 /obj/item/vacuum_pack/proc/toggle_nozzle(mob/living/user)
-	if(!istype(user) || user.get_item_by_slot(user.getBackSlot()) != src)
+	if(!istype(user) || !is_worn_by(user))
 		balloon_alert(user, "wear the pack first!")
 		return FALSE
 	if(user.incapacitated || busy)
@@ -165,6 +165,9 @@
 		balloon_alert(loc, "nozzle snaps back")
 	source.forceMove(src)
 	playsound(source, 'sound/vehicles/mecha/mechmove03.ogg', 75, TRUE)
+
+/obj/item/vacuum_pack/proc/is_worn_by(mob/user)
+	return user.get_slot_by_item(src) & slot_flags
 
 /obj/item/vacuum_pack/proc/occupants()
 	. = list()
@@ -221,7 +224,7 @@
 /obj/item/vacuum_pack/proc/can_use_nozzle(mob/living/user, feedback = FALSE)
 	if(QDELETED(src) || QDELETED(nozzle) || !istype(user))
 		return FALSE
-	if(user.get_item_by_slot(user.getBackSlot()) != src || user.get_active_held_item() != nozzle)
+	if(!is_worn_by(user) || user.get_active_held_item() != nozzle)
 		if(feedback)
 			balloon_alert(user, "hold the nozzle with the pack worn")
 		return FALSE
