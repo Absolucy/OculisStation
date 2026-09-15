@@ -298,6 +298,7 @@
 		return
 
 	cycle_progress = 1 // 0 means idle, so a fresh cycle starts just past that
+	last_process = world.time
 	var/list/color_info = extract_color_lookup[color_extracts[1].type]
 	if(color_info?[1] == SLIME_TYPE_RAINBOW)
 		running_particle_key = "extract_compressor_rainbow"
