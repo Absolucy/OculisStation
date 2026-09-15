@@ -6,6 +6,8 @@
 #define COMPRESSOR_CYCLE_TIME_PER_SERVO_TIER (20 SECONDS)
 #define COMPRESSOR_LINK_RANGE 5
 #define COMPRESSOR_FRIDGE_RANGE 1
+#define COMPRESSOR_PLOP_PITCH_MIN 1
+#define COMPRESSOR_PLOP_PITCH_MAX 1.8
 
 /particles/slime/extract_compressor
 	count = 20
@@ -205,24 +207,28 @@
 	if(istype(tool, /obj/item/storage/bag/xeno))
 		var/inserted = 0
 		for(var/obj/item/slime_extract/extract in tool)
-			if(!insert_extract(extract, tank, required))
-				break
-			inserted++
+			if(insert_extract(extract, tank, required))
+				inserted++
+				play_fill_plop(tank, required)
 		if(!inserted)
 			return NONE
 		balloon_alert(user, "[inserted] extract\s inserted[prediction_suffix()]")
-		playsound(src, 'sound/effects/slosh.ogg', vol = 25, vary = TRUE)
 		update_appearance()
 		return ITEM_INTERACT_SUCCESS
 	if(!istype(tool, /obj/item/slime_extract))
 		return NONE
 	if(!insert_extract(tool, tank, required))
-		balloon_alert(user, length(tank) >= required ? "tank full" : "wrong color")
+		balloon_alert(user, length(tank) >= required ? "tank full" : "wrong extract")
 		return ITEM_INTERACT_BLOCKING
 	balloon_alert(user, "extract inserted[prediction_suffix()]")
-	playsound(src, 'sound/effects/slosh.ogg', vol = 25, vary = TRUE)
+	play_fill_plop(tank, required)
 	update_appearance()
 	return ITEM_INTERACT_SUCCESS
+
+/obj/machinery/extract_compressor/proc/play_fill_plop(list/obj/item/slime_extract/tank, required)
+	var/fraction = length(tank) / required
+	var/pitch = COMPRESSOR_PLOP_PITCH_MIN + (fraction * (COMPRESSOR_PLOP_PITCH_MAX - COMPRESSOR_PLOP_PITCH_MIN))
+	playsound(src, 'sound/items/vacuum/vacuum_ploop.ogg', vol = 35, frequency = pitch)
 
 /// " - will make X" / " - no known crossbreed" once both tanks hold something, else "".
 /obj/machinery/extract_compressor/proc/prediction_suffix()
@@ -234,6 +240,10 @@
 /// Moves a matching extract into the tank. Returns FALSE without touching the extract if it doesn't fit.
 /obj/machinery/extract_compressor/proc/insert_extract(obj/item/slime_extract/extract, list/obj/item/slime_extract/tank, required)
 	if(length(tank) >= required)
+		return FALSE
+	if(tank == effect_extracts && !extract.crossbreed_modification)
+		return FALSE
+	if(tank == color_extracts && !extract_color_lookup[extract.type])
 		return FALSE
 	if(length(tank) && tank[1].type != extract.type)
 		return FALSE
@@ -379,3 +389,5 @@
 #undef COMPRESSOR_EFFECT_EXTRACTS
 #undef COMPRESSOR_FRIDGE_RANGE
 #undef COMPRESSOR_LINK_RANGE
+#undef COMPRESSOR_PLOP_PITCH_MAX
+#undef COMPRESSOR_PLOP_PITCH_MIN
