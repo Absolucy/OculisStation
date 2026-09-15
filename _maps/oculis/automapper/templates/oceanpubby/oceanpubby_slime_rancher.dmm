@@ -235,7 +235,6 @@
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
 "rC" = (
-/obj/structure/chair/office/light,
 /obj/effect/turf_decal/trimline/purple/filled/line{
 	dir = 4
 	},
@@ -647,23 +646,12 @@
 /turf/open/floor/plating,
 /area/station/maintenance/department/science/xenobiology)
 "Xq" = (
-/obj/structure/table/glass,
-/obj/item/storage/box/monkeycubes{
-	pixel_x = 3;
-	pixel_y = 4
-	},
-/obj/item/reagent_containers/cup/beaker{
-	pixel_x = -6
-	},
 /obj/machinery/button/door/directional/east{
 	id = "xenobiomain";
 	name = "Containment Blast Doors";
 	req_access = list("xenobiology")
 	},
-/obj/item/slime_rancher_scanner{
-	pixel_y = -5;
-	pixel_x = 7
-	},
+/obj/machinery/extract_compressor,
 /turf/open/floor/iron,
 /area/station/science/xenobiology)
 "Xx" = (

@@ -111,6 +111,12 @@
 /obj/effect/spawner/structure/window/reinforced,
 /turf/open/floor/plating,
 /area/station/science/xenobiology)
+"vj" = (
+/obj/structure/cable,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/obj/machinery/extract_compressor,
+/turf/open/floor/catwalk_floor/iron_white,
+/area/station/science/xenobiology)
 "ws" = (
 /obj/structure/table,
 /obj/machinery/fax{
@@ -225,7 +231,7 @@
 (1,1,1) = {"
 OM
 OM
-OM
+vj
 OM
 OM
 OM

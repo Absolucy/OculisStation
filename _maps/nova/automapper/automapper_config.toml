@@ -161,7 +161,7 @@ trait_name = "Station"
 map_files = ["metastation_slime_rancher.dmm"]
 directory = "_maps/oculis/automapper/templates/metastation/"
 required_map = "MetaStation.dmm"
-coordinates = [169, 77, 1]
+coordinates = [168, 76, 1]
 trait_name = "Station"
 
 # Oculis - Pubby xenobiology

@@ -128,7 +128,7 @@
 /obj/effect/turf_decal/trimline/purple/filled/line{
 	dir = 8
 	},
-/obj/item/kirbyplants/random,
+/obj/machinery/extract_compressor,
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
 "hO" = (

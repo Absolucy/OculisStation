@@ -204,23 +204,14 @@
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/structure/table/glass,
 /obj/structure/window/reinforced/spawner/directional/east,
-/obj/item/storage/box/monkeycubes,
 /obj/effect/turf_decal/stripes/line{
 	dir = 6
 	},
 /obj/effect/turf_decal/stripes/line{
 	dir = 8
 	},
-/obj/item/storage/box/syringes{
-	pixel_x = -5;
-	pixel_y = 5
-	},
-/obj/item/storage/box/beakers{
-	pixel_x = 5;
-	pixel_y = 8
-	},
+/obj/machinery/extract_compressor,
 /turf/open/floor/iron,
 /area/station/science/xenobiology)
 "tU" = (
@@ -361,6 +352,14 @@
 /obj/structure/table,
 /obj/item/storage/box/monkeycubes{
 	pixel_x = -1
+	},
+/obj/item/storage/box/syringes{
+	pixel_y = 6;
+	pixel_x = 7
+	},
+/obj/item/storage/box/beakers{
+	pixel_x = 7;
+	pixel_y = -4
 	},
 /turf/open/floor/iron,
 /area/station/science/xenobiology)

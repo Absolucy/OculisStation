@@ -553,6 +553,11 @@
 	},
 /turf/open/floor/grass,
 /area/station/science/xenobiology)
+"If" = (
+/obj/structure/cable,
+/obj/machinery/extract_compressor,
+/turf/open/floor/iron/dark/diagonal,
+/area/station/science/xenobiology)
 "IE" = (
 /obj/machinery/camera/directional/south{
 	c_tag = "Xenobiology Lab - Pen #8";
@@ -1084,7 +1089,7 @@ Oi
 DC
 cJ
 Fb
-gB
+If
 Ph
 jn
 jn

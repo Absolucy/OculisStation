@@ -144,21 +144,7 @@
 "wS" = (
 /obj/effect/turf_decal/trimline/purple/filled/line,
 /obj/effect/turf_decal/bot,
-/obj/structure/rack,
-/obj/item/vacuum_pack{
-	pixel_x = -8
-	},
-/obj/item/vacuum_pack{
-	pixel_x = 8
-	},
-/obj/item/disk/vacuum_upgrade/printer{
-	pixel_x = -8;
-	pixel_y = -8
-	},
-/obj/item/disk/vacuum_upgrade/printer{
-	pixel_y = -8;
-	pixel_x = 8
-	},
+/obj/machinery/smartfridge/extract/preloaded,
 /turf/open/floor/iron/white/smooth_edge{
 	dir = 1
 	},
@@ -169,6 +155,28 @@
 /turf/open/floor/iron/white/smooth_edge{
 	dir = 1
 	},
+/area/station/science/xenobiology)
+"yz" = (
+/obj/effect/turf_decal/trimline/purple/filled/line{
+	dir = 6
+	},
+/obj/effect/turf_decal/delivery,
+/obj/structure/rack,
+/obj/item/vacuum_pack{
+	pixel_x = -8
+	},
+/obj/item/vacuum_pack{
+	pixel_x = 8
+	},
+/obj/item/disk/vacuum_upgrade/printer{
+	pixel_y = -8;
+	pixel_x = -8
+	},
+/obj/item/disk/vacuum_upgrade/printer{
+	pixel_x = 8;
+	pixel_y = -8
+	},
+/turf/open/floor/iron/white,
 /area/station/science/xenobiology)
 "AK" = (
 /obj/effect/turf_decal/tile/blue/fourcorners,
@@ -238,17 +246,9 @@
 /turf/open/floor/iron/white/smooth_large,
 /area/station/science/xenobiology)
 "IE" = (
-/obj/structure/table/glass,
-/obj/item/storage/box/monkeycubes{
-	pixel_x = -5;
-	pixel_y = 1
-	},
-/obj/item/storage/box/monkeycubes{
-	pixel_x = 6;
-	pixel_y = 4
-	},
 /obj/effect/turf_decal/trimline/purple/filled/line,
 /obj/machinery/firealarm/directional/south,
+/obj/machinery/extract_compressor,
 /turf/open/floor/iron/white/smooth_edge{
 	dir = 1
 	},
@@ -419,6 +419,9 @@
 /obj/item/slime_rancher_scanner{
 	pixel_x = 7;
 	pixel_y = 6
+	},
+/obj/item/storage/box/monkeycubes{
+	pixel_y = -6
 	},
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
@@ -684,7 +687,7 @@ dh
 ZS
 Qf
 Qf
-Qf
+yz
 Qf
 Qf
 "}

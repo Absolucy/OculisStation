@@ -132,6 +132,10 @@
 	dir = 4
 	},
 /obj/machinery/light/directional/east,
+/obj/item/storage/box/monkeycubes{
+	pixel_y = -4;
+	pixel_x = 6
+	},
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
 "gT" = (
@@ -443,15 +447,7 @@
 /obj/effect/turf_decal/trimline/purple/filled/line{
 	dir = 4
 	},
-/obj/structure/table/glass,
-/obj/item/storage/box/monkeycubes{
-	pixel_x = -5;
-	pixel_y = 1
-	},
-/obj/item/storage/box/monkeycubes{
-	pixel_x = 6;
-	pixel_y = 4
-	},
+/obj/machinery/extract_compressor,
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
 "ID" = (

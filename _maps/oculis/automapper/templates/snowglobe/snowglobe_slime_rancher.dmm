@@ -160,6 +160,15 @@
 	},
 /turf/open/floor/iron/white/smooth_half,
 /area/station/science/xenobiology)
+"rH" = (
+/obj/effect/turf_decal/tile/purple/half{
+	dir = 8
+	},
+/obj/machinery/extract_compressor,
+/turf/open/floor/iron/white/smooth_half{
+	dir = 8
+	},
+/area/station/science/xenobiology)
 "rO" = (
 /obj/effect/turf_decal/tile/purple/fourcorners,
 /obj/structure/slime_pen_post/premade{
@@ -284,6 +293,12 @@
 "GM" = (
 /turf/template_noop,
 /area/template_noop)
+"Iu" = (
+/obj/structure/cable,
+/obj/effect/turf_decal/tile/purple/opposingcorners,
+/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
+/turf/open/floor/iron/white,
+/area/station/science/xenobiology)
 "Jb" = (
 /obj/machinery/camera/autoname/directional/north{
 	network = list("ss13","rd")
@@ -380,18 +395,6 @@
 /obj/machinery/light/cold/directional/south,
 /obj/effect/turf_decal/tile/purple/fourcorners,
 /turf/open/floor/iron,
-/area/station/science/xenobiology)
-"Ra" = (
-/obj/effect/turf_decal/tile/purple/half{
-	dir = 8
-	},
-/obj/item/kirbyplants/random{
-	pixel_x = -2;
-	pixel_y = 5
-	},
-/turf/open/floor/iron/white/smooth_half{
-	dir = 8
-	},
 /area/station/science/xenobiology)
 "Ri" = (
 /obj/structure/cable,
@@ -532,10 +535,10 @@ GM
 GM
 GM
 GM
-GM
+Iu
 OH
+rH
 ud
-Ra
 GM
 GM
 GM
