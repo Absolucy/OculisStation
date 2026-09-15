@@ -184,10 +184,11 @@
 	var/fraction = length(tank) / required
 	var/fill_state = fraction >= 1 ? "full" : (fraction >= 0.5 ? "half" : "quarter")
 	var/list/extract_color = extract_color_lookup[tank[1].type]
-	var/rainbow = extract_color?[1] == SLIME_TYPE_RAINBOW
-	var/state_suffix = rainbow ? "_rainbow" : ""
-	var/mutable_appearance/fill = mutable_appearance(icon, "[base_icon_state]_[side]_[fill_state][state_suffix]")
-	if(extract_color && !rainbow)
+	var/static/list/custom_fill_types = list(SLIME_TYPE_RAINBOW, SLIME_TYPE_BLUESPACE, SLIME_TYPE_GOLD, SLIME_TYPE_PYRITE)
+	if(extract_color?[1] in custom_fill_types)
+		return mutable_appearance(icon, "[base_icon_state]_[side]_[fill_state]_[extract_color[1]]")
+	var/mutable_appearance/fill = mutable_appearance(icon, "[base_icon_state]_[side]_[fill_state]")
+	if(extract_color)
 		fill.color = vibrant_tint_matrix(extract_color[2])
 	return fill
 
