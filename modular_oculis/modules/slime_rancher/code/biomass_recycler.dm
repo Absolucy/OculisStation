@@ -79,10 +79,21 @@
 		for(var/obj/item/stack/biomass/biomass_cubes in tool)
 			inserted_biomass += biomass_cubes.amount
 			qdel(biomass_cubes)
-		if(inserted_biomass)
-			biomass += inserted_biomass
-			to_chat(user, span_notice("You empty [inserted_biomass] biomass cube\s from [tool] into [src]."))
-			balloon_alert(user, "biomass inserted")
+		for(var/obj/item/food/monkeycube/monkey_cube in tool)
+			inserted_biomass += BIOMASS_MONKEY_YIELD
+			qdel(monkey_cube)
+		if(!inserted_biomass)
+			balloon_alert(user, "no biomass!")
+			return ITEM_INTERACT_BLOCKING
+		biomass = round(biomass + inserted_biomass, 0.01)
+		to_chat(user, span_notice("You empty [inserted_biomass] biomass cube\s from [tool] into [src]."))
+		balloon_alert(user, "biomass inserted")
+		return ITEM_INTERACT_SUCCESS
+	if(istype(tool, /obj/item/food/monkeycube))
+		biomass = round(biomass + BIOMASS_MONKEY_YIELD, 0.01)
+		qdel(tool)
+		to_chat(user, span_notice("You recycle a monkey cube into [BIOMASS_MONKEY_YIELD] biomass."))
+		balloon_alert(user, "biomass inserted")
 		return ITEM_INTERACT_SUCCESS
 	if(!istype(tool, /obj/item/stack/biomass))
 		return NONE

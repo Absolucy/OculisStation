@@ -10,6 +10,7 @@
 			"type": "decorator",
 			"decorator": "/datum/bt_node/decorator/ability_available",
 			"vars": {
+				"observer_abort": "BT_ABORT_LOWER_PRIORITY",
 				"ability_key": "BB_SLIME_EVOLVE"
 			},
 			"child": {
