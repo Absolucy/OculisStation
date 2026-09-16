@@ -422,6 +422,8 @@
 
 /obj/structure/slime_pen_anchor/Initialize(mapload, obj/structure/slime_pen_post/post)
 	. = ..()
+	if(isnull(post))
+		return INITIALIZE_HINT_QDEL
 	src.post = post
 	setDir(post.dir)
 
@@ -472,6 +474,8 @@
 
 /obj/effect/slime_pen_guide/Initialize(mapload, obj/structure/slime_pen_post/post)
 	. = ..()
+	if(isnull(post))
+		return INITIALIZE_HINT_QDEL
 	src.post = post
 	setDir(post.dir)
 	update_appearance(UPDATE_OVERLAYS)
