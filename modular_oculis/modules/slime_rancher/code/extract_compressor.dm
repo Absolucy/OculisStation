@@ -59,7 +59,8 @@
 
 /obj/machinery/extract_compressor/add_context(atom/source, list/context, obj/item/held_item, mob/user)
 	. = ..()
-	context[SCREENTIP_CONTEXT_ALT_LMB] = "Eject both tanks"
+	context[SCREENTIP_CONTEXT_ALT_LMB] = "Eject effect tank"
+	context[SCREENTIP_CONTEXT_ALT_RMB] = "Eject color tank"
 	if(istype(held_item, /obj/item/slime_extract))
 		context[SCREENTIP_CONTEXT_LMB] = "Load effect tank"
 		context[SCREENTIP_CONTEXT_RMB] = "Load color tank"
@@ -171,18 +172,35 @@
 
 /obj/machinery/extract_compressor/update_overlays()
 	. = ..()
-	. += tank_fill_overlay("left", effect_extracts, COMPRESSOR_EFFECT_EXTRACTS)
-	. += tank_fill_overlay("right", color_extracts, COMPRESSOR_COLOR_EXTRACTS)
+	. += tank_fill_overlay("left", effect_extracts)
+	. += tank_fill_overlay("right", color_extracts)
 	if(length(effect_extracts) || length(color_extracts))
 		. += "[base_icon_state]_tank"
 	if(is_cycling())
 		. += emissive_appearance(icon, "[base_icon_state]_tank", src)
+	if(!is_operational || panel_open)
+		return
+	var/screen_color = get_screen_color()
+	if(!screen_color)
+		return
+	var/mutable_appearance/screen = mutable_appearance(icon, is_cycling() ? "[base_icon_state]_screen_running" : "[base_icon_state]_screen")
+	screen.color = screen_color
+	. += screen
+	. += emissive_appearance(icon, "[base_icon_state]_screen_e", src)
 
-/obj/machinery/extract_compressor/proc/tank_fill_overlay(side, list/obj/item/slime_extract/tank, required)
+/obj/machinery/extract_compressor/proc/get_screen_color()
+	if(!length(effect_extracts) && !length(color_extracts))
+		return null
+	if(length(effect_extracts) && length(color_extracts) && !get_resulting_crossbreed())
+		return "#ff4040"
+	if(length(effect_extracts) < COMPRESSOR_EFFECT_EXTRACTS || length(color_extracts) < COMPRESSOR_COLOR_EXTRACTS)
+		return "#ffb020"
+	return "#40ff40"
+
+/obj/machinery/extract_compressor/proc/tank_fill_overlay(side, list/obj/item/slime_extract/tank)
 	if(!length(tank))
 		return null
-	var/fraction = length(tank) / required
-	var/fill_state = fraction >= 1 ? "full" : (fraction >= 0.5 ? "half" : "quarter")
+	var/fill_state = length(tank)
 	var/list/extract_color = extract_color_lookup[tank[1].type]
 	var/static/list/custom_fill_types = list(SLIME_TYPE_RAINBOW, SLIME_TYPE_BLUESPACE, SLIME_TYPE_GOLD, SLIME_TYPE_PYRITE)
 	if(extract_color?[1] in custom_fill_types)
@@ -217,26 +235,28 @@
 	)
 
 /obj/machinery/extract_compressor/item_interaction(mob/living/user, obj/item/tool, list/modifiers)
-	. = try_insert(user, tool, effect_extracts, COMPRESSOR_EFFECT_EXTRACTS)
+	. = try_insert(user, tool, effect_extracts)
 	if(. != NONE)
 		return .
 	return ..()
 
 /obj/machinery/extract_compressor/item_interaction_secondary(mob/living/user, obj/item/tool, list/modifiers)
-	. = try_insert(user, tool, color_extracts, COMPRESSOR_COLOR_EXTRACTS)
+	. = try_insert(user, tool, color_extracts)
 	if(. != NONE)
 		return .
 	return ..()
 
-/obj/machinery/extract_compressor/proc/try_insert(mob/living/user, obj/item/tool, list/obj/item/slime_extract/tank, required)
+/obj/machinery/extract_compressor/proc/try_insert(mob/living/user, obj/item/tool, list/obj/item/slime_extract/preferred)
 	if(!is_operational || panel_open || is_cycling())
 		return NONE
 	if(istype(tool, /obj/item/storage/bag/xeno))
 		var/inserted = 0
 		for(var/obj/item/slime_extract/extract in tool)
-			if(insert_extract(extract, tank, required))
-				inserted++
-				play_fill_plop(tank, required)
+			var/list/obj/item/slime_extract/tank = insert_into_either(extract, preferred)
+			if(isnull(tank))
+				continue
+			inserted++
+			play_fill_plop(tank)
 		if(!inserted)
 			return NONE
 		balloon_alert(user, "[inserted] extract\s inserted[prediction_suffix()]")
@@ -244,16 +264,27 @@
 		return ITEM_INTERACT_SUCCESS
 	if(!istype(tool, /obj/item/slime_extract))
 		return NONE
-	if(!insert_extract(tool, tank, required))
-		balloon_alert(user, length(tank) >= required ? "tank full" : "wrong extract")
+	var/list/obj/item/slime_extract/tank = insert_into_either(tool, preferred)
+	if(isnull(tank))
+		var/both_full = length(effect_extracts) >= COMPRESSOR_EFFECT_EXTRACTS && length(color_extracts) >= COMPRESSOR_COLOR_EXTRACTS
+		balloon_alert(user, both_full ? "tanks full" : "wrong extract")
 		return ITEM_INTERACT_BLOCKING
-	balloon_alert(user, "extract inserted[prediction_suffix()]")
-	play_fill_plop(tank, required)
+	balloon_alert(user, "loaded [tank == effect_extracts ? "effect" : "color"] tank[prediction_suffix()]")
+	play_fill_plop(tank)
 	update_appearance()
 	return ITEM_INTERACT_SUCCESS
 
-/obj/machinery/extract_compressor/proc/play_fill_plop(list/obj/item/slime_extract/tank, required)
-	var/fraction = length(tank) / required
+/obj/machinery/extract_compressor/proc/insert_into_either(obj/item/slime_extract/extract, list/obj/item/slime_extract/preferred)
+	if(insert_extract(extract, preferred))
+		return preferred
+	var/list/obj/item/slime_extract/other = (preferred == effect_extracts) ? color_extracts : effect_extracts
+	return insert_extract(extract, other) ? other : null
+
+/obj/machinery/extract_compressor/proc/tank_capacity(list/obj/item/slime_extract/tank)
+	return tank == effect_extracts ? COMPRESSOR_EFFECT_EXTRACTS : COMPRESSOR_COLOR_EXTRACTS
+
+/obj/machinery/extract_compressor/proc/play_fill_plop(list/obj/item/slime_extract/tank)
+	var/fraction = length(tank) / tank_capacity(tank)
 	var/pitch_min = 1
 	var/pitch_max = 1.8
 	var/pitch = pitch_min + (fraction * (pitch_max - pitch_min))
@@ -267,8 +298,8 @@
 	return result_path ? " - will make [result_path::name]" : " - no known crossbreed"
 
 /// Moves a matching extract into the tank. Returns FALSE without touching the extract if it doesn't fit.
-/obj/machinery/extract_compressor/proc/insert_extract(obj/item/slime_extract/extract, list/obj/item/slime_extract/tank, required)
-	if(length(tank) >= required)
+/obj/machinery/extract_compressor/proc/insert_extract(obj/item/slime_extract/extract, list/obj/item/slime_extract/tank)
+	if(length(tank) >= tank_capacity(tank))
 		return FALSE
 	if(tank == effect_extracts && !extract.crossbreed_modification)
 		return FALSE
@@ -281,18 +312,25 @@
 	return TRUE
 
 /obj/machinery/extract_compressor/click_alt(mob/user)
+	return eject_tank(user, effect_extracts)
+
+/obj/machinery/extract_compressor/click_alt_secondary(mob/user)
+	return eject_tank(user, color_extracts)
+
+/obj/machinery/extract_compressor/proc/eject_tank(mob/user, list/obj/item/slime_extract/tank)
 	if(is_cycling())
 		balloon_alert(user, "busy")
 		return CLICK_ACTION_BLOCKING
-	eject_tank(effect_extracts)
-	eject_tank(color_extracts)
-	update_appearance()
-	return CLICK_ACTION_SUCCESS
-
-/obj/machinery/extract_compressor/proc/eject_tank(list/obj/item/slime_extract/tank)
+	var/side = (tank == effect_extracts) ? "effect" : "color"
+	if(!length(tank))
+		balloon_alert(user, "[side] tank empty")
+		return CLICK_ACTION_BLOCKING
 	for(var/obj/item/slime_extract/extract as anything in tank)
 		extract.forceMove(drop_location())
 	tank.Cut()
+	balloon_alert(user, "[side] tank emptied")
+	update_appearance()
+	return CLICK_ACTION_SUCCESS
 
 /obj/machinery/extract_compressor/interact(mob/user)
 	. = ..()
@@ -302,12 +340,14 @@
 	if(!length(effect_extracts) || !length(color_extracts))
 		balloon_alert(user, "load both tanks")
 		return
-	refill_from_nearby_fridge(effect_extracts, COMPRESSOR_EFFECT_EXTRACTS)
-	refill_from_nearby_fridge(color_extracts, COMPRESSOR_COLOR_EXTRACTS)
+	refill_from_nearby_fridge(effect_extracts)
+	refill_from_nearby_fridge(color_extracts)
 	start_cycle(user)
+	update_appearance() // the fridge top-up moved extracts even if start_cycle bailed
 
 /// Tops a tank up from any extract fridge within COMPRESSOR_FRIDGE_RANGE, matching the type already loaded.
-/obj/machinery/extract_compressor/proc/refill_from_nearby_fridge(list/obj/item/slime_extract/tank, required)
+/obj/machinery/extract_compressor/proc/refill_from_nearby_fridge(list/obj/item/slime_extract/tank)
+	var/required = tank_capacity(tank)
 	if(length(tank) >= required || !length(tank))
 		return
 	var/wanted_type = tank[1].type

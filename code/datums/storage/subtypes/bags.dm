@@ -202,6 +202,7 @@
 		// OCULIS EDIT ADDITION START - slime rancher stuff
 		/obj/item/stack/biomass,
 		/obj/item/slime_breeding_pellet,
+		/obj/item/slimepotion,
 		// OCULIS EDIT ADDITION END
 	))
 

@@ -1,17 +1,64 @@
 #define SLIME_PEN_MAX_SIZE 9
+#define SLIME_PEN_DEPLOY_TIME 2 SECONDS
+
+/proc/pick_slime_pen_corner(mob/user, atom/menu_anchor)
+	var/list/choices = list()
+	var/list/by_label = list()
+	for(var/corner in GLOB.diagonals)
+		var/label = "[capitalize(dir2text(corner))] corner"
+		choices[label] = image(
+			icon = 'modular_oculis/modules/slime_rancher/icons/slime_pen.dmi',
+			icon_state = "post_picker",
+			dir = corner,
+		)
+		by_label[label] = corner
+	var/picked = show_radial_menu(user, menu_anchor, choices, require_near = TRUE, tooltips = TRUE)
+	return by_label[picked]
 
 /obj/item/slime_pen_post
 	name = "slime pen post"
-	desc = "A collapsible corner post. Plant four of them around a patch of floor and they'll string a containment fence between themselves."
+	desc = "A collapsible corner post. Use it on an adjacent floor tile to choose its exact corner and deploy it there."
 	icon = 'modular_oculis/modules/slime_rancher/icons/slime_pen.dmi'
 	icon_state = "corner"
 	inhand_icon_state = null
 	w_class = WEIGHT_CLASS_NORMAL
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 2, /datum/material/glass = SHEET_MATERIAL_AMOUNT)
 
-/obj/item/slime_pen_post/Initialize(mapload)
+/obj/item/slime_pen_post/attack_self(mob/living/user, list/modifiers)
+	deploy_to(get_step(user, user.dir), user)
+
+/obj/item/slime_pen_post/interact_with_atom(atom/interacting_with, mob/living/user, list/modifiers)
+	if(!isfloorturf(interacting_with))
+		return NONE
+	deploy_to(interacting_with, user)
+	return ITEM_INTERACT_SUCCESS
+
+/obj/item/slime_pen_post/examine(mob/user)
 	. = ..()
-	AddComponent(/datum/component/deployable, 2 SECONDS, /obj/structure/slime_pen_post, direction_setting = FALSE)
+	. += span_notice("[EXAMINE_HINT("Click an adjacent floor tile")] to deploy it there, or use it in hand to deploy it ahead of you.")
+
+/obj/item/slime_pen_post/proc/deploy_to(turf/deploy_location, mob/living/user)
+	if(!isfloorturf(deploy_location) || !user.Adjacent(deploy_location))
+		balloon_alert(user, "pick an adjacent floor!")
+		return
+	var/chosen_corner = pick_slime_pen_corner(user, src)
+	if(isnull(chosen_corner) || QDELETED(src) || !user.is_holding(src))
+		return
+	setDir(chosen_corner)
+	if(deploy_location.is_blocked_turf(TRUE, src))
+		balloon_alert(user, "not enough room!")
+		return
+	balloon_alert(user, "deploying...")
+	playsound(src, 'sound/items/tools/ratchet.ogg', 50, TRUE)
+	if(!do_after(user, SLIME_PEN_DEPLOY_TIME, src) || QDELETED(src) || !user.is_holding(src))
+		return
+	if(deploy_location.is_blocked_turf(TRUE, src))
+		balloon_alert(user, "space got blocked!")
+		return
+	var/obj/structure/slime_pen_post/post = new(deploy_location)
+	post.setDir(chosen_corner)
+	post.update_offsets()
+	qdel(src)
 
 /datum/design/slime_pen_post
 	name = "Slime Pen Post"
@@ -25,7 +72,7 @@
 
 /obj/structure/slime_pen_post
 	name = "slime pen post"
-	desc = "A corner post for a slime pen. Wrench it down, then click it to hook up with the other three."
+	desc = "A corner post for a slime pen. Its plate marks the tile it belongs to, and the dotted guides point into the future pen."
 	icon = 'modular_oculis/modules/slime_rancher/icons/slime_pen.dmi'
 	icon_state = "corner"
 	dir = NORTHEAST
@@ -36,24 +83,37 @@
 	resistance_flags = LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	var/datum/slime_pen/pen
 	var/barrier_color
+	/// The click target kept inside this post's tile.
+	var/obj/structure/slime_pen_anchor/anchor
+	/// The click-through line and unfinished fence preview.
+	var/obj/effect/slime_pen_guide/guide
+	/// Whether construction markers should be visible while this post is unlinked.
+	var/construction_markers_visible = TRUE
 
 /obj/structure/slime_pen_post/Initialize(mapload)
 	. = ..()
 	update_offsets()
+	anchor = new(loc, src)
+	guide = new(loc, src)
+	update_construction_markers()
 
 /obj/structure/slime_pen_post/Destroy(force)
 	QDEL_NULL(pen)
+	QDEL_NULL(anchor)
+	QDEL_NULL(guide)
 	return ..()
 
 /obj/structure/slime_pen_post/examine(mob/user)
 	. = ..()
-	. += span_notice("It's marking the [dir2text(dir)] corner.")
+	. += span_notice("This is tile ([x], [y])'s [dir2text(dir)] corner.")
 	if(pen)
 		. += span_notice("It's linked up. Click it to check on the slimes inside.")
 	else if(anchored)
-		. += span_notice("It's bolted down but not linked. Click it once the other three posts are placed.")
+		. += span_notice("Click it once the other three posts are ready.")
 	else
-		. += span_notice("Right-click to point it at a different corner, or wrench it down where it stands.")
+		. += span_notice("Right-click it to choose another corner, or wrench it to bolt it down.")
+	if(anchor && !pen)
+		. += span_notice("Its construction markers can be [EXAMINE_HINT("toggled with a multitool")].")
 
 /obj/structure/slime_pen_post/proc/update_offsets()
 	// the post stands on the corner point of its tile, not in the middle of it
@@ -65,6 +125,17 @@
 	else
 		pixel_z = 0
 		layer = ABOVE_MOB_LAYER + 0.01
+	anchor?.setDir(dir)
+	guide?.setDir(dir)
+	guide?.update_appearance(UPDATE_OVERLAYS)
+
+/obj/structure/slime_pen_post/proc/update_construction_markers()
+	var/show_markers = construction_markers_visible && isnull(pen)
+	if(anchor)
+		anchor.alpha = show_markers ? 255 : 0
+		anchor.mouse_opacity = show_markers ? MOUSE_OPACITY_ICON : MOUSE_OPACITY_TRANSPARENT
+	if(guide)
+		guide.alpha = show_markers ? 255 : 0
 
 /obj/structure/slime_pen_post/update_overlays()
 	. = ..()
@@ -81,12 +152,7 @@
 	. = ..()
 	if(. == SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN)
 		return
-	if(anchored)
-		balloon_alert(user, "unwrench it first!")
-		return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
-	setDir(turn(dir, 90))
-	update_offsets()
-	balloon_alert(user, "[dir2text(dir)] corner")
+	pick_post(user)?.choose_corner(user)
 	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
 
 /obj/structure/slime_pen_post/wrench_act(mob/living/user, obj/item/tool)
@@ -94,17 +160,48 @@
 	var/obj/structure/slime_pen_post/chosen = pick_post(user)
 	if(isnull(chosen))
 		return ITEM_INTERACT_BLOCKING
-	if(chosen.pen)
-		qdel(chosen.pen)
-	chosen.default_unfasten_wrench(user, tool)
+	chosen.wrench_post(user, tool)
 	return ITEM_INTERACT_SUCCESS
+
+/obj/structure/slime_pen_post/multitool_act(mob/living/user, obj/item/tool)
+	var/obj/structure/slime_pen_post/chosen = pick_post(user)
+	if(isnull(chosen))
+		return ITEM_INTERACT_BLOCKING
+	chosen.toggle_construction_markers(user)
+	return ITEM_INTERACT_SUCCESS
+
+/obj/structure/slime_pen_post/proc/wrench_post(mob/living/user, obj/item/tool)
+	if(pen)
+		qdel(pen)
+	default_unfasten_wrench(user, tool)
+
+/obj/structure/slime_pen_post/proc/toggle_construction_markers(mob/user)
+	if(pen)
+		balloon_alert(user, "pen already linked!")
+		return
+	construction_markers_visible = !construction_markers_visible
+	update_construction_markers()
+	balloon_alert(user, "markers [construction_markers_visible ? "shown" : "hidden"]")
+
+/obj/structure/slime_pen_post/proc/choose_corner(mob/user, atom/menu_anchor = src)
+	if(anchored)
+		balloon_alert(user, "unwrench it first!")
+		return
+	var/chosen_corner = pick_slime_pen_corner(user, menu_anchor)
+	if(isnull(chosen_corner) || QDELETED(src) || !user.Adjacent(src) || anchored)
+		return
+	setDir(chosen_corner)
+	update_offsets()
+	balloon_alert(user, "[dir2text(dir)] corner")
 
 /obj/structure/slime_pen_post/proc/use_post(mob/living/user)
 	if(pen)
 		ui_interact(user)
 		return
 	if(!anchored)
-		user.put_in_hands(new /obj/item/slime_pen_post(drop_location()))
+		var/obj/item/slime_pen_post/folded_post = new(drop_location())
+		folded_post.setDir(dir)
+		user.put_in_hands(folded_post)
 		qdel(src)
 		return
 	try_link(user)
@@ -114,6 +211,9 @@
 	var/turf/here = get_turf(src)
 	if(isnull(here))
 		return found
+	for(var/obj/structure/slime_pen_post/post in here)
+		if(post != src && post.dir == dir)
+			found += post
 	var/our_east = (dir & EAST) ? 1 : 0
 	var/our_north = (dir & NORTH) ? 1 : 0
 	for(var/corner in GLOB.diagonals)
@@ -138,11 +238,17 @@
 	var/list/choices = list()
 	var/list/by_label = list()
 	for(var/obj/structure/slime_pen_post/post as anything in candidates)
-		var/label = "[dir2text(post.dir)] corner ([post.pen ? "linked" : "unlinked"])"
-		choices[label] = image(icon = post.icon, icon_state = post.icon_state)
+		var/fastening = post.anchored ? "bolted" : "loose"
+		var/label = "[capitalize(dir2text(post.dir))] corner, tile ([post.x], [post.y]) - [fastening], [post.pen ? "linked" : "unlinked"]"
+		if(by_label[label])
+			label = "[label] #[length(choices) + 1]"
+		choices[label] = image(icon = post.icon, icon_state = "post_picker", dir = post.dir)
 		by_label[label] = post
 	var/picked = show_radial_menu(user, src, choices, require_near = TRUE, tooltips = TRUE)
-	return by_label[picked]
+	var/obj/structure/slime_pen_post/chosen = by_label[picked]
+	if(QDELETED(chosen) || !user.Adjacent(chosen) || !(chosen in posts_sharing_corner()))
+		return null
+	return chosen
 
 // yee haw
 /obj/structure/slime_pen_post/proc/find_partner(turf/from, direction, wanted_dir) as /obj/structure/slime_pen_post
@@ -175,6 +281,64 @@
 			return list(src, across, down, post)
 	return null
 
+/obj/structure/slime_pen_post/proc/report_partner_problem(mob/user, turf/from, direction, wanted_dir, position)
+	var/saw_post = FALSE
+	var/turf/scan = from
+	for(var/step in 1 to SLIME_PEN_MAX_SIZE)
+		for(var/obj/structure/slime_pen_post/post in scan)
+			if(post == src)
+				continue
+			saw_post = TRUE
+			if(post.dir != wanted_dir)
+				continue
+			if(!post.anchored)
+				balloon_alert(user, "[position] post isn't bolted!")
+				return
+			if(post.pen)
+				balloon_alert(user, "[position] post already linked!")
+				return
+		scan = get_step(scan, direction)
+		if(isnull(scan))
+			break
+	if(saw_post)
+		balloon_alert(user, "[position] post must face [dir2text(wanted_dir)]!")
+	else
+		balloon_alert(user, "need a [dir2text(wanted_dir)] post [position]!")
+
+/obj/structure/slime_pen_post/proc/report_layout_problem(mob/user)
+	var/turf/here = get_turf(src)
+	if(isnull(here))
+		return
+	var/inward_x = (dir & EAST) ? WEST : EAST
+	var/inward_y = (dir & NORTH) ? SOUTH : NORTH
+	var/across_dir = (dir & (NORTH|SOUTH)) | inward_x
+	var/down_dir = (dir & (EAST|WEST)) | inward_y
+	var/obj/structure/slime_pen_post/across = find_partner(here, inward_x, across_dir)
+	if(isnull(across))
+		report_partner_problem(user, here, inward_x, across_dir, "[dir2text(inward_x)]-side")
+		return
+	var/obj/structure/slime_pen_post/down = find_partner(here, inward_y, down_dir)
+	if(isnull(down))
+		report_partner_problem(user, here, inward_y, down_dir, "[dir2text(inward_y)]-side")
+		return
+	var/turf/far = locate(across.x, down.y, here.z)
+	var/far_dir = inward_x | inward_y
+	var/saw_post = FALSE
+	for(var/obj/structure/slime_pen_post/post in far)
+		saw_post = TRUE
+		if(post.dir != far_dir)
+			continue
+		if(!post.anchored)
+			balloon_alert(user, "far post isn't bolted!")
+			return
+		if(post.pen)
+			balloon_alert(user, "far post already linked!")
+			return
+	if(saw_post)
+		balloon_alert(user, "far post must face [dir2text(far_dir)]!")
+	else
+		balloon_alert(user, "need a [dir2text(far_dir)] far post!")
+
 /obj/structure/slime_pen_post/proc/try_link(mob/user)
 	if(!anchored)
 		balloon_alert(user, "bolt it down first!")
@@ -183,7 +347,7 @@
 		return FALSE
 	var/list/posts = find_rectangle_layout()
 	if(isnull(posts))
-		balloon_alert(user, "no matching posts!")
+		report_layout_problem(user)
 		return FALSE
 	var/list/xs = list()
 	var/list/ys = list()
@@ -232,6 +396,8 @@
 
 /obj/structure/slime_pen_post/premade/Initialize(mapload)
 	. = ..()
+	QDEL_NULL(anchor)
+	QDEL_NULL(guide)
 	if(!ISDIAGONALDIR(dir))
 		log_mapping("mapped slime pen post at [AREACOORD(src)] faces [dir2text(dir)], which isn't a corner")
 		CRASH("mapped slime pen post at [AREACOORD(src)] faces [dir2text(dir)], which isn't a corner")
@@ -241,4 +407,85 @@
 	if(isnull(pen))
 		try_link()
 
+/obj/structure/slime_pen_anchor
+	name = "slime pen tile plate"
+	desc = "This plate marks the tile owned by its corner post."
+	icon = 'modular_oculis/modules/slime_rancher/icons/slime_pen.dmi'
+	icon_state = "post_anchor"
+	density = FALSE
+	anchored = TRUE
+	layer = ABOVE_MOB_LAYER
+	mouse_opacity = MOUSE_OPACITY_ICON
+	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
+	/// The exact post this plate controls.
+	var/obj/structure/slime_pen_post/post
+
+/obj/structure/slime_pen_anchor/Initialize(mapload, obj/structure/slime_pen_post/post)
+	. = ..()
+	src.post = post
+	setDir(post.dir)
+
+/obj/structure/slime_pen_anchor/Destroy(force)
+	post = null
+	return ..()
+
+/obj/structure/slime_pen_anchor/examine(mob/user)
+	. = ..()
+	if(post)
+		. += post.examine(user)
+
+/obj/structure/slime_pen_anchor/attack_hand(mob/living/user, list/modifiers)
+	. = ..()
+	if(. || QDELETED(post) || !user.Adjacent(src))
+		return
+	post.use_post(user)
+	return TRUE
+
+/obj/structure/slime_pen_anchor/attack_hand_secondary(mob/user, list/modifiers)
+	. = ..()
+	if(. == SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN)
+		return
+	if(!QDELETED(post) && user.Adjacent(src))
+		post.choose_corner(user, src)
+	return SECONDARY_ATTACK_CANCEL_ATTACK_CHAIN
+
+/obj/structure/slime_pen_anchor/wrench_act(mob/living/user, obj/item/tool)
+	. = ..()
+	if(QDELETED(post) || !user.Adjacent(src))
+		return ITEM_INTERACT_BLOCKING
+	post.wrench_post(user, tool)
+	return ITEM_INTERACT_SUCCESS
+
+/obj/structure/slime_pen_anchor/multitool_act(mob/living/user, obj/item/tool)
+	if(QDELETED(post) || !user.Adjacent(src))
+		return ITEM_INTERACT_BLOCKING
+	post.toggle_construction_markers(user)
+	return ITEM_INTERACT_SUCCESS
+
+/obj/effect/slime_pen_guide
+	icon = 'modular_oculis/modules/slime_rancher/icons/slime_pen.dmi'
+	icon_state = "post_marker"
+	layer = ABOVE_MOB_LAYER
+	mouse_opacity = MOUSE_OPACITY_TRANSPARENT
+	/// The post whose construction state this preview follows.
+	var/obj/structure/slime_pen_post/post
+
+/obj/effect/slime_pen_guide/Initialize(mapload, obj/structure/slime_pen_post/post)
+	. = ..()
+	src.post = post
+	setDir(post.dir)
+	update_appearance(UPDATE_OVERLAYS)
+
+/obj/effect/slime_pen_guide/Destroy(force)
+	post = null
+	return ..()
+
+/obj/effect/slime_pen_guide/update_overlays()
+	. = ..()
+	if(!post?.pen)
+		var/mutable_appearance/fence_preview = mutable_appearance(icon, "post_guide")
+		fence_preview.dir = dir
+		. += fence_preview
+
 #undef SLIME_PEN_MAX_SIZE
+#undef SLIME_PEN_DEPLOY_TIME

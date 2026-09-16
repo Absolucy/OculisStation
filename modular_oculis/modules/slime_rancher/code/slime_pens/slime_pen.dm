@@ -32,6 +32,7 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	posts = new_posts.Copy()
 	for(var/obj/structure/slime_pen_post/post as anything in posts)
 		post.pen = src
+		post.update_construction_markers()
 		if(post.barrier_color)
 			barrier_color = post.barrier_color
 		RegisterSignals(post, list(COMSIG_MOVABLE_MOVED, COMSIG_QDELETING), PROC_REF(on_piece_lost))
@@ -52,6 +53,7 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	QDEL_LIST(barriers)
 	for(var/obj/structure/slime_pen_post/post as anything in posts)
 		post.pen = null
+		post.update_construction_markers()
 	posts = null
 	for(var/turf/turf as anything in turfs)
 		remove_turf(turf)
