@@ -1,0 +1,4 @@
+author: "Shroopy"
+delete-after: True
+changes:
+  - balance: "Reverted MODsuit control units slowing you when worn."
