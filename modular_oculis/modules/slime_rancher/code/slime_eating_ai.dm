@@ -55,6 +55,16 @@
 /datum/bt_node/decorator/bb_key_set/slime_target/on_child_complete(datum/ai_controller/controller, result)
 	controller.clear_blackboard_key(key)
 
+/// move loops count "already there" as a failed step, so a slime sitting on its meal gives up pathing after
+/// 10 ticks, fails the whole eat branch, lets go, and rerolls a random monkey. being in range isn't failing
+/datum/bt_node/ai_behavior/move_to_target/slime
+
+/datum/bt_node/ai_behavior/move_to_target/slime/perform(seconds_per_tick, datum/ai_controller/controller)
+	var/atom/target = controller.blackboard[target_key]
+	if(movement_failed && !QDELETED(target) && get_dist(controller.pawn, target) <= required_dist)
+		movement_failed = FALSE
+	return ..()
+
 /// check to see if we're free to go eat items laying around
 /datum/bt_node/decorator/bb_key_set/slime_target/forage
 	polling_rate = 1 SECONDS
