@@ -10,7 +10,6 @@
 			"type": "decorator",
 			"decorator": "/datum/bt_node/decorator/ability_available",
 			"vars": {
-				"observer_abort": "BT_ABORT_LOWER_PRIORITY",
 				"ability_key": "BB_SLIME_EVOLVE"
 			},
 			"child": {
@@ -67,6 +66,7 @@
 								"type": "parallel",
 								"failure_policy": "BT_PARALLEL_FAILURE_ANY",
 								"success_policy": "BT_PARALLEL_SUCCESS_CHILD_ONE",
+								"repeat_secondary": true,
 								"finish_on_primary": true,
 								"children": [
 									{
@@ -99,7 +99,7 @@
 									},
 									{
 										"type": "leaf",
-										"behavior": "/datum/bt_node/ai_behavior/move_to_target/slime",
+										"behavior": "/datum/bt_node/ai_behavior/move_to_target",
 										"vars": {
 											"target_key": "BB_SLIME_EAT_TARGET",
 											"required_dist": 1,
@@ -120,6 +120,7 @@
 								"type": "parallel",
 								"failure_policy": "BT_PARALLEL_FAILURE_ANY",
 								"success_policy": "BT_PARALLEL_SUCCESS_CHILD_ONE",
+								"repeat_secondary": true,
 								"finish_on_primary": true,
 								"children": [
 									{
@@ -152,7 +153,7 @@
 									},
 									{
 										"type": "leaf",
-										"behavior": "/datum/bt_node/ai_behavior/move_to_target/slime",
+										"behavior": "/datum/bt_node/ai_behavior/move_to_target",
 										"vars": {
 											"target_key": "BB_CURRENT_TARGET",
 											"required_dist": 1,
@@ -173,6 +174,7 @@
 								"type": "parallel",
 								"failure_policy": "BT_PARALLEL_FAILURE_ANY",
 								"success_policy": "BT_PARALLEL_SUCCESS_CHILD_ONE",
+								"repeat_secondary": true,
 								"finish_on_primary": true,
 								"children": [
 									{
@@ -192,7 +194,7 @@
 									},
 									{
 										"type": "leaf",
-										"behavior": "/datum/bt_node/ai_behavior/move_to_target/slime",
+										"behavior": "/datum/bt_node/ai_behavior/move_to_target",
 										"vars": {
 											"target_key": "BB_SLIME_ITEM_TARGET",
 											"required_dist": 1,
@@ -207,7 +209,7 @@
 							"decorator": "/datum/bt_node/decorator/slime_wants_to_nuzzle",
 							"child": {
 								"type": "decorator",
-								"decorator": "/datum/bt_node/decorator/bb_key_set/slime_target",
+								"decorator": "/datum/bt_node/decorator/bb_key_set",
 								"vars": {
 									"key": "BB_SLIME_NUZZLE_TARGET"
 								},
@@ -216,7 +218,7 @@
 									"children": [
 										{
 											"type": "leaf",
-											"behavior": "/datum/bt_node/ai_behavior/move_to_target/slime",
+											"behavior": "/datum/bt_node/ai_behavior/move_to_target",
 											"vars": {
 												"target_key": "BB_SLIME_NUZZLE_TARGET",
 												"required_dist": 1
@@ -264,7 +266,7 @@
 				},
 				{
 					"type": "decorator",
-					"decorator": "/datum/bt_node/decorator/slime_wants_to_eat/ranching",
+					"decorator": "/datum/bt_node/decorator/slime_wants_to_eat",
 					"child": {
 						"type": "leaf",
 						"behavior": "/datum/bt_node/ai_behavior/acquire_target/update_interaction_target",

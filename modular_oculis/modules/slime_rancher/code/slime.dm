@@ -12,21 +12,15 @@
 	RegisterSignals(src, list(COMSIG_SLIME_ATE_ITEM, COMSIG_LIVING_BEFRIENDED), PROC_REF(on_slime_happy_yay))
 	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(crush_the_monkey_rebels))
 
-// a monkey swinging at one slime gets the whole pen to beat it up
+// a monkey swinging at one slime gets the whole pen mad at it
 /mob/living/basic/slime/proc/crush_the_monkey_rebels(datum/source, atom/attacker, attack_flags)
 	SIGNAL_HANDLER
 	if(!ismonkey(attacker))
 		return
 	for(var/mob/living/basic/slime/buddy in oview(SLIME_MONKEY_RALLY_RANGE, src))
-		if(buddy.stat || isnull(buddy.ai_controller))
+		if(buddy.stat)
 			continue
-		buddy.ai_controller.set_blackboard_key_assoc_lazylist(BB_BASIC_MOB_RETALIATE_LIST, attacker, world.time)
-		if(buddy.buckled)
-			continue
-		// the retaliate branch sits below the eat branch, so anyone already chasing food would never come help.
-		// hijacking the eat target works out: can_feed_on refuses a monkey with a slime already on it,
-		// so the branch falls through to punching, and the retaliate list keeps the target valid
-		buddy.ai_controller.set_blackboard_key(BB_SLIME_EAT_TARGET, attacker)
+		buddy.ai_controller?.set_blackboard_key_assoc_lazylist(BB_BASIC_MOB_RETALIATE_LIST, attacker, world.time)
 
 /mob/living/basic/slime/Destroy()
 	QDEL_LIST(mutation_progress)

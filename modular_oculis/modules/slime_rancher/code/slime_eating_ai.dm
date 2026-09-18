@@ -27,18 +27,6 @@
 	var/mob/living/basic/slime/slimey = living_mob
 	return slimey.can_feed_on(target, silent = TRUE, check_adjacent = FALSE) && can_see(slimey, target, vision_range)
 
-/// upstream's version falls through to TRUE no matter what, so full slimes hunted anyway.
-/// critters we still owe a mutation get chased hungry or not, see slime_food above
-/datum/bt_node/decorator/slime_wants_to_eat/ranching
-
-/datum/bt_node/decorator/slime_wants_to_eat/ranching/check_condition(datum/ai_controller/controller)
-	var/mob/living/basic/slime/slime_pawn = controller.pawn
-	if(!istype(slime_pawn) || slime_pawn.buckled)
-		return FALSE
-	if(controller.blackboard[BB_SLIME_HUNGER_LEVEL] != SLIME_HUNGER_NONE || controller.blackboard[BB_SLIME_RABID])
-		return TRUE
-	return length(controller.blackboard[BB_SLIME_WANTED_MOBS]) > 0
-
 /datum/bt_node/decorator/slime_is_wild
 
 /datum/bt_node/decorator/slime_is_wild/check_condition(datum/ai_controller/controller)
@@ -54,16 +42,6 @@
 
 /datum/bt_node/decorator/bb_key_set/slime_target/on_child_complete(datum/ai_controller/controller, result)
 	controller.clear_blackboard_key(key)
-
-/// move loops count "already there" as a failed step, so a slime sitting on its meal gives up pathing after
-/// 10 ticks, fails the whole eat branch, lets go, and rerolls a random monkey. being in range isn't failing
-/datum/bt_node/ai_behavior/move_to_target/slime
-
-/datum/bt_node/ai_behavior/move_to_target/slime/perform(seconds_per_tick, datum/ai_controller/controller)
-	var/atom/target = controller.blackboard[target_key]
-	if(movement_failed && !QDELETED(target) && get_dist(controller.pawn, target) <= required_dist)
-		movement_failed = FALSE
-	return ..()
 
 /// check to see if we're free to go eat items laying around
 /datum/bt_node/decorator/bb_key_set/slime_target/forage
@@ -91,13 +69,12 @@
 /datum/bt_node/ai_behavior/snatch_held_item
 
 /datum/bt_node/ai_behavior/snatch_held_item/perform(seconds_per_tick, datum/ai_controller/controller)
-	// the parallel only reruns us once per BASIC_MOB_FIND_TARGET_RATE, so this is already per-second
-	if(!prob(15))
+	if(!SPT_PROB(15, seconds_per_tick))
 		return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_FAILED
 
 	var/mob/living/basic/slime/slime_pawn = controller.pawn
 	var/list/wanted_types = controller.blackboard[BB_SLIME_WANTED_ITEMS]
-	if(!istype(slime_pawn) || slime_pawn.buckled || IS_UNCONSCIOUS_OR_CRIT(slime_pawn) || !length(wanted_types))
+	if(!istype(slime_pawn) || !length(wanted_types))
 		return AI_BEHAVIOR_INSTANT | AI_BEHAVIOR_FAILED
 
 	for(var/mob/living/neighbor in oview(1, slime_pawn))
