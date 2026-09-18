@@ -37,6 +37,9 @@
 "dx" = (
 /turf/open/floor/plating,
 /area/station/maintenance/department/science/central)
+"dC" = (
+/turf/open/floor/plating,
+/area/template_noop)
 "dW" = (
 /obj/structure/disposalpipe/segment{
 	dir = 5
@@ -240,6 +243,11 @@
 	},
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
+"rP" = (
+/obj/structure/disposalpipe/segment,
+/obj/structure/cable,
+/turf/open/floor/plating,
+/area/template_noop)
 "sU" = (
 /obj/structure/sign/warning/biohazard,
 /turf/closed/wall/r_wall,
@@ -320,6 +328,10 @@
 /obj/effect/turf_decal/tile/blue/fourcorners,
 /turf/open/floor/iron,
 /area/station/science/xenobiology)
+"yV" = (
+/obj/structure/cable,
+/turf/open/floor/plating,
+/area/station/maintenance/department/science/central)
 "yW" = (
 /obj/structure/disposalpipe/segment{
 	dir = 4
@@ -881,7 +893,7 @@ zt
 "}
 (8,1,1) = {"
 TM
-dx
+yV
 yW
 RM
 yF
@@ -906,7 +918,7 @@ FI
 "}
 (9,1,1) = {"
 OX
-dx
+yV
 yW
 Sq
 yF
@@ -930,7 +942,7 @@ ke
 xJ
 "}
 (10,1,1) = {"
-gB
+rP
 dW
 yW
 yF
@@ -955,7 +967,7 @@ OE
 gB
 "}
 (11,1,1) = {"
-gB
+dC
 kM
 GF
 bA
@@ -980,7 +992,7 @@ OE
 gB
 "}
 (12,1,1) = {"
-gB
+dC
 kM
 GF
 JJ
@@ -1005,7 +1017,7 @@ OE
 gB
 "}
 (13,1,1) = {"
-gB
+dC
 kM
 GF
 jj
@@ -1030,7 +1042,7 @@ FI
 gB
 "}
 (14,1,1) = {"
-TM
+dx
 kM
 GF
 jj
@@ -1055,7 +1067,7 @@ FI
 gB
 "}
 (15,1,1) = {"
-TM
+dx
 Nn
 GF
 LZ
@@ -1080,7 +1092,7 @@ tC
 FI
 "}
 (16,1,1) = {"
-TM
+dx
 kM
 GF
 vA
