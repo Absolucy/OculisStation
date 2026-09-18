@@ -90,6 +90,7 @@
 
 	if(interrupted || QDELETED(owner) || IS_UNCONSCIOUS_OR_CRIT(owner))
 		slime_owner.queued_mutation = null
+		COOLDOWN_START(slime_owner, ranch_retry_cooldown, SLIME_RANCH_RETRY_COOLDOWN)
 	else
 		slime_owner.finish_reproduce()
 

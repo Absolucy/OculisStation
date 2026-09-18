@@ -8,11 +8,12 @@
 	if(!primed_split_cost)
 		. |= /obj/item/slime_breeding_pellet
 
-/// returns a list of mob types this slime still needs to drain for mutations
+/// returns a list of mob types this slime can drain for mutations, finished quotas included -
+/// a pen stocked only with critters still has to be able to feed a slime up to its next outcome
 /mob/living/basic/slime/proc/get_wanted_mob_types() as /list
 	. = list()
 	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
-		for(var/mob_type, drain_left in mutation.latch_needed)
+		for(var/mob_type, drain_total in mutation.latch_totals)
 			. |= mob_type
 
 /mob/living/basic/slime/proc/refresh_wanted_targets()
@@ -51,6 +52,8 @@
 	SEND_SIGNAL(src, COMSIG_SLIME_ATE_ITEM, meal_type)
 	if(ispath(meal_type, /obj/item/slime_breeding_pellet))
 		set_primed_split_cost(SLIME_RANCH_PELLET_SPLIT_COST)
+	else if(life_stage == SLIME_LIFE_STAGE_ADULT)
+		try_ranch_outcome()
 
 	if(!silent)
 		visible_message(
@@ -76,6 +79,7 @@
 
 /mob/living/basic/slime/set_slime_type(new_type = SLIME_TYPE_RANDOM)
 	. = ..()
+	pending_ranch_mutation = null
 	LAZYOR(GLOB.obtained_slime_types, slime_type.type)
 	QDEL_LIST(mutation_progress)
 	mutation_progress = list()

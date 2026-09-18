@@ -21,10 +21,9 @@
 	latch_totals = latch_needed?.Copy()
 	RegisterSignal(our_slime, COMSIG_SLIME_CHECK_WANTED_ITEM, PROC_REF(on_check_wanted_item))
 	RegisterSignal(our_slime, COMSIG_SLIME_ATE_ITEM, PROC_REF(on_ate_item))
-	RegisterSignal(our_slime, COMSIG_SLIME_LATCH_DRAINED, PROC_REF(on_latch_drained))
 
 /datum/slime_mutation/Destroy()
-	UnregisterSignal(our_slime, list(COMSIG_SLIME_CHECK_WANTED_ITEM, COMSIG_SLIME_ATE_ITEM, COMSIG_SLIME_LATCH_DRAINED))
+	UnregisterSignal(our_slime, list(COMSIG_SLIME_CHECK_WANTED_ITEM, COMSIG_SLIME_ATE_ITEM))
 	our_slime = null
 	return ..()
 
@@ -53,8 +52,8 @@
 			needed_items -= needed_type
 			return
 
-/datum/slime_mutation/proc/on_latch_drained(mob/living/basic/slime/source, mob/living/meal, drained)
-	SIGNAL_HANDLER
+/// Called straight from the slime's own drain handler, so quotas update before it checks for an outcome.
+/datum/slime_mutation/proc/on_latch_drained(mob/living/meal, drained)
 	drained = ceil(drained * 1.5)
 	for(var/mob_type, drain_left in latch_needed)
 		if(!istype(meal, mob_type))
@@ -62,11 +61,10 @@
 		drain_left -= drained
 		if(drain_left > 0)
 			latch_needed[mob_type] = drain_left
-			EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "drained [drained] from [mob_type] ([drain_left + drained] -> [drain_left], for [type])")
+			EVLOG_TEXT(our_slime, EVLOG_CATEGORY_SLIMES, "drained [drained] from [mob_type] ([drain_left + drained] -> [drain_left], for [type])")
 			continue
 		latch_needed -= mob_type
-		source.refresh_wanted_targets()
-		EVLOG_TEXT(source, EVLOG_CATEGORY_SLIMES, "drained enough [mob_type] (for [type])")
+		EVLOG_TEXT(our_slime, EVLOG_CATEGORY_SLIMES, "drained enough [mob_type] (for [type])")
 
 /datum/slime_mutation/metal
 	mutates_into = /datum/slime_type/metal

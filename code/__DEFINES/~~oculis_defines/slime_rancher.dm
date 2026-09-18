@@ -4,7 +4,7 @@
 #define BB_SLIME_ITEM_TARGET "BB_slime_item_target"
 ///Typecache of item types the slime still wants to eat
 #define BB_SLIME_WANTED_ITEMS "BB_slime_wanted_items"
-///Typecache of mob types the slime still wants to latch onto and drain
+///Typecache of mob types the slime can latch onto and drain for a mutation
 #define BB_SLIME_WANTED_MOBS "BB_slime_wanted_mobs"
 ///Friend a slime is currently waddling over to go nuzzle
 #define BB_SLIME_NUZZLE_TARGET "BB_slime_nuzzle_target"
@@ -43,6 +43,10 @@
 #define SLIME_RANCH_COMMAND_SPLIT_COST 50
 /// Health a slime that ate a breeding pellet has to drain first
 #define SLIME_RANCH_PELLET_SPLIT_COST 100
+/// How long a refused or interrupted split/mutation waits before trying again
+#define SLIME_RANCH_RETRY_COOLDOWN (5 SECONDS)
+/// How long a slime ignores a target it couldn't path to
+#define SLIME_CHASE_GIVE_UP_TIME (5 SECONDS)
 
 /// The fence sprite's own blue. A pen set to this color skips the recolor filter entirely, so the default look is the sprite as drawn.
 #define SLIME_PEN_DEFAULT_COLOR "#4dc8e8"

@@ -103,9 +103,13 @@
 	slime_owner.reproduce()
 
 ///Splits the slime into multiple children if possible
-/mob/living/basic/slime/proc/reproduce()
+/mob/living/basic/slime/proc/reproduce(feedback = TRUE) // OCULIS EDIT CHANGE - SLIME_RANCHER - automatic retries stay quiet - ORIGINAL: /mob/living/basic/slime/proc/reproduce()
 
 	if(IS_UNCONSCIOUS_OR_CRIT(src))
+		// OCULIS EDIT ADDITION START - SLIME_RANCHER
+		if(!feedback)
+			return FALSE
+		// OCULIS EDIT ADDITION END
 		if(stat == DEAD)
 			balloon_alert(src, "dead!")
 		else if(IS_UNCONSCIOUS(src))
@@ -114,15 +118,17 @@
 			balloon_alert(src, "in critical!")
 		return FALSE
 
-	if(!isopenturf(loc))
+	if(!isopenturf(loc) && feedback) // OCULIS EDIT CHANGE - SLIME_RANCHER - ORIGINAL: if(!isopenturf(loc))
 		balloon_alert(src, "not here!")
 
 	if(life_stage != SLIME_LIFE_STAGE_ADULT)
-		balloon_alert(src, "not adult!")
+		if(feedback) // OCULIS EDIT ADDITION - SLIME_RANCHER
+			balloon_alert(src, "not adult!")
 		return
 
 	if(amount_grown < SLIME_EVOLUTION_THRESHOLD)
-		balloon_alert(src, "need growth!")
+		if(feedback) // OCULIS EDIT ADDITION - SLIME_RANCHER
+			balloon_alert(src, "need growth!")
 		return
 
 	var/list/friends_list = list()
@@ -135,12 +141,14 @@
 
 	overcrowded = length(friends_list) >= SLIME_OVERCROWD_AMOUNT
 	if(overcrowded)
-		balloon_alert(src, "overcrowded!")
+		if(feedback) // OCULIS EDIT ADDITION - SLIME_RANCHER
+			balloon_alert(src, "overcrowded!")
 		return
 
 	// OCULIS EDIT ADDITION START - slime rancher rework - wind up first, split later
 	if(!isopenturf(loc))
-		balloon_alert(src, "not here!")
+		if(feedback)
+			balloon_alert(src, "not here!")
 		return
 
 	queued_mutation = get_random_mutation()

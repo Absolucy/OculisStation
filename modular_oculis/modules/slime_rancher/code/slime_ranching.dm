@@ -3,10 +3,15 @@
 	var/ranch_progress = 0
 	/// 0 = not primed, otherwise how much ranch_progress a split needs before it fires
 	var/primed_split_cost = 0
+	/// Slime type a ranch mutation already rolled, held onto until that mutation actually happens
+	var/datum/slime_type/pending_ranch_mutation
+	COOLDOWN_DECLARE(ranch_retry_cooldown)
 
 /mob/living/basic/slime/proc/on_ranch_drain(datum/source, mob/living/meal, drained)
 	SIGNAL_HANDLER
 	set_temporary_mood(SLIME_MOOD_SMILE) // a mouthful of someone is still a mouthful, even for babies
+	for(var/datum/slime_mutation/mutation as anything in mutation_progress)
+		mutation.on_latch_drained(meal, drained)
 	if(life_stage != SLIME_LIFE_STAGE_ADULT)
 		return
 	ranch_progress += drained
@@ -18,9 +23,12 @@
 		return
 
 	if(primed_split_cost)
-		if(ranch_progress < primed_split_cost)
+		if(ranch_progress < primed_split_cost || !COOLDOWN_FINISHED(src, ranch_retry_cooldown))
 			return
-		reproduce()
+		reproduce(feedback = FALSE)
+		return
+
+	if(pending_ranch_mutation) // Life picks it back up once we've let go of lunch
 		return
 
 	if(ranch_progress < SLIME_RANCH_EXTRACT_COST)
@@ -28,8 +36,8 @@
 
 	var/mutation_target = (transformative_effect != SLIME_TYPE_CERULEAN) ? get_unlocked_mutation_type(weight_new_types = TRUE) : null
 	if(mutation_target && prob(mutation_chance))
-		queued_mutation = mutation_target
-		apply_status_effect(/datum/status_effect/slime_reproducing, SLIME_MUTATE_WINDUP)
+		pending_ranch_mutation = mutation_target
+		start_ranch_mutation()
 		return
 
 	ranch_progress -= SLIME_RANCH_EXTRACT_COST
@@ -43,14 +51,54 @@
 	playsound(src, 'sound/effects/splat.ogg', 50, TRUE)
 	EVLOG_TEXT(src, EVLOG_CATEGORY_SLIMES, "produced an extract via ranching ([ranch_progress] progress left over)")
 
+/// Starts the wind-up for the mutation we already rolled.
+/mob/living/basic/slime/proc/start_ranch_mutation()
+	queued_mutation = pending_ranch_mutation
+	apply_status_effect(/datum/status_effect/slime_reproducing, SLIME_MUTATE_WINDUP)
+
+/// Whether the stored mutation could wind up right now, ignoring whether we're still latched onto lunch.
+/mob/living/basic/slime/proc/ranch_mutation_ready()
+	// only ever gates stored mutations, never primed splits - a growth-blocked split that can't eat never grows, so it'd never unblock
+	if(isnull(pending_ranch_mutation))
+		return FALSE
+	if(IS_UNCONSCIOUS_OR_CRIT(src) || HAS_TRAIT(src, TRAIT_STASIS))
+		return FALSE
+	if(has_status_effect(/datum/status_effect/slime_reproducing))
+		return FALSE
+	return COOLDOWN_FINISHED(src, ranch_retry_cooldown)
+
+/mob/living/basic/slime/Life(seconds_per_tick = SSMOBS_DT, times_fired)
+	. = ..()
+	if(!.)
+		return
+
+	if(pending_ranch_mutation)
+		if(ranch_mutation_ready() && !isliving(buckled))
+			EVLOG_TEXT(src, EVLOG_CATEGORY_SLIMES, "resumes its stored [pending_ranch_mutation] mutation")
+			start_ranch_mutation()
+		return
+
+	if(primed_split_cost && !HAS_TRAIT(src, TRAIT_STASIS))
+		try_ranch_outcome()
+
+/mob/living/basic/slime/can_feed_on(mob/living/meal, silent = FALSE, check_adjacent = FALSE, check_friendship = FALSE)
+	if(ranch_mutation_ready())
+		if(!silent)
+			balloon_alert(src, "about to mutate!")
+		return FALSE
+	return ..()
+
 /mob/living/basic/slime/proc/set_primed_split_cost(new_cost)
 	primed_split_cost = new_cost
+	if(new_cost)
+		pending_ranch_mutation = null
 	balloon_alert_to_viewers(new_cost ? "ready to split!" : "back to extracts")
 	do_jitter_animation()
 	refresh_wanted_targets() // so the AI starts (or stops) hunting down breeding pellets
 	try_ranch_outcome() // if we already banked enough, split right away instead of waiting on the next drain
 
 /mob/living/basic/slime/finish_reproduce()
+	pending_ranch_mutation = null
 	if(primed_split_cost)
 		primed_split_cost = 0
 		balloon_alert_to_viewers("back to extracts")

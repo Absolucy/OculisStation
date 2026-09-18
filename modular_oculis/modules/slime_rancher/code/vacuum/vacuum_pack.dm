@@ -77,7 +77,8 @@
 	. += span_notice("It contains [length(stored)] of [capacity] slimes.")
 	. += span_notice("Its suction reaches [capture_range] tiles and takes [DisplayTimeText(capture_delay)].")
 	. += span_notice("It is set to [selective_mode ? "selective" : "random"] firing.")
-	. += span_notice("Ctrl-right-click with the nozzle to suck up slime extracts in that direction.")
+	. += span_notice("[EXAMINE_HINT("Ctrl-right-click")] with the nozzle to suck up slime extracts in that direction.")
+	. += span_notice("A confused slime should shake it off and go back to normal if you vacuum it up and fire it back out.")
 	if(length(upgrades))
 		var/list/upgrade_names = list()
 		for(var/upgrade_type, value in upgrades)
@@ -327,6 +328,7 @@
 	UnregisterSignal(occupant, COMSIG_QDELETING)
 	if(!QDELETED(owned_controller) && occupant.ai_controller == owned_controller)
 		owned_controller.clear_forced_off()
+	astype(occupant, /mob/living/basic/slime)?.reset_stuck_ai()
 	SEND_SIGNAL(src, COMSIG_VACUUM_RELEASED, occupant)
 
 /obj/item/vacuum_pack/proc/release(mob/living/occupant, turf/destination)
