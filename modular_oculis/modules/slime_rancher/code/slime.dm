@@ -11,14 +11,13 @@
 	RegisterSignal(src, COMSIG_ANIMAL_PET, PROC_REF(on_petted))
 	RegisterSignals(src, list(COMSIG_SLIME_ATE_ITEM, COMSIG_LIVING_BEFRIENDED), PROC_REF(on_slime_happy_yay))
 	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(crush_the_monkey_rebels))
-	RegisterSignal(src, COMSIG_LIVING_DEATH, PROC_REF(drop_pending_ranch_mutation))
 
 /mob/living/basic/slime/Destroy()
 	QDEL_LIST(mutation_progress)
 	return ..()
 
-/mob/living/basic/slime/proc/drop_pending_ranch_mutation(datum/source)
-	SIGNAL_HANDLER
+/mob/living/basic/slime/death(gibbed)
+	. = ..()
 	pending_ranch_mutation = null
 
 // a monkey swinging at one slime gets the whole pen mad at it
