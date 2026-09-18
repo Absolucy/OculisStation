@@ -202,6 +202,8 @@
 				baby.update_name()
 				baby.regenerate_icons()
 				baby.set_nutrition(new_nutrition)
+
+		baby.cores = max(cores, baby.cores) // hopefully won't cause issues
 		// OCULIS ADDITION END
 		SSblackbox.record_feedback("tally", "slime_babies_born", 1, baby.slime_type.colour)
 		step_away(baby, src)
