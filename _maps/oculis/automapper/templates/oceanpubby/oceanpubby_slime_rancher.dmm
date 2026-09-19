@@ -324,13 +324,6 @@
 /obj/structure/cable,
 /turf/open/floor/plating,
 /area/station/maintenance/department/science/central)
-"yW" = (
-/obj/structure/disposalpipe/segment{
-	dir = 4
-	},
-/obj/structure/cable,
-/turf/closed/wall/r_wall,
-/area/station/maintenance/department/science/central)
 "zt" = (
 /obj/machinery/light/small/directional/north,
 /turf/open/floor/plating,
@@ -355,6 +348,12 @@
 	},
 /turf/open/floor/iron/white,
 /area/station/science/xenobiology)
+"Dd" = (
+/obj/structure/disposalpipe/segment{
+	dir = 5
+	},
+/turf/closed/wall/r_wall,
+/area/station/maintenance/department/science/central)
 "Dr" = (
 /obj/structure/cable,
 /obj/effect/turf_decal/tile/green/fourcorners,
@@ -861,7 +860,7 @@ gB
 (7,1,1) = {"
 ek
 ek
-dW
+Dd
 Hx
 vt
 vt
@@ -886,7 +885,7 @@ zt
 (8,1,1) = {"
 TM
 yV
-yW
+GF
 RM
 yF
 Zx
@@ -911,7 +910,7 @@ FI
 (9,1,1) = {"
 OX
 yV
-yW
+GF
 Sq
 yF
 nS
@@ -936,7 +935,7 @@ xJ
 (10,1,1) = {"
 ek
 dW
-yW
+GF
 yF
 Ii
 yF
