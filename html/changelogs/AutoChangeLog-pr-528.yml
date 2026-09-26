@@ -1,0 +1,5 @@
+author: "Meunahlux"
+delete-after: True
+changes:
+  - bugfix: "added pet command AI to domestic foxes"
+  - qol: "Poly can now be ordered to perch by more than just the CE if people bond with it."
