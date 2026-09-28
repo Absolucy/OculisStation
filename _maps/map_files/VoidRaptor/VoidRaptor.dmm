@@ -5349,22 +5349,6 @@
 /obj/effect/mapping_helpers/airlock/access/any/supply/maintenance,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
-/obj/effect/mapping_helpers/airlock/unres{
-	dir = 4
-	},
-/obj/structure/cable,
-/obj/structure/barricade/wooden/crude,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/machinery/door/airlock/maintenance{
-	name = "Old Bar"
-	},
-/obj/effect/mapping_helpers/airlock/access/any/supply/maintenance,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
-/obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /obj/effect/mapping_helpers/airlock/unres/delayed{
 	dir = 4
 	},
@@ -31050,13 +31034,6 @@
 	dir = 1
 	},
 /area/station/hallway/primary/fore)
-"iQx" = (
-/obj/structure/chair/stool/directional/north{
-	pixel_y = 6
-	},
-/mob/living/basic/trooper/syndicate/melee,
-/turf/open/floor/wood,
-/area/station/maintenance/rus_gambling)
 "iQy" = (
 /obj/structure/cable,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/supply/hidden/layer4,
@@ -61439,11 +61416,6 @@
 	},
 /turf/open/floor/iron/freezer,
 /area/station/medical/pharmacy)
-"qZv" = (
-/obj/effect/mapping_helpers/broken_floor,
-/mob/living/basic/trooper/syndicate/melee,
-/turf/open/floor/wood,
-/area/station/maintenance/rus_gambling)
 "qZz" = (
 /obj/machinery/light/small/directional/north,
 /obj/machinery/camera/directional/north{
@@ -74864,7 +74836,6 @@
 /area/station/security/warden)
 "uFZ" = (
 /obj/effect/decal/cleanable/blood/old,
-/mob/living/basic/trooper/syndicate/melee/sword,
 /turf/open/floor/wood,
 /area/station/maintenance/rus_gambling)
 "uGj" = (
@@ -84388,7 +84359,6 @@
 	pixel_y = 24
 	},
 /obj/effect/mapping_helpers/broken_floor,
-/mob/living/basic/trooper/syndicate/melee,
 /turf/open/floor/wood,
 /area/station/maintenance/rus_gambling)
 "xqb" = (
@@ -126553,7 +126523,7 @@ ykh
 eUK
 jgR
 bTB
-qZv
+cSC
 ykh
 aqi
 yep
@@ -128865,7 +128835,7 @@ ykh
 dwZ
 rlj
 fhK
-iQx
+iiQ
 oCm
 ykh
 wtQ

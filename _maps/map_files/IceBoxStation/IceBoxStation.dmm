@@ -6786,18 +6786,6 @@
 	},
 /turf/open/floor/wood/parquet,
 /area/station/service/bar/atrium)
-"bSt" = (
-/obj/structure/fence/post,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/structure/fence{
-	dir = 2
-	},
-/turf/open/misc/asteroid/snow/icemoon,
-/area/icemoon/surface/outdoors/less_spawns)
 "bSz" = (
 /obj/structure/fence{
 	dir = 8
@@ -23686,9 +23674,7 @@
 	dir = 8;
 	name = "Air to External"
 	},
-/obj/effect/turf_decal/trimline/blue/arrow_cw{
-	dir = 2
-	},
+/obj/effect/turf_decal/trimline/blue/arrow_cw,
 /obj/effect/turf_decal/box/white{
 	color = "#00FFFF"
 	},
@@ -42730,9 +42716,7 @@
 /area/station/cargo/storage)
 "maW" = (
 /obj/effect/decal/cleanable/dirt,
-/obj/machinery/atmospherics/pipe/smart/manifold/scrubbers/hidden{
-	dir = 2
-	},
+/obj/machinery/atmospherics/pipe/smart/manifold/scrubbers/hidden,
 /obj/machinery/atmospherics/pipe/smart/simple/scrubbers/visible/layer2{
 	dir = 9
 	},
@@ -50514,9 +50498,7 @@
 /obj/effect/turf_decal/siding/wideplating{
 	dir = 1
 	},
-/obj/machinery/atmospherics/pipe/smart/manifold/purple/visible{
-	dir = 2
-	},
+/obj/machinery/atmospherics/pipe/smart/manifold/purple/visible,
 /obj/machinery/meter,
 /turf/open/floor/iron,
 /area/station/engineering/atmos/pumproom)
@@ -61369,18 +61351,6 @@
 /obj/effect/mapping_helpers/broken_floor,
 /turf/open/floor/plating,
 /area/station/maintenance/starboard/fore)
-"raL" = (
-/obj/structure/fence/corner,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/structure/fence{
-	dir = 4
-	},
-/turf/open/misc/asteroid/snow/icemoon,
-/area/icemoon/surface/outdoors/less_spawns)
 "raN" = (
 /obj/machinery/firealarm/directional/north,
 /obj/machinery/light/directional/north,
@@ -61433,12 +61403,6 @@
 	},
 /turf/open/floor/iron/dark,
 /area/station/service/hydroponics/garden)
-"rbV" = (
-/obj/structure/fence/post{
-	dir = 2
-	},
-/turf/open/floor/plating/snowed/smoothed/icemoon,
-/area/icemoon/surface/outdoors/less_spawns)
 "rbW" = (
 /obj/machinery/firealarm/directional/west,
 /turf/open/floor/iron,
@@ -65647,18 +65611,6 @@
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
 /turf/open/floor/iron/dark,
 /area/station/hallway/secondary/entry)
-"slZ" = (
-/obj/structure/fence,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/structure/fence/door{
-	dir = 8
-	},
-/turf/open/floor/plating/snowed/smoothed/icemoon,
-/area/icemoon/surface/outdoors/less_spawns)
 "sma" = (
 /obj/effect/spawner/random/trash/mopbucket,
 /obj/effect/decal/cleanable/dirt/dust,
@@ -67597,9 +67549,7 @@
 /obj/machinery/atmospherics/pipe/smart/simple/scrubbers/visible{
 	dir = 4
 	},
-/obj/effect/turf_decal/trimline/red/arrow_cw{
-	dir = 2
-	},
+/obj/effect/turf_decal/trimline/red/arrow_cw,
 /turf/open/floor/iron,
 /area/station/engineering/atmos)
 "sOm" = (
@@ -71249,15 +71199,6 @@
 /obj/effect/turf_decal/box/white,
 /turf/open/floor/iron/dark/smooth_large,
 /area/station/engineering/storage/tech)
-"tQm" = (
-/obj/structure/fence,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/turf/open/misc/asteroid/snow/icemoon,
-/area/icemoon/surface/outdoors/less_spawns)
 "tQx" = (
 /obj/effect/turf_decal/trimline/neutral/warning{
 	dir = 10
@@ -78223,9 +78164,7 @@
 /turf/open/floor/plating,
 /area/station/maintenance/department/chapel)
 "vRK" = (
-/obj/structure/fence/corner{
-	dir = 2
-	},
+/obj/structure/fence/corner,
 /turf/open/floor/plating/snowed/smoothed/icemoon,
 /area/icemoon/surface/outdoors/less_spawns)
 "vRP" = (
@@ -84446,9 +84385,7 @@
 /turf/open/floor/iron/showroomfloor,
 /area/station/maintenance/department/medical/morgue)
 "xDW" = (
-/obj/machinery/atmospherics/pipe/smart/manifold/cyan/visible{
-	dir = 2
-	},
+/obj/machinery/atmospherics/pipe/smart/manifold/cyan/visible,
 /obj/effect/turf_decal/trimline/blue/arrow_cw{
 	dir = 10
 	},
@@ -254678,7 +254615,7 @@ kDs
 kDs
 bzq
 utC
-raL
+fuZ
 utC
 utC
 utC
@@ -257514,14 +257451,14 @@ utC
 utC
 utC
 utC
-tQm
-tQm
+utC
+utC
 jHS
-bSt
 euz
 euz
-slZ
-rbV
+euz
+wDS
+kSI
 euz
 swF
 swF

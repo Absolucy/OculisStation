@@ -7354,9 +7354,7 @@
 /area/station/security/mechbay)
 "aWB" = (
 /obj/effect/turf_decal/siding/dark/corner,
-/obj/effect/turf_decal/trimline/brown/filled/warning/corner{
-	dir = 2
-	},
+/obj/effect/turf_decal/trimline/brown/filled/warning/corner,
 /obj/structure/railing/corner,
 /turf/open/floor/iron/smooth_large,
 /area/station/cargo/storage)
@@ -35448,21 +35446,6 @@
 "jvj" = (
 /turf/closed/wall/r_wall,
 /area/station/security/checkpoint/science)
-"jvy" = (
-/obj/effect/turf_decal/siding/dark/corner,
-/obj/effect/turf_decal/trimline/brown/filled/warning/corner,
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/effect/turf_decal/siding/dark/corner,
-/obj/effect/turf_decal/trimline/brown/filled/warning/corner{
-	dir = 2
-	},
-/obj/structure/railing/corner,
-/turf/open/floor/iron/smooth_large,
-/area/station/cargo/storage)
 "jvB" = (
 /obj/structure/disposalpipe/segment,
 /obj/machinery/atmospherics/pipe/smart/manifold4w/scrubbers/hidden/layer2,
@@ -111733,7 +111716,7 @@ aFi
 aEj
 afO
 afO
-jvy
+aWB
 jsB
 jsB
 jsB

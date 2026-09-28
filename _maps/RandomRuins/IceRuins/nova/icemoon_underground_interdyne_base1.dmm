@@ -6616,9 +6616,7 @@
 /area/ruin/interdyne_planetary_base/science/xeno)
 "Id" = (
 /obj/effect/turf_decal/tile/blue/fourcorners,
-/obj/structure/slime_pen_post/premade{
-	dir = 5
-	},
+/obj/structure/slime_pen_post/premade,
 /turf/open/floor/iron,
 /area/ruin/interdyne_planetary_base/science/xeno)
 "Ip" = (
@@ -6672,7 +6670,6 @@
 /obj/item/storage/bag/xeno,
 /obj/structure/table/glass/plasmaglass,
 /obj/item/slime_rancher_scanner{
-	pixel_y = 0;
 	pixel_x = -8
 	},
 /turf/open/floor/iron/dark/textured_large,
@@ -6706,9 +6703,7 @@
 /area/ruin/interdyne_planetary_base/science/xeno)
 "Jx" = (
 /obj/effect/turf_decal/tile/green/fourcorners,
-/obj/structure/slime_pen_post/premade{
-	dir = 5
-	},
+/obj/structure/slime_pen_post/premade,
 /turf/open/floor/iron,
 /area/ruin/interdyne_planetary_base/science/xeno)
 "JE" = (
@@ -6762,9 +6757,7 @@
 /turf/open/floor/iron/diagonal,
 /area/ruin/interdyne_planetary_base/cargo)
 "KP" = (
-/obj/structure/slime_pen_post/premade{
-	dir = 5
-	},
+/obj/structure/slime_pen_post/premade,
 /obj/effect/turf_decal/tile/purple/fourcorners,
 /turf/open/floor/iron/dark/textured_large,
 /area/ruin/interdyne_planetary_base/science/xeno)
@@ -7093,18 +7086,6 @@
 /obj/machinery/vending/medical/syndicate{
 	onstation = 0;
 	contraband = list(/obj/item/storage/box/gum/happiness = 3, /obj/item/storage/box/hug/medical = 3, /obj/item/mmi/syndie/interdyne = 3);
-	extended_inventory = 1;
-	all_products_free = 1
-	},
-/obj/merge_conflict_marker{
-	name = "---Merge Conflict Marker---";
-	
-	desc = "A best-effort merge was performed. You must resolve this conflict yourself (manually) and remove this object once complete."
-	},
-/obj/machinery/firealarm/directional/west,
-/obj/machinery/vending/medical/syndicate{
-	onstation = 0;
-	contraband = list(/obj/item/storage/box/gum/happiness=3, /obj/item/storage/box/hug/medical=3, /obj/item/brain_processor/organic/syndie/interdyne=3);
 	extended_inventory = 1;
 	all_products_free = 1
 	},
