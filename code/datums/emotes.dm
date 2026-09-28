@@ -188,7 +188,7 @@
 
 			// AI-eye emotes
 			if(is_visual)
-				relay_visual_emote_to_ai_runechat(user, msg, space, pref_to_check) // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
+				relay_visual_emote_to_ai_runechat(user, msg, space) // OCULIS EDIT CHANGE // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
 
 			return // Early exit so no dchat message
 
@@ -273,7 +273,7 @@
 
 			// AI-eye emotes
 			if(is_visual)
-				relay_visual_emote_to_ai_runechat(user, msg, space, pref_to_check) // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
+				relay_visual_emote_to_ai_runechat(user, msg, space) // OCULIS EDIT CHANGE // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
 
 			return // Early exit so no dchat message
 
@@ -347,7 +347,7 @@
 	*/ // IRIS EDIT REMOVAL END
 
 	if(is_visual)
-		relay_visual_emote_to_ai_runechat(user, msg, space, pref_to_check) // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
+		relay_visual_emote_to_ai_runechat(user, msg, space) // OCULIS EDIT CHANGE // NOVA EDIT CHANGE - ORIGINAL: relay_visual_emote_to_ai_runechat(user, msg)
 
 	if(!isnull(user.client))
 		var/dchatmsg = "<b>[user]</b>[space][msg]" // NOVA EDIT CHANGE - ORIGINAL: var/dchatmsg = "<b>[user]</b> [msg]"

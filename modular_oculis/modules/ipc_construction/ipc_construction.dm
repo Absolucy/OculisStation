@@ -41,11 +41,13 @@
 	icon_state = "posibrain"
 	base_icon_state = "posibrain"
 
+	/*
 	begin_activation_message = "<span class='notice'>You carefully locate the manual activation switch and start the compact positronic brain's boot process.</span>"
 	success_message = "<span class='notice'>The compact positronic brain pings, and its lights start flashing. Success!</span>"
 	fail_message = "<span class='notice'>The compact positronic brain buzzes quietly, and the golden lights fade away. Perhaps you could try again?</span>"
 	new_mob_message = "<span class='notice'>The compact positronic brain chimes quietly.</span>"
 	recharge_message = "<span class='warning'>The compact positronic brain isn't ready to activate again yet! Give it some time to recharge.</span>"
+	*/
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 2, /datum/material/glass = SHEET_MATERIAL_AMOUNT, /datum/material/silver = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/mmi/posibrain/ipc/transfer_personality(mob/dead/observer/candidate)
@@ -57,12 +59,13 @@
 		else
 			ipc_brain.brainmob.key = candidate.key
 		candidate.reenter_corpse()
-		visible_message(success_message)
+		// visible_message(success_message)
 		playsound(src, 'sound/machines/ping.ogg', 15, TRUE)
 		qdel(src)
 
 /obj/item/mmi/posibrain/ipc/update_icon_state()
 	. = ..()
+		/*
 	if(searching)
 		icon = 'icons/obj/devices/assemblies.dmi'
 		icon_state = "[base_icon_state]-searching"
@@ -71,6 +74,7 @@
 		icon = 'modular_nova/master_files/icons/obj/surgery.dmi'
 		icon_state = "posibrain-ipc"
 		return
+	*/
 	icon = 'icons/obj/devices/assemblies.dmi'
 	icon_state = "[base_icon_state]"
 	return
