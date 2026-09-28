@@ -50,6 +50,7 @@
 	*/
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 2, /datum/material/glass = SHEET_MATERIAL_AMOUNT, /datum/material/silver = SHEET_MATERIAL_AMOUNT)
 
+/*
 /obj/item/mmi/posibrain/ipc/transfer_personality(mob/dead/observer/candidate)
 	if(candidate)
 		var/obj/item/organ/brain/synth/ipc_brain = new /obj/item/organ/brain/synth(get_turf(src))
@@ -62,6 +63,7 @@
 		// visible_message(success_message)
 		playsound(src, 'sound/machines/ping.ogg', 15, TRUE)
 		qdel(src)
+*/
 
 /obj/item/mmi/posibrain/ipc/update_icon_state()
 	. = ..()
