@@ -1,0 +1,6 @@
+author: "Absolucy"
+delete-after: True
+changes:
+  - map: "MetaStation: fixed one of the xenobio reagent grinders being stuck in a window."
+  - map: "MetaStation: added a second windoor and a tinyfan to the xenobio bz chamber."
+  - map: "MetaStation: moved the welder tank and heater out of the way of the xenobio maint doors."
