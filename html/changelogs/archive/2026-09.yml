@@ -349,3 +349,11 @@
   - bugfix: Cortical Borer Produce Offspring II (No host egg) now deals damage to
       the Cortical borer
   - bugfix: Cortical Borer health overlay now updates while healing inside a host.
+2026-09-30:
+  Absolucy:
+  - map: 'MetaStation: fixed one of the xenobio reagent grinders being stuck in a
+      window.'
+  - map: 'MetaStation: added a second windoor and a tinyfan to the xenobio bz chamber.'
+  - map: 'MetaStation: moved the welder tank and heater out of the way of the xenobio
+      maint doors.'
+  - image: Weapons enchanted with the warping black rune now look cooler and starrier.
