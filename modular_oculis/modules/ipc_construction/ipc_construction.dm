@@ -35,15 +35,15 @@
 	departmental_flags = DEPARTMENT_BITFLAG_SCIENCE
 
 /obj/item/brain_processor/positronic/ipc
-	name = "compact positronic brain"
+	name = "compact positronic matrix"
 	desc = "A cube of shining metal, it has an IPC serial number engraved on the top. It is usually slotted into the chest of synthetic crewmembers. This one appears to be inactive."
 	icon = 'icons/obj/devices/assemblies.dmi'
 	icon_state = "posibrain"
 	base_icon_state = "posibrain"
 
-	begin_activation_message = "<span class='notice'>You carefully locate the manual activation switch and start the compact positronic brain's boot process.</span>"
-	success_message = "<span class='notice'>The compact positronic brain pings, and its lights start flashing. Success!</span>"
-	fail_message = "<span class='notice'>The compact positronic brain buzzes quietly, and the golden lights fade away. Perhaps you could try again?</span>"
+	begin_activation_message = "<span class='notice'>You carefully locate the manual activation switch and start the compact positronic matrix's boot process.</span>"
+	success_message = "<span class='notice'>The compact positronic matrix pings, and its lights start flashing. Success!</span>"
+	fail_message = "<span class='notice'>The compact positronic matrix buzzes quietly, and the golden lights fade away. Perhaps you could try again?</span>"
 	custom_materials = list(/datum/material/iron = SHEET_MATERIAL_AMOUNT * 5, /datum/material/gold = SHEET_MATERIAL_AMOUNT * 2, /datum/material/glass = SHEET_MATERIAL_AMOUNT, /datum/material/silver = SHEET_MATERIAL_AMOUNT)
 
 /obj/item/brain_processor/positronic/ipc/update_icon_state()
