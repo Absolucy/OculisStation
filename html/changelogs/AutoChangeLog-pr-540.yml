@@ -1,0 +1,4 @@
+author: "Shroopy"
+delete-after: True
+changes:
+  - qol: "Disabled the ore silo requiring a bank account by default."
