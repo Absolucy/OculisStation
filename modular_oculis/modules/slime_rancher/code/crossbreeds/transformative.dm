@@ -3,6 +3,8 @@
 	var/list/datum/slime_transformation/transformations
 	/// Every transformation's color mixed into one, for the warping core drawn inside us.
 	var/transformation_color
+	/// The warping core underlay we last drew, so regenerate_icons() can swap it out.
+	var/mutable_appearance/warping_core
 	/// Extra babies we make per split.
 	var/extra_babies = 0
 	/// A split leaves us an adult.
@@ -60,12 +62,15 @@
 			alpha = slime_type.transparent ? SLIME_TRANSPARENCY_ALPHA : src::alpha
 		else
 			alpha = stealth_alpha
+	underlays -= warping_core
+	warping_core = null
 	if(stat == DEAD)
 		return
 	if(transformation_color)
-		var/mutable_appearance/warping_core = mutable_appearance('modular_iris/modules/research/icons/slimecrossing.dmi', "warping", MOB_BELOW_PIGGYBACK_LAYER)
+		// an underlay rides along with our layer, so it stays under us even up on a slime stack
+		warping_core = mutable_appearance('modular_iris/modules/research/icons/slimecrossing.dmi', "warping")
 		warping_core.color = transformation_color
-		add_overlay(warping_core)
+		underlays += warping_core
 	if(cat_slime)
 		var/mutable_appearance/cat_ears = mutable_appearance('modular_oculis/modules/slime_rancher/icons/slime_cat_ears.dmi', "cat_ears-[life_stage]")
 		cat_ears.color = slime_type.rgb_code

@@ -1,4 +1,6 @@
 /mob/living/basic/slime
+	generic_canpass = FALSE
+	layer = MOB_BELOW_PIGGYBACK_LAYER
 	var/list/datum/slime_mutation/mutation_progress
 	/// Only goes after mobs smaller than us.
 	var/cat_slime = FALSE
@@ -27,6 +29,7 @@
 	RegisterSignal(src, COMSIG_SLIME_ATE_ITEM, PROC_REF(on_slime_happy_yay))
 	RegisterSignal(src, COMSIG_LIVING_BEFRIENDED, PROC_REF(on_befriended))
 	RegisterSignal(src, COMSIG_ATOM_WAS_ATTACKED, PROC_REF(on_attacked))
+	RegisterSignals(src, list(COMSIG_AI_BLACKBOARD_KEY_CLEARED(BB_SLIME_ROAM_PLAYER), COMSIG_AI_BLACKBOARD_KEY_SET(BB_SLIME_ROAM_PLAYER)), PROC_REF(on_seek_changed))
 
 /mob/living/basic/slime/Destroy()
 	QDEL_LIST(mutation_progress)
@@ -53,6 +56,28 @@
 	if(user.pulling != src)
 		return FALSE
 	return ..()
+
+/// Not fighting, hunting, latched or getting hit, so people can walk through us.
+/mob/living/basic/slime/proc/is_calm()
+	if(is_latched() || combat_mode || was_recently_attacked())
+		return FALSE
+	return !ai_controller?.blackboard[BB_SLIME_RABID] && !ai_controller?.blackboard[BB_CURRENT_TARGET] && !ai_controller?.blackboard[BB_SLIME_EAT_TARGET]
+
+/// Whether we and other can share a tile, which takes both sides being out of combat.
+/mob/living/basic/slime/proc/can_slip_past(atom/movable/other)
+	if(!isliving(other) || !is_calm())
+		return FALSE
+	var/mob/living/other_living = other
+	if(isslime(other_living))
+		var/mob/living/basic/slime/other_slime = other_living
+		return other_slime.is_calm()
+	return !other_living.combat_mode
+
+/mob/living/basic/slime/CanAllowThrough(atom/movable/mover, border_dir)
+	return ..() || can_slip_past(mover)
+
+/mob/living/basic/slime/CanPassThrough(atom/blocker, movement_dir, blocker_opinion)
+	return ..() || can_slip_past(blocker)
 
 /mob/living/basic/slime/death(gibbed)
 	. = ..()

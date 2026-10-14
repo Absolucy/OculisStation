@@ -141,7 +141,9 @@
 
 /datum/bt_node/decorator/slime_wants_to_stack/check_condition(datum/ai_controller/controller)
 	var/mob/living/basic/slime/slime_pawn = controller.pawn
-	return istype(slime_pawn) && (isslime(slime_pawn.buckled) || slime_pawn.wants_to_stack())
+	if(!istype(slime_pawn) || (slime_pawn.cleaner_slime && slime_pawn.sees_mess_to_clean()))
+		return FALSE
+	return isslime(slime_pawn.buckled) || slime_pawn.wants_to_stack()
 
 /// Hops on, and then just sits there. This staying running is what keeps us on the tower,
 /// so anything higher up the tree butting in drops it, and finish_action() gets us off.

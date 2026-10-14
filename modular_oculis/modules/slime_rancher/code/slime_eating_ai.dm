@@ -5,6 +5,13 @@
 /datum/bt_node/subtree/pet_command/attack/slime
 	behavior_tree_json = "modular_oculis/modules/slime_rancher/code/pet_command_attack_slime.bt.json"
 
+/datum/pet_command/follow/slime
+	follow_subtree = /datum/bt_node/subtree/pet_command/follow/slime
+
+/// The stock follow tree, except we only count as caught up on their floor, so we follow people up and down stairs
+/datum/bt_node/subtree/pet_command/follow/slime
+	behavior_tree_json = "modular_oculis/modules/slime_rancher/code/pet_command_follow_slime.bt.json"
+
 /// items the slime wants to eat, from BB_SLIME_WANTED_ITEMS, if it is set
 /datum/target_source/slime_wanted_items
 
@@ -135,6 +142,8 @@
 		BB_SLIME_BOUNCE_TARGET,
 		BB_SLIME_CLEAN_TARGET,
 		BB_SLIME_STACK_TARGET,
+		BB_SLIME_ROAM_TARGET,
+		BB_SLIME_ROAM_PLAYER,
 		BB_TEMPORARY_IGNORE_LIST,
 		BB_BASIC_MOB_RETALIATE_LIST,
 	))

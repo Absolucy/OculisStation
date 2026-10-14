@@ -14,6 +14,10 @@
 #define BB_SLIME_CLEAN_TARGET "BB_slime_clean_target"
 ///Slime we're walking over to sit on, or the one we're already sitting on
 #define BB_SLIME_STACK_TARGET "BB_slime_stack_target"
+///Turf a cleaner slime is wandering over to, to look for messes there
+#define BB_SLIME_ROAM_TARGET "BB_slime_roam_target"
+///Player a cleaner slime is wandering towards, getting as close as it can
+#define BB_SLIME_ROAM_PLAYER "BB_slime_roam_player"
 ///Emotes a monkey uses for its battle screech instead of the hardcoded roar/screech, if set
 #define BB_MONKEY_BATTLE_SCREECHES "BB_monkey_battle_screeches"
 
@@ -66,6 +70,8 @@
 #define SLIME_RANCH_RETRY_COOLDOWN (5 SECONDS)
 /// How long a slime ignores a target it couldn't path to
 #define SLIME_CHASE_GIVE_UP_TIME (5 SECONDS)
+/// How far (in path steps) a slime will walk to go find a player, or chase anything once it's moving with A*
+#define SLIME_SEEK_PATH_LENGTH 150
 /// How many damaging hits a cat slime shrugs off before it holds a grudge
 #define SLIME_CAT_PATIENCE_HITS 3
 /// Hits further apart than this don't add up against a cat slime's patience
