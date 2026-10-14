@@ -1,6 +1,6 @@
 /// makes it so that slime - if a friend tries to peel the slime off someone, they immediately stop and feel bad about it.
 /mob/living/basic/slime/on_attack_hand(mob/living/basic/slime/defender_slime, mob/living/attacker)
-	if(!isliving(buckled) || attacker.combat_mode || !(attacker in ai_controller?.blackboard[BB_FRIENDS_LIST]))
+	if(!is_latched() || attacker.combat_mode || !(attacker in ai_controller?.blackboard[BB_FRIENDS_LIST]))
 		return ..()
 
 	var/mob/living/spared = buckled

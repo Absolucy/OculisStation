@@ -9,7 +9,7 @@
 /mob/living/basic/slime/proc/on_attack_hand(mob/living/basic/slime/defender_slime, mob/living/attacker)
 	SIGNAL_HANDLER
 
-	if(!isliving(buckled)) // OCULIS EDIT CHANGE - a slime on a chair has nobody to be wrestled off - ORIGINAL: if(isnull(buckled))
+	if(!is_latched()) // OCULIS EDIT CHANGE - a slime on a chair has nobody to be wrestled off - ORIGINAL: if(isnull(buckled))
 		return
 
 	if(buckled == attacker ? prob(50) : prob(20)) // OCULIS EDIT CHANGE - SLIME_RANCHER - a helper has both hands free and isn't being eaten - ORIGINAL: if(buckled == attacker ? prob(60) : prob(30)) //its easier to remove the slime from yourself

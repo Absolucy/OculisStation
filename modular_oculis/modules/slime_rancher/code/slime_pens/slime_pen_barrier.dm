@@ -1,3 +1,4 @@
+/// Do pen fences stop this thing? (slimes, monkeys, and basic mobs worth biomass)
 /proc/is_slime_pen_contained(atom/movable/mover)
 	if(isslime(mover) || ismonkey(mover))
 		return TRUE
@@ -6,6 +7,7 @@
 	var/mob/living/basic/critter = mover
 	return critter.biomass_value > 0
 
+/// One edge of a pen's fence, keeps slimes and their snacks from wandering off
 /obj/structure/slime_pen_barrier
 	name = "containment field"
 	desc = "A shimmering mesh strung between two pen posts. Slimes bounce off it. You won't."
@@ -18,7 +20,9 @@
 	resistance_flags = INDESTRUCTIBLE | LAVA_PROOF | FIRE_PROOF | UNACIDABLE | ACID_PROOF
 	move_resist = INFINITY
 	can_astar_pass = CANASTARPASS_ALWAYS_PROC
+	/// Adds the little connector sprite so the corner doesn't have a gap
 	var/top_row = FALSE
+	/// Color of this piece, as a hex string
 	var/barrier_color = SLIME_PEN_DEFAULT_COLOR
 
 /obj/structure/slime_pen_barrier/Initialize(mapload, new_dir, top_row = FALSE)
@@ -74,6 +78,7 @@
 	sync_with_twin()
 	find_twin()?.sync_with_twin()
 
+/// Picks whether we or our twin gets drawn, and mixes our colors together
 /obj/structure/slime_pen_barrier/proc/sync_with_twin()
 	var/obj/structure/slime_pen_barrier/twin = find_twin()
 	// two pens sharing an edge would draw the same fence twice, so one of us hides - south always takes priority over north or east
@@ -137,6 +142,7 @@
 	leaving.Bump(src)
 	return COMPONENT_ATOM_BLOCK_EXIT
 
+/// Should the fence stop this thing from moving thru?
 /obj/structure/slime_pen_barrier/proc/should_block(atom/movable/mover)
 	if(!is_slime_pen_contained(mover))
 		return FALSE

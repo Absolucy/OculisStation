@@ -1,6 +1,7 @@
 /// nutrition a dissolved mess gives, same as a wanted item
 #define SLIME_CLEAN_NUTRITION 5
 
+/// Whether this is a mess a cleaner slime will eat.
 /mob/living/basic/slime/proc/can_dissolve(atom/movable/mess)
 	var/static/list/dissolvable_cache
 	if(isnull(dissolvable_cache))
@@ -38,6 +39,7 @@
 		return FALSE
 	return is_type_in_typecache(mess, dissolvable_cache)
 
+/// Sets cleaner_slime and resets the AI's cleaning state.
 /mob/living/basic/slime/proc/set_cleaner_slime(enabled)
 	cleaner_slime = !!enabled
 	ai_controller?.clear_blackboard_key(BB_SLIME_CLEAN_TARGET)
@@ -50,6 +52,7 @@
 			return TRUE
 	return ..()
 
+/// Eats a mess for nutrition. Returns TRUE if it did.
 /mob/living/basic/slime/proc/try_dissolve(atom/movable/mess)
 	if(!cleaner_slime || !can_dissolve(mess))
 		return FALSE
@@ -79,7 +82,7 @@
 
 /datum/bt_node/decorator/slime_is_cleaner/check_condition(datum/ai_controller/controller)
 	var/mob/living/basic/slime/slime_pawn = controller.pawn
-	return istype(slime_pawn) && slime_pawn.cleaner_slime && !slime_pawn.buckled && !IS_UNCONSCIOUS_OR_CRIT(slime_pawn)
+	return istype(slime_pawn) && slime_pawn.cleaner_slime && !slime_pawn.is_latched() &&!IS_UNCONSCIOUS_OR_CRIT(slime_pawn)
 
 /datum/bt_node/ai_behavior/dissolve_mess
 

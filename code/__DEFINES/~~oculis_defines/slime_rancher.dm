@@ -12,6 +12,8 @@
 #define BB_SLIME_BOUNCE_TARGET "BB_slime_bounce_target"
 ///Mess (or pest) a cleaner slime is walking towards to dissolve
 #define BB_SLIME_CLEAN_TARGET "BB_slime_clean_target"
+///Slime we're walking over to sit on, or the one we're already sitting on
+#define BB_SLIME_STACK_TARGET "BB_slime_stack_target"
 ///Emotes a monkey uses for its battle screech instead of the hardcoded roar/screech, if set
 #define BB_MONKEY_BATTLE_SCREECHES "BB_monkey_battle_screeches"
 
@@ -40,6 +42,9 @@
 #define COMSIG_VACUUM_STORED "vacuum_stored"
 /// From /obj/item/vacuum_pack/Exited(): (mob/living/released_mob)
 #define COMSIG_VACUUM_RELEASED "vacuum_released"
+
+///called on a movable when it stops orbiting an atom: (atom/center)
+#define COMSIG_MOVABLE_STOPPED_ORBITING "movable_stopped_orbiting"
 
 #define VACUUM_CAN_PACIFY (1<<0)
 #define VACUUM_CAN_PRINT (1<<1)
@@ -74,5 +79,13 @@
 #define SLIME_MONKEY_RALLY_RANGE 5
 
 #define COMPRESSOR_LINK_RANGE 7
+
+#define VV_HK_SLIME_SET_TYPE "slime_set_type"
+#define VV_HK_SLIME_ADD_TRANSFORMATION "slime_add_transformation"
+#define VV_HK_SLIME_SET_LIFE_STAGE "slime_set_life_stage"
+#define VV_HK_SLIME_SET_POWER "slime_set_power"
+#define VV_HK_SLIME_SET_BEHAVIOR "slime_set_behavior"
+#define VV_HK_SLIME_FILL_GROWTH "slime_fill_growth"
+#define VV_HK_SLIME_FORCE_SPLIT "slime_force_split"
 
 #define EVLOG_CATEGORY_SLIMES "Slimes"

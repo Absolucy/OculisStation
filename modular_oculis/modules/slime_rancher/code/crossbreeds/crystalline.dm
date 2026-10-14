@@ -1,3 +1,4 @@
+/// Source tag on mutations a green pylon hands out.
 #define MUTATION_SOURCE_GREEN_PYLON "green_pylon"
 // don't get any funny ideas and make these faster.
 // 3+ flashes a second is where photosensitive seizures become a risk i think and i'd rather this game be accessible
@@ -5,9 +6,11 @@
 #define PYRITE_RAINBOW_PERIOD (8 SECONDS)
 #define PYRITE_INNER_SPIN_TIME (16 SECONDS)
 #define PYRITE_OUTER_SPIN_TIME (24 SECONDS)
+/// Tiles around a pyrite pylon that count as inside it.
 #define PYRITE_RAINBOW_RANGE 4
 // pyrite_rainbow.dmi is a 11 fucking tiles wide, so it sticks out 5 tiles past the pylon on every side
 #define PYRITE_GLOW_RANGE 5
+/// Color changes in one full rainbow cycle.
 #define PYRITE_RAINBOW_HUE_STEPS 12
 
 /obj/item/slimecross/crystalline
@@ -39,12 +42,14 @@
 	new crystal_type(user_turf)
 	qdel(src)
 
+/// Whether there's no other pylon within 6 tiles.
 /obj/item/slimecross/crystalline/proc/can_place(mob/user)
 	if(locate(/obj/structure/slime_crystal) in range(6, get_turf(user)))
 		to_chat(user, span_notice("You can't build crystals that close to each other!"))
 		return FALSE
 	return TRUE
 
+/// Base pylon, one subtype per slime color.
 /obj/structure/slime_crystal
 	name = "slimic pylon"
 	desc = "Glassy, pure, transparent. Powerful artifact that relays the slimecore's influence onto space around it."
@@ -89,6 +94,7 @@
 	QDEL_NULL(mob_tracker)
 	return ..()
 
+/// Tints the pylon to its slime's color, or gives it the slime's visual effect.
 /obj/structure/slime_crystal/proc/tint_to_slime_color()
 	var/datum/slime_type/slime_type = GLOB.slime_colors_to_types[colour]
 	if(!slime_type)
@@ -110,6 +116,7 @@
 		affected_mobs[affected_mob] += seconds_per_tick
 		on_mob_effect(affected_mob, seconds_per_tick)
 
+/// Starts tracking a mob, and calls on_mob_enter on it.
 /obj/structure/slime_crystal/proc/add_affected_mob(mob/living/arrived)
 	if(arrived in affected_mobs)
 		return
@@ -117,6 +124,7 @@
 	RegisterSignal(arrived, COMSIG_QDELETING, PROC_REF(on_affected_mob_deleted))
 	on_mob_enter(arrived)
 
+/// Stops tracking a mob, and calls on_mob_leave on it.
 /obj/structure/slime_crystal/proc/remove_affected_mob(mob/living/gone)
 	if(!(gone in affected_mobs))
 		return
@@ -128,15 +136,19 @@
 	SIGNAL_HANDLER
 	remove_affected_mob(source)
 
+/// Called when a mob starts being tracked.
 /obj/structure/slime_crystal/proc/on_mob_enter(mob/living/affected_mob)
 	return
 
+/// Called every process tick on each tracked mob.
 /obj/structure/slime_crystal/proc/on_mob_effect(mob/living/affected_mob, seconds_per_tick)
 	return
 
+/// Called when a mob stops being tracked, including when the pylon is destroyed.
 /obj/structure/slime_crystal/proc/on_mob_leave(mob/living/affected_mob)
 	return
 
+/// Tells the pylon when living mobs walk in or out of range.
 /datum/proximity_monitor/advanced/slime_crystal
 	edge_is_a_field = TRUE
 
@@ -221,6 +233,7 @@
 /obj/structure/slime_crystal/purple
 	colour = SLIME_TYPE_PURPLE
 	tracks_mobs = TRUE
+	/// Damage healed per tick, on one random damage type.
 	var/heal_amount = 2
 
 /obj/structure/slime_crystal/purple/on_mob_effect(mob/living/affected_mob)
@@ -274,6 +287,7 @@
 /obj/structure/slime_crystal/metal
 	colour = SLIME_TYPE_METAL
 	tracks_mobs = TRUE
+	/// Brute healed per tick on robotic mobs and limbs.
 	var/heal_amount = 3
 
 /obj/structure/slime_crystal/metal/on_mob_effect(mob/living/affected_mob)
@@ -436,6 +450,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 	colour = SLIME_TYPE_SEPIA
 	tracks_mobs = TRUE
 	uses_process = FALSE
+	/// Traits held by everyone inside.
 	var/static/list/traits_to_give = list(
 		TRAIT_NOBREATH,
 		TRAIT_NOCRITDAMAGE,
@@ -459,12 +474,14 @@ GLOBAL_LIST(bluespace_slime_pylons)
 /obj/structure/slime_crystal/cerulean
 	colour = SLIME_TYPE_CERULEAN
 	uses_process = FALSE
+	/// Poly-crystals currently standing around this pylon.
 	var/crystals = 0
 
 /obj/structure/slime_crystal/cerulean/Initialize(mapload)
 	. = ..()
 	spawn_crystals()
 
+/// Grows poly-crystals nearby until there are 3.
 /obj/structure/slime_crystal/cerulean/proc/spawn_crystals()
 	var/turf/center = get_turf(src)
 	if(!center)
@@ -479,6 +496,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 		new /obj/structure/cerulean_slime_crystal(candidate, src)
 		crystals++
 
+/// Poly-crystal grown by a cerulean pylon.
 /obj/structure/cerulean_slime_crystal
 	name = "cerulean slime poly-crystal"
 	desc = "Translucent and irregular, it can duplicate matter on a whim"
@@ -487,12 +505,15 @@ GLOBAL_LIST(bluespace_slime_pylons)
 	icon = 'modular_iris/modules/research/icons/slimecrossing.dmi'
 	icon_state = "cerulean_crystal"
 	max_integrity = 5
+	/// Current growth stage.
 	var/stage = 0
+	/// Stage where it's fully grown.
 	var/max_stage = 5
 	///Stage past which the crystal is solid and drops an item when it breaks.
 	var/solid_stage = 3
 	///How long each growth stage takes.
 	var/growth_time = 120 SECONDS
+	/// Weakref to the pylon that grew this.
 	var/datum/weakref/pylon
 
 /obj/structure/cerulean_slime_crystal/Initialize(mapload, obj/structure/slime_crystal/cerulean/master_pylon)
@@ -502,6 +523,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 	transform *= 1 / (max_stage - 1)
 	stage_growth()
 
+/// Grows one stage, then schedules the next.
 /obj/structure/cerulean_slime_crystal/proc/stage_growth()
 	if(stage == max_stage)
 		return
@@ -530,11 +552,13 @@ GLOBAL_LIST(bluespace_slime_pylons)
 		owner_pylon.spawn_crystals()
 	return ..()
 
+/// Tops up a stack of items when used on it.
 /obj/item/cerulean_slime_crystal
 	name = "cerulean slime poly-crystal"
 	desc = "Translucent and irregular, it can duplicate matter on a whim"
 	icon = 'modular_iris/modules/research/icons/slimecrossing.dmi'
 	icon_state = "cerulean_item_crystal"
+	/// Items added to the stack.
 	var/amount = 1
 
 /obj/item/cerulean_slime_crystal/interact_with_atom(obj/item/stack/target, mob/living/user, list/modifiers)
@@ -582,6 +606,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 	QDEL_LIST(disco_lights)
 	return ..()
 
+/// Base of the floor lights a pyrite pylon draws around itself.
 /obj/effect/abstract/pyrite_rainbow
 	icon = 'modular_oculis/modules/slime_rancher/icons/pyrite_rainbow.dmi'
 	plane = FLOOR_PLANE
@@ -599,6 +624,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 	icon_state = "spots_inner"
 	///How long one full turn around the pylon takes.
 	var/spin_time = PYRITE_INNER_SPIN_TIME
+	/// Whether the spots turn clockwise.
 	var/clockwise = TRUE
 
 /obj/effect/abstract/pyrite_rainbow/spots/Initialize(mapload)
@@ -639,7 +665,9 @@ GLOBAL_LIST(bluespace_slime_pylons)
 
 /obj/structure/slime_crystal/red
 	colour = SLIME_TYPE_RED
+	/// Blood stored, in units.
 	var/blood_amount = 0
+	/// Most blood it can store, in units.
 	var/max_blood_amount = 300
 	///Blood spent to make one organ or slab of meat.
 	var/organ_cost = 100
@@ -805,7 +833,9 @@ GLOBAL_LIST(bluespace_slime_pylons)
 /obj/structure/slime_crystal/oil
 	colour = SLIME_TYPE_OIL
 	tracks_mobs = TRUE
+	/// Liquid stored, in units.
 	var/oil_amount = 100
+	/// Most liquid it can store, in units.
 	var/max_oil_amount = 100
 	///Oil regained per second.
 	var/regen_rate = 0.5
@@ -974,6 +1004,7 @@ GLOBAL_LIST(bluespace_slime_pylons)
 		core_colors += core.colour
 	. += span_info("It has a [english_list(core_colors)] core[length(core_colors) > 1 ? "s" : ""] inserted.")
 
+/// Eats the extract and adds its pylon as a core. FALSE if it has that core already.
 /obj/structure/slime_crystal/rainbow/proc/insert_core(obj/item/slimecross/crystalline/slimecross)
 	if(inserted_cores[slimecross.crystal_type])
 		return FALSE

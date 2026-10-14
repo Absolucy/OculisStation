@@ -16,6 +16,7 @@
 		for(var/mob_type, drain_total in mutation.latch_totals)
 			. |= mob_type
 
+/// Rebuilds the AI's lists of items and mobs we want to eat.
 /mob/living/basic/slime/proc/refresh_wanted_targets()
 	if(isnull(ai_controller))
 		return
@@ -100,6 +101,13 @@
 		for(var/mob_type in mutation.latch_totals)
 			LAZYOR(GLOB.unlocked_xenofauna, mob_type)
 	refresh_wanted_targets()
+
+/mob/living/basic/slime/throw_impact(atom/hit_atom, datum/thrownthing/throwingdatum)
+	. = ..()
+	if(. == SUCCESSFUL_BLOCK || isnull(throwingdatum?.get_thrower()))
+		return
+	if(can_feed_on(hit_atom, silent = TRUE, check_friendship = TRUE))
+		start_feeding(hit_atom)
 
 /// What this slime turns into when it reproduces. Returning our own type means an ordinary split.
 /// Mutating is ranching's job now (see try_ranch_outcome in slime_ranching.dm) - splitting never mutates.

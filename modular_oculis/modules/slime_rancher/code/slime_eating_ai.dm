@@ -33,11 +33,46 @@
 	if(. || isnull(controller) || QDELETED(target))
 		return .
 
+	var/static/list/livestock = typecacheof(list(
+		/mob/living/basic/cow,
+		/mob/living/basic/pig,
+		/mob/living/basic/sheep,
+		/mob/living/basic/goat,
+		/mob/living/basic/chicken,
+		/mob/living/basic/rabbit,
+	))
 	var/list/wanted_mobs = controller.blackboard[BB_SLIME_WANTED_MOBS]
-	if(!wanted_mobs?[target.type])
+	if(!livestock[target.type] && !wanted_mobs?[target.type])
 		return FALSE
 
 	return slimey.can_feed_on(target, silent = TRUE, check_adjacent = FALSE) && can_see(slimey, target, vision_range)
+
+/// the fence is see-through, but nothing outside it is ever reachable
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime
+
+/// Whether we're in a pen and this thing isn't.
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime/proc/outside_our_pen(datum/ai_controller/controller, atom/thing)
+	var/mob/living/basic/slime/slime_pawn = controller.pawn
+	var/datum/slime_pen/pen = slime_pawn.pen
+	return pen && !pen.turfs[get_turf(thing)]
+
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime/should_keep_target(datum/ai_controller/controller, datum/targeting_strategy/strategy, datum/target_priority_strategy/priority_strategy, atom/current_target, resolved_vision_range)
+	if(current_target && outside_our_pen(controller, current_target))
+		return FALSE
+	return ..()
+
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime/filter_candidates(datum/ai_controller/controller, list/candidates, datum/targeting_strategy/strategy, datum/target_priority_strategy/priority_strategy, atom/current_target, range)
+	var/list/penned_candidates = list()
+	for(var/atom/candidate as anything in candidates)
+		if(!outside_our_pen(controller, candidate))
+			penned_candidates += candidate
+	return ..(controller, penned_candidates, strategy, priority_strategy, current_target, range)
+
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime/meal
+
+// stagger it out a bit so it feels more natural
+/datum/bt_node/ai_behavior/acquire_target/update_interaction_target/slime/meal/get_cooldown(datum/ai_controller/cooldown_for)
+	return rand(1 SECONDS, 4 SECONDS)
 
 /datum/bt_node/decorator/slime_is_wild
 
@@ -99,6 +134,7 @@
 		BB_SLIME_NUZZLE_TARGET,
 		BB_SLIME_BOUNCE_TARGET,
 		BB_SLIME_CLEAN_TARGET,
+		BB_SLIME_STACK_TARGET,
 		BB_TEMPORARY_IGNORE_LIST,
 		BB_BASIC_MOB_RETALIATE_LIST,
 	))
@@ -137,7 +173,7 @@
 	if(!.)
 		return FALSE
 	var/mob/living/basic/slime/slime_pawn = controller.pawn
-	if(!istype(slime_pawn) || slime_pawn.buckled || IS_UNCONSCIOUS_OR_CRIT(slime_pawn))
+	if(!istype(slime_pawn) || slime_pawn.is_latched() || IS_UNCONSCIOUS_OR_CRIT(slime_pawn))
 		return FALSE
 	return TRUE
 

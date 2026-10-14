@@ -6,6 +6,7 @@
 	icon = 'modular_iris/modules/research/icons/slimecrossing.dmi'
 	icon_state = "gentle"
 	var/extract_type = /obj/item/slime_extract/grey // If this is not replaced, it'll be very apparent to players
+	/// The real extract inside, made from extract_type.
 	var/obj/item/slime_extract/extract = null
 	COOLDOWN_DECLARE(use_cooldown)
 

@@ -7,11 +7,16 @@
 	var/cat_patience_last_hit = 0
 	/// Cleans messes and pests instead of hunting.
 	var/cleaner_slime = FALSE
+	/// TRUE while our player is being asked whether someone can pick us up.
+	var/pickup_prompt_open = FALSE
 
 /mob/living/basic/slime/Initialize(mapload, new_type, new_life_stage)
 	pet_commands |= /datum/pet_command/slime_split
 	. = ..()
+	AddElement(/datum/element/can_be_held)
 	ADD_TRAIT(src, TRAIT_DOESNT_SQUASH, INNATE_TRAIT) // so we don't squash iceroaches and such. slimes are soft and squishy it makes sense.
+	// TRAIT_NO_IMMOBILIZE is for slimes sitting on us - can_feed_on() refuses a slime that can't move, so they'd never leave for food
+	ADD_TRAIT(src, TRAIT_NO_IMMOBILIZE, INNATE_TRAIT)
 	AddElement(/datum/element/pet_bonus, "jiggle")
 	AddElement(/datum/element/strippable, GLOB.strippable_slime_items)
 	// on_attacked keeps the grudge list itself, bc a cat slime has to be able to say "nah" to a grudge
@@ -25,6 +30,28 @@
 
 /mob/living/basic/slime/Destroy()
 	QDEL_LIST(mutation_progress)
+	return ..()
+
+/mob/living/basic/slime/mob_try_pickup(mob/living/user, instant = FALSE)
+	if(isnull(client))
+		if(!(user in ai_controller?.blackboard[BB_FRIENDS_LIST]))
+			to_chat(user, span_notice("[src] doesn't trust you enough to let you pick them up"))
+			balloon_alert(user, "not enough trust!")
+			return FALSE
+		return ..()
+
+	if(pickup_prompt_open)
+		return FALSE
+	pickup_prompt_open = TRUE
+	var/answer = tgui_alert(src, "[user] wants to pick you up. Let them?", "Pick up", list("Yes", "No"), timeout = 10 SECONDS)
+	pickup_prompt_open = FALSE
+	if(QDELETED(src) || QDELETED(user))
+		return FALSE
+	if(answer != "Yes")
+		balloon_alert(user, "doesn't want to be picked up!")
+		return FALSE
+	if(user.pulling != src)
+		return FALSE
 	return ..()
 
 /mob/living/basic/slime/death(gibbed)

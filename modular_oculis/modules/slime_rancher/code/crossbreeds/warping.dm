@@ -10,9 +10,12 @@
 	var/storing_time = 5 SECONDS
 	///time it takes to draw the rune
 	var/drawing_time = 5 SECONDS
+	/// How long you have to wait between drawing runes.
 	var/max_cooldown = 30 SECONDS
+	/// Can you tap a slime extract on this to set its color?
 	var/keyable = FALSE
 	var/key_color
+	/// The rune this drew, so drawing again replaces it.
 	var/datum/weakref/drawn_rune_ref
 	COOLDOWN_DECLARE(cooldown)
 
@@ -50,13 +53,17 @@
 	move_resist = INFINITY //here to avoid the rune being moved since it only sets it's turf once when it's drawn. doesn't include admin fuckery.
 	anchored = TRUE
 	resistance_flags = FIRE_PROOF
+	/// Sound played when the rune activates.
 	var/dir_sound = 'sound/effects/phasein.ogg'
+	/// Whether the rune triggers when something steps on it.
 	var/activated_on_step = FALSE
 	///is only used for bluespace crystal erasing as of now
 	var/storing_time = 5 SECONDS
 	///Nearly all runes needs to know which turf they are on
 	var/turf/rune_turf
+	/// Whether the rune deletes itself once it has activated.
 	var/remove_on_activation = TRUE
+	/// If TRUE, the rune starts processing on SSobj when it's made.
 	var/uses_process = FALSE
 	var/key_color
 
@@ -202,6 +209,7 @@
 	var/static/list/cores_to_slimes = null
 	///extracttype is used to remember the type of the extract on the rune
 	var/obj/item/slime_extract/extracttype
+	/// How many extracts must be fed to the rune before it can be used.
 	var/req_extracts = 8
 
 /obj/effect/warped_rune/greyspace/Initialize(mapload, key_color)
@@ -367,6 +375,7 @@
 /obj/effect/warped_rune/darkpurplespace
 	icon_state = "rune_dark_purple"
 	desc = "To gain something you must sacrifice something else in return."
+	/// Material paths the rune can turn plasma into.
 	var/static/list/materials = null
 
 /obj/effect/warped_rune/darkpurplespace/Initialize(mapload, key_color)
@@ -436,6 +445,14 @@
 	if(blue_storage?.loc == rune_turf)
 		blue_storage.moveToNullspace() // Do not touch the storage please
 	return ..()
+
+/obj/effect/warped_rune/bluespace/attack_ghost(mob/dead/observer/user)
+	. = ..()
+	if(.)
+		return
+	var/obj/item/storage/backpack/holding/bluespace/blue_storage = storages_by_key[key_color]
+	if(!QDELETED(blue_storage))
+		blue_storage.atom_storage.open_storage(user)
 
 /obj/effect/warped_rune/bluespace/do_effect(mob/user)
 	var/obj/item/storage/backpack/holding/bluespace/blue_storage = storages_by_key[key_color]
@@ -542,6 +559,7 @@
 		remove_on_activation = TRUE
 		playsound(rune_turf, dir_sound, vol = 20, vary = TRUE)
 
+/// Spawns a hologram that looks like the host, and starts processing.
 /obj/effect/warped_rune/ceruleanspace/proc/holo_creation(mob/living/holo_host)
 	holotile = new(rune_turf) //setting up the hologram to look like the person that just stepped in
 	holotile.appearance = copy_appearance_filter_overlays(holo_host.appearance)
@@ -650,7 +668,9 @@
 	icon_state = "rune_gold"
 	desc = "This can be activated to transmute valuable items into a random item."
 	remove_on_activation = FALSE
+	/// How many credits the stuff on the rune has to be worth to get a prize.
 	var/target_value = 5000
+	/// The junk you get 80% of the time.
 	var/static/list/common_items = list(
 		/obj/item/toy/plush/carpplushie,
 		/obj/item/toy/plush/bubbleplush,
@@ -690,6 +710,7 @@
 		/obj/item/clothing/under/costume/russian_officer,
 	)
 
+	/// The actually kinda neat stuff you get the other 20% of the time.
 	var/static/list/uncommon_items = list(
 		/obj/item/gun/energy/laser/retro/old,
 		/obj/item/storage/toolbox/mechanical/old,
@@ -735,6 +756,7 @@
 	icon_state = "rune_oil"
 	desc = "This can be activated to light a short fuse. Erase it before the fuse runs out, or stand well back."
 	remove_on_activation = FALSE
+	/// Whether the fuse is already burning.
 	var/fuse_lit = FALSE
 
 /obj/effect/warped_rune/oilspace/do_effect(mob/user)
@@ -749,6 +771,7 @@
 	animate(alpha = 255, time = 0.5 SECONDS)
 	addtimer(CALLBACK(src, PROC_REF(detonate)), 5 SECONDS)
 
+/// Small blast when the fuse runs out, then the rune is gone.
 /obj/effect/warped_rune/oilspace/proc/detonate()
 	explosion(rune_turf, light_impact_range = 1, flash_range = 1, explosion_cause = src)
 	qdel(src)
@@ -848,6 +871,7 @@
 	desc = "This is where I go when I want to be alone. Yet they keep clawing at the walls until everything crumbles."
 	remove_on_activation = FALSE
 	key_color = SLIME_TYPE_RAINBOW
+	/// The pocket room this rune leads to.
 	var/datum/warped_room/room
 
 ///creates the warped room and place an exit rune to exit the room
@@ -875,9 +899,17 @@
 	room = null
 	return ..()
 
+/// Shows the room's window on the rune, if the room has one.
 /obj/effect/warped_rune/rainbowspace/proc/open_window()
 	if(room.window)
 		vis_contents += room.window
+
+/obj/effect/warped_rune/rainbowspace/attack_ghost(mob/dead/observer/user)
+	if(!room.exit_door)
+		return ..()
+	room.entry_runes[WEAKREF(user)] = WEAKREF(src)
+	user.abstract_move(get_turf(room.exit_door))
+	return TRUE
 
 /obj/effect/warped_rune/rainbowspace/on_entered(datum/source, atom/movable/arrived, atom/old_loc)
 	. = ..()

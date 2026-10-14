@@ -5,6 +5,10 @@
 	/// Runs after we get forced off a meal. We can't latch onto anything until it's over.
 	COOLDOWN_DECLARE(latch_cooldown)
 
+/// Whether we're latched onto a meal. Sitting on another slime doesn't count.
+/mob/living/basic/slime/proc/is_latched()
+	return isliving(buckled) && !isslime(buckled)
+
 /mob/living/basic/slime/can_feed_on(mob/living/meal, silent = FALSE, check_adjacent = FALSE, check_friendship = FALSE)
 	if(!COOLDOWN_FINISHED(src, latch_cooldown))
 		if(!silent)
@@ -14,7 +18,7 @@
 
 /mob/living/basic/slime/discipline_slime()
 	var/mob/living/victim = buckled
-	if(isliving(victim))
+	if(is_latched())
 		COOLDOWN_START(src, latch_cooldown, SLIME_LATCH_COOLDOWN)
 		// a grudge skips can_feed_on(), so without this we'd just bite whoever we were eating instead of backing off
 		var/datum/ai_controller/basic_controller/slime/controller = ai_controller

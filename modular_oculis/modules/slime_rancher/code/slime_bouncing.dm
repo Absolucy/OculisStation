@@ -1,6 +1,9 @@
+/// Each bounce picks its wait between MIN and MAX.
 #define SLIME_BOUNCE_COOLDOWN_MIN (30 SECONDS)
 #define SLIME_BOUNCE_COOLDOWN_MAX (75 SECONDS)
+/// Pixels the slime lunges toward the person.
 #define SLIME_BOUNCE_REACH 6
+/// Pixels the slime hops up.
 #define SLIME_BOUNCE_HEIGHT 6
 
 /mob/living/basic/slime
@@ -8,7 +11,7 @@
 
 /// Whether we're in the mood to go bounce off someone right now. Cat slimes only
 /mob/living/basic/slime/proc/wants_to_bounce()
-	if(!cat_slime || buckled || IS_UNCONSCIOUS_OR_CRIT(src))
+	if(!cat_slime || is_latched() || IS_UNCONSCIOUS_OR_CRIT(src))
 		return FALSE
 	if(!COOLDOWN_FINISHED(src, bounce_cooldown))
 		return FALSE
@@ -18,6 +21,8 @@
 
 // "GET A JOB" nope I'm hopping around :3
 /mob/living/basic/slime/proc/bounce_off(mob/living/person)
+	// we're about to lunge out from under them, and they'd just hover there
+	dump_riders()
 	COOLDOWN_START(src, bounce_cooldown, rand(SLIME_BOUNCE_COOLDOWN_MIN, SLIME_BOUNCE_COOLDOWN_MAX))
 	set_temporary_mood(SLIME_MOOD_CAT)
 	playsound(src, 'sound/effects/blob/attackblob.ogg', 25, TRUE, -3)

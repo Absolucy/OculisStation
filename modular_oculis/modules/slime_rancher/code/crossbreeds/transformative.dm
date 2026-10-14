@@ -56,7 +56,7 @@
 /mob/living/basic/slime/regenerate_icons()
 	. = ..()
 	if(stealth_alpha)
-		if(isliving(buckled))
+		if(is_latched())
 			alpha = slime_type.transparent ? SLIME_TRANSPARENCY_ALPHA : src::alpha
 		else
 			alpha = stealth_alpha
@@ -77,11 +77,13 @@
 	if(stealth_alpha)
 		regenerate_icons()
 
+/// A permanent upgrade a transformative extract gives a slime. One subtype per color.
 /datum/slime_transformation
 	/// Shown to anyone examining the slime.
 	var/desc
 	/// Our share of the color of the warping core drawn inside the slime.
 	var/overlay_color
+	/// The slime this is on.
 	var/mob/living/basic/slime/our_slime
 
 /datum/slime_transformation/New(mob/living/basic/slime/our_slime, mob/living/user)
@@ -93,9 +95,11 @@
 	our_slime = null
 	return ..()
 
+/// Puts the effect on the slime. Runs once, when this is made.
 /datum/slime_transformation/proc/on_apply(mob/living/user)
 	return
 
+/// Passes this transformation on to the new baby.
 /datum/slime_transformation/proc/on_split(mob/living/basic/slime/source, mob/living/basic/slime/baby)
 	SIGNAL_HANDLER
 	baby.add_transformation(type)
@@ -151,6 +155,7 @@
 /datum/slime_transformation/orange
 	desc = "Anyone it shocks also catches fire."
 	overlay_color = COLOR_SLIME_ORANGE
+	/// Fire stacks put on whoever it shocks.
 	var/fire_stacks = 2
 
 /datum/slime_transformation/orange/on_apply(mob/living/user)
@@ -169,6 +174,7 @@
 /datum/slime_transformation/purple
 	desc = "It slowly heals on its own."
 	overlay_color = COLOR_SLIME_PURPLE
+	/// Brute healed per second.
 	var/heal_per_second = 0.25
 
 /datum/slime_transformation/purple/on_apply(mob/living/user)
@@ -204,6 +210,7 @@
 /datum/slime_transformation/metal
 	desc = "It can take a lot more punishment."
 	overlay_color = COLOR_SLIME_METAL
+	/// Multiplier on max health and current health.
 	var/health_multiplier = 1.3
 
 /datum/slime_transformation/metal/on_apply(mob/living/user)
@@ -218,6 +225,7 @@
 /datum/slime_transformation/yellow
 	desc = "It builds up electric charge three times as fast."
 	overlay_color = COLOR_SLIME_YELLOW
+	/// Added to the slime's own extra_charge.
 	var/extra_charge = 2
 
 /datum/slime_transformation/yellow/on_apply(mob/living/user)
@@ -233,11 +241,13 @@
 	overlay_color = COLOR_SLIME_DARK_PURPLE
 	/// Moles of plasma an adult converts per tick. Babies manage half.
 	var/plasma_per_tick = 20
+	/// Brute healed per mole of plasma converted.
 	var/heal_per_mole = 0.1
 
 /datum/slime_transformation/darkpurple/on_apply(mob/living/user)
 	RegisterSignal(our_slime, COMSIG_LIVING_LIFE, PROC_REF(on_life))
 
+/// Swaps plasma in the air for oxygen, and heals the slime for it.
 /datum/slime_transformation/darkpurple/proc/on_life(mob/living/basic/slime/source)
 	SIGNAL_HANDLER
 	if(source.stat == DEAD)
@@ -263,6 +273,7 @@
 
 /datum/slime_transformation/darkblue/on_apply(mob/living/user)
 	our_slime.set_cleaner_slime(TRUE)
+	COOLDOWN_RESET(our_slime, pen_expiry_cooldown) // you prolly WANT cleaner slimes to split outside of pens
 
 /obj/item/slimecross/transformative/silver
 	colour = SLIME_TYPE_SILVER
@@ -334,6 +345,7 @@
 /datum/slime_transformation/red
 	desc = "It hits a little harder."
 	overlay_color = COLOR_SLIME_RED
+	/// Multiplier on melee damage.
 	var/damage_multiplier = 1.1
 
 /datum/slime_transformation/red/on_apply(mob/living/user)
@@ -348,6 +360,7 @@
 /datum/slime_transformation/green
 	desc = "If it has a mind of its own, it can choose to become a luminescent."
 	overlay_color = COLOR_SLIME_GREEN
+	/// Action that lets a player-controlled slime become a luminescent.
 	var/datum/action/innate/become_luminescent/luminescent_action
 
 /datum/slime_transformation/green/on_apply(mob/living/user)
@@ -397,6 +410,9 @@
 
 /datum/slime_transformation/pink/on_apply(mob/living/user)
 	our_slime.cat_slime = TRUE
+	// 0.5% chance for a witch hat, because cute
+	if(!our_slime.equipped_hat && prob(0.5))
+		our_slime.equip_hat(new /obj/item/clothing/head/wizard/marisa)
 
 /obj/item/slimecross/transformative/oil
 	colour = SLIME_TYPE_OIL
@@ -406,6 +422,7 @@
 /datum/slime_transformation/oil
 	desc = "It douses whatever it latches onto in fuel."
 	overlay_color = COLOR_SLIME_OIL
+	/// Fire stacks put on whatever it latches onto.
 	var/fire_stacks = 2
 
 /datum/slime_transformation/oil/on_apply(mob/living/user)
@@ -413,7 +430,7 @@
 
 /datum/slime_transformation/oil/proc/on_set_buckled(mob/living/basic/slime/source, mob/living/meal)
 	SIGNAL_HANDLER
-	if(isliving(meal))
+	if(isliving(meal) && !isslime(meal))
 		meal.adjust_fire_stacks(fire_stacks)
 
 /obj/item/slimecross/transformative/black
@@ -424,6 +441,7 @@
 /datum/slime_transformation/black
 	desc = "It is nearly invisible, except while it feeds."
 	overlay_color = COLOR_SLIME_BLACK
+	/// Alpha the slime fades to while it isn't latched on.
 	var/stealth_alpha = 64
 
 /datum/slime_transformation/black/on_apply(mob/living/user)
@@ -437,6 +455,7 @@
 /datum/slime_transformation/lightpink
 	desc = "Something from beyond could move in and take control of it."
 	overlay_color = COLOR_SLIME_LIGHT_PINK
+	/// Ghost role sitting inside the slime.
 	var/obj/effect/mob_spawn/ghost_role/transformed_slime/spawner
 	/// Name of whoever used the extract, passed down to babies.
 	var/master_name
@@ -451,6 +470,7 @@
 	QDEL_NULL(spawner)
 	return ..()
 
+/// Sets who the slime's ghost is told to assist.
 /datum/slime_transformation/lightpink/proc/serve(new_master_name)
 	master_name = new_master_name
 	spawner.important_text = "Assist [master_name] at all costs."
@@ -460,6 +480,7 @@
 	if(master_name)
 		inherited.serve(master_name)
 
+/// Lets a ghost take over the slime, if nobody is playing it.
 /datum/slime_transformation/lightpink/proc/on_attack_ghost(mob/living/basic/slime/source, mob/dead/observer/ghost)
 	SIGNAL_HANDLER
 	if(source.ckey)
@@ -467,6 +488,7 @@
 	INVOKE_ASYNC(spawner, TYPE_PROC_REF(/atom, attack_ghost), ghost)
 	return COMPONENT_CANCEL_ATTACK_CHAIN
 
+/// Ghost role that puts a player in the slime it sits inside.
 /obj/effect/mob_spawn/ghost_role/transformed_slime
 	name = "transformed slime"
 	desc = "It seems to pulse slightly with an inner life."
@@ -500,6 +522,7 @@
 /datum/slime_transformation/adamantine
 	desc = "It shrugs off half of any brute damage."
 	overlay_color = COLOR_SLIME_ADAMANTINE
+	/// Multiplier on brute damage taken.
 	var/brute_multiplier = 0.5
 
 /datum/slime_transformation/adamantine/on_apply(mob/living/user)
@@ -519,6 +542,7 @@
 /datum/slime_transformation/rainbow/on_apply(mob/living/user)
 	RegisterSignal(our_slime, COMSIG_LIVING_LIFE, PROC_REF(on_life))
 
+/// Sometimes changes the slime's color at random.
 /datum/slime_transformation/rainbow/proc/on_life(mob/living/basic/slime/source, seconds_per_tick)
 	SIGNAL_HANDLER
 	// a wind-up already decided what color it ends on, don't pull the rug out from under it
