@@ -134,7 +134,8 @@
 /datum/pet_command/slime_split
 	command_name = "Split"
 	command_desc = "Prime (or unprime) your slime to split the next time it's fed enough."
-	radial_icon_state = "breed"
+	radial_icon = 'modular_oculis/modules/slime_rancher/icons/radial_pets.dmi'
+	radial_icon_state = "split"
 	speech_commands = list("split", "breed", "multiply")
 
 /datum/pet_command/slime_split/try_activate_command(mob/living/commander, radial_command)
