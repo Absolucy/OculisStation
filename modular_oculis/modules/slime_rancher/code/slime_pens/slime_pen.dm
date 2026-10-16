@@ -5,9 +5,9 @@ GLOBAL_LIST_EMPTY(slime_pens)
 	var/datum/slime_pen/pen
 	COOLDOWN_DECLARE(pen_expiry_cooldown)
 
-/// Is this slime in a pen? (or it left one less than 10 minutes ago, close enough)
+/// Is this slime in a pen? (or it left one less than 10 minutes ago, close enough - cleaners skip the grace period)
 /mob/living/basic/slime/proc/is_ranched()
-	return pen || !COOLDOWN_FINISHED(src, pen_expiry_cooldown)
+	return pen || (!cleaner_slime && !COOLDOWN_FINISHED(src, pen_expiry_cooldown))
 
 // penned monkeys have become jaded to getting glomped, and thus are less likely to lose their mcfucking marbles
 /datum/ai_controller/monkey/on_attacked(datum/source, mob/attacker)

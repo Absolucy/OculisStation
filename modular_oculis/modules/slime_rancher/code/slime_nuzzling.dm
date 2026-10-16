@@ -35,7 +35,11 @@
 	if(!.)
 		return FALSE
 	var/mob/living/candidate = target
-	return isliving(candidate) && candidate.client && !candidate.incapacitated
+	if(!isliving(candidate) || !candidate.client || candidate.incapacitated)
+		return FALSE
+	// roaming cleaners have a station to clean, they only say hi in passing
+	var/mob/living/basic/slime/slime_pawn = living_mob
+	return !(slime_pawn.cleaner_slime && isnull(slime_pawn.pen) && get_dist(slime_pawn, candidate) > 1)
 
 /datum/target_source/from_bb_list/slime_friends
 	list_key = BB_FRIENDS_LIST

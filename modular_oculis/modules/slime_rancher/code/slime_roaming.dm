@@ -1,6 +1,3 @@
-/// How far (in path steps) a slime will walk in one hop
-#define SLIME_ROAM_PATH_LENGTH 50
-
 /mob/living/basic/slime
 	COOLDOWN_DECLARE(player_seek_cooldown)
 	COOLDOWN_DECLARE(player_seek_timeout)
@@ -19,7 +16,7 @@
 /datum/bt_node/ai_behavior/find_slime_roam_spot
 	time_between_perform = 4 SECONDS
 	/// How far away a random spot can be
-	var/scan_range = 20
+	var/scan_range = 40
 	/// The spot the async path search is checking
 	VAR_PRIVATE/turf/picked_spot
 
@@ -47,8 +44,7 @@
 /datum/bt_node/ai_behavior/find_slime_roam_spot/perform_async(datum/ai_controller/basic_controller/slime/controller)
 	var/turf/spot = picked_spot
 	picked_spot = null
-	var/max_length = controller.blackboard_key_exists(BB_SLIME_ROAM_PLAYER) ? SLIME_SEEK_PATH_LENGTH : SLIME_ROAM_PATH_LENGTH
-	var/list/path = get_astar_path_to(controller.pawn, spot, max_distance = max_length, access = controller.get_access())
+	var/list/path = get_astar_path_to(controller.pawn, spot, max_distance = SLIME_SEEK_PATH_LENGTH, access = controller.get_access())
 	if(!async_still_valid())
 		return
 	if(!length(path))
@@ -96,7 +92,7 @@
 		return
 
 	var/turf/here = get_turf(controller.pawn)
-	for(var/i in 1 to 12)
+	for(var/i in 1 to 20)
 		var/turf/candidate = locate(here.x + rand(-scan_range, scan_range), here.y + rand(-scan_range, scan_range), here.z)
 		if(isnull(candidate) || get_dist(here, candidate) < 8)
 			continue
@@ -147,5 +143,3 @@
 	SIGNAL_HANDLER
 	// shutting the AI off cancels every action, and this can fire from inside one of them
 	addtimer(CALLBACK(ai_controller, TYPE_PROC_REF(/datum/ai_controller, reset_ai_status)), 0.1 SECONDS, TIMER_UNIQUE)
-
-#undef SLIME_ROAM_PATH_LENGTH

@@ -66,6 +66,9 @@
 		return FALSE
 	if(person in controller?.blackboard[BB_BASIC_MOB_RETALIATE_LIST])
 		return FALSE
+	var/mob/living/basic/slime/slime_pawn = living_mob
+	if(slime_pawn.cleaner_slime && isnull(slime_pawn.pen) && get_dist(slime_pawn, person) > 1)
+		return FALSE
 	return can_see(living_mob, person, vision_range)
 
 /datum/bt_node/decorator/slime_wants_to_bounce
