@@ -1,4 +1,0 @@
-author: "Shroopy"
-delete-after: True
-changes:
-  - rscdel: "Removed disabling mail on Sundays."
