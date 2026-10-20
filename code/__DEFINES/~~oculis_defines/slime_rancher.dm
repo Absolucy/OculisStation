@@ -73,7 +73,7 @@
 /// How long a slime ignores a target it couldn't path to
 #define SLIME_CHASE_GIVE_UP_TIME (5 SECONDS)
 /// How far (in path steps) a slime will walk to go find a player, or chase anything once it's moving with A*
-#define SLIME_SEEK_PATH_LENGTH 150
+#define SLIME_SEEK_PATH_LENGTH 60
 /// How many damaging hits a cat slime shrugs off before it holds a grudge
 #define SLIME_CAT_PATIENCE_HITS 3
 /// Hits further apart than this don't add up against a cat slime's patience
